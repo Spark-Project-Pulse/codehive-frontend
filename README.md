@@ -37,4 +37,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Additional npm packages that we installed:
 
-- 
+- [Prettier Tailwind Plugin](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier) (useful for sorting [Tailwind](https://tailwindcss.com/) classes, this also auto-installs Prettier!)
