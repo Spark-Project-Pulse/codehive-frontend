@@ -29,7 +29,8 @@ jobs:
       # Step 4: Configure Docker to use gcloud as a credential helper
       - name: Configure Docker for GCR
         run: |
-          gcloud auth configure-docker --quiet
+          gcloud auth configure-docker gcr.io --quiet
+
 
       # Step 5: Build Docker image for frontend
       - name: Build Docker image for frontend
