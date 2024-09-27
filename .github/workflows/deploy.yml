@@ -31,29 +31,29 @@ jobs:
         run: echo ${{ secrets.GOOGLE_CLOUD_PROJECT }}
 
       # Step 5: Configure Docker to use gcloud as a credential helper
-      - name: Configure Docker for GCR
+      - name: Configure Docker for GAR
         run: |
-          gcloud auth configure-docker gcr.io --quiet
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
 
       # Step 6: Build Docker image for frontend
       - name: Build Docker image for frontend
         run: |
-          docker build -t gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend .
+          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend .
 
-      # Step 7: Push Docker image to Google Container Registry
-      - name: Push Docker image to Google Container Registry
+      # Step 7: Push Docker image to Google Artifact Registry
+      - name: Push Docker image to Google Artifact Registry
         run: |
-          docker push gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend
+          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend
 
       # Step 8: Deploy to Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy pulse-frontend \
-            --image "gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend" \
+            --image "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend" \
             --no-cpu-throttling \
             --min-instances 1 \
             --max-instances 10 \
-            --region us-east4 \
+            --region "${{ secrets.REGION }}"  \
             --platform managed \
             --allow-unauthenticated \
             --port 3000
