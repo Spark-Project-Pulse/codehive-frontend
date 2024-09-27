@@ -38,5 +38,5 @@ jobs:
             --image "gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/frontend-app" \
             --region us-east4 \
             --platform managed \
-            --allow-unauthenticated \  # Allow public access to frontend
+            --allow-unauthenticated \
             --port 3000
