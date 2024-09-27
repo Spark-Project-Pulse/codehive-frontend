@@ -38,3 +38,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Additional npm packages that we installed:
 
 - [Prettier Tailwind Plugin](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier) (useful for sorting [Tailwind](https://tailwindcss.com/) classes, this also auto-installs Prettier!)
+
+<!-- ## Running with Docker
+1. Make sure the Docker daemon is running (open Docker Desktop)
+2. Use the command `docker compose up --build` to run the project locally
+3. Navigate to `http://localhost:3000` to view the project -->
