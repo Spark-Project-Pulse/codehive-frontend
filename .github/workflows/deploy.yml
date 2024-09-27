@@ -46,12 +46,12 @@ jobs:
       # Step 7: Build Docker image for frontend
       - name: Build Docker image for frontend
         run: |
-          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend .
+          docker build -t "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend:latest" .
 
       # Step 8: Push Docker image to Google Artifact Registry
       - name: Push Docker image to Google Artifact Registry
         run: |
-          docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend
+          docker push "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend:latest"
 
       # Step 9: Deploy to Cloud Run
       - name: Deploy to Cloud Run
