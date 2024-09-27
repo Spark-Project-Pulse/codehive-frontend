@@ -50,6 +50,9 @@ jobs:
         run: |
           gcloud run deploy pulse-frontend \
             --image "gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend" \
+            --no-cpu-throttling \  # Ensure CPU is allocated only during request processing
+            --min-instances 1 \  # Set minimum number of instances to 1
+            --max-instances 10 \  # Adjust based on your scaling needs
             --region us-east4 \
             --platform managed \
             --allow-unauthenticated \
