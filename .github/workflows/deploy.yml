@@ -42,7 +42,8 @@ jobs:
       # Step 6: Build Docker image for frontend
       - name: Build Docker image for frontend
         run: |
-          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend/image-${{ github.sha }} .
+          docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend/image-${{ github.sha }} \
+            --build-arg NEXT_PUBLIC_BACKEND_URL="${{ secrets.NEXT_PUBLIC_BACKEND_URL }}" .
 
       # Step 7: Push Docker image to Google Artifact Registry
       - name: Push Docker image to Google Artifact Registry
@@ -60,6 +61,5 @@ jobs:
             --region "${{ secrets.REGION }}"  \
             --platform managed \
             --allow-unauthenticated \
-            --port 3000 \
-            --set-env-vars NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+            --port 3000
 
