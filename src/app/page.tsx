@@ -8,6 +8,8 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("about to call api:", process.env.NEXT_PUBLIC_BACKEND_URL);
+      
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}`, {
           method: "GET",
