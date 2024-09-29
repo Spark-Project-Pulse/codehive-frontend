@@ -8,8 +8,6 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("about to call api:", process.env.NEXT_PUBLIC_BACKEND_URL);
-      
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}`, {
           method: "GET",
@@ -25,8 +23,6 @@ export default function Home() {
 
         const data = await response.json();
         setData(data);
-        console.log(data);
-        
       } catch (error) {
         console.error("Error fetching listings:", error);
       } finally {
