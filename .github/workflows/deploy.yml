@@ -55,7 +55,7 @@ jobs:
         run: |
           gcloud run deploy pulse-frontend \
             --image "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend/image-${{ github.sha }}" \
-            --no-cpu-throttling \
+            --cpu-throttling \
             --min-instances 1 \
             --max-instances 10 \
             --region "${{ secrets.REGION }}"  \
