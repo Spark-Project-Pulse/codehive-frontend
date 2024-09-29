@@ -1,8 +1,9 @@
 "use client"
+import { HelloWorld } from '@/types/Home';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<HelloWorld | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -22,6 +23,8 @@ export default function Home() {
 
         const data = await response.json();
         setData(data);
+        console.log(data);
+        
       } catch (error) {
         console.error("Error fetching listings:", error);
       } finally {
@@ -41,11 +44,10 @@ export default function Home() {
     <section className="py-24">
       <div>
         <h1 className="text-3xl font-bold">Project Pulse yuhhhhh</h1>
-        <h1 className="text-3xl font-bold">Sussy</h1>
         {data ? (
-          <div>{JSON.stringify(data, null, 2)}</div> // Display the fetched data
+          <div>{data.message}</div>
         ) : (
-          <div>No data available.</div> // Handle case with no data
+          <div>No data available.</div>
         )}
       </div>
     </section>
