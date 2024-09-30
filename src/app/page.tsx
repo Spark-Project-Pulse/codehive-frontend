@@ -36,7 +36,7 @@ export default function Home() {
   // Conditional rendering for loading state
   if (isLoading) {
     return <div>Loading...</div>;
-  }
+  
 
   return (
     <section className="py-24">
