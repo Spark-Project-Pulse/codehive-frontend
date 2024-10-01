@@ -5,7 +5,7 @@ import QuestionForm from '@/components/ask-question/QuestionForm'
 import { useToast } from '../../components/ui/use-toast'
 import { LoadingSpinner } from '../../components/ui/loading'
 import { Question } from '@/types/Question'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 // Main page for asking a question
 export default function AskQuestion() {

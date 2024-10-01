@@ -55,18 +55,21 @@ export default function QuestionPage({
   }
 
   return (
-    <section className="py-24 bg-gray-100 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4">
+    <section className="min-h-screen bg-gray-100 py-24">
+      <div className="mx-auto max-w-4xl px-4">
         {question ? (
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">{question.title}</h1>
-            <p className="text-gray-600 text-lg">{question.description}</p>
+          <div className="rounded-lg bg-white p-6 shadow-lg">
+            <h1 className="mb-4 text-3xl font-bold text-gray-800">
+              {question.title}
+            </h1>
+            <p className="text-lg text-gray-600">{question.description}</p>
             <p className="mt-4 text-gray-500">
-              Asked by: {question.asker_id ? question.asker_id : 'Anonymous User'}
+              Asked by:{' '}
+              {question.asker_id ? question.asker_id : 'Anonymous User'}
             </p>
           </div>
         ) : (
-          <div className="bg-red-100 border border-red-400 text-red-700 rounded-lg p-4">
+          <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
             <h2 className="text-lg font-bold">Question not found</h2>
           </div>
         )}
