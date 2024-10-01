@@ -61,6 +61,9 @@ export default function QuestionPage({
           <div className="bg-white shadow-lg rounded-lg p-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-4">{question.title}</h1>
             <p className="text-gray-600 text-lg">{question.description}</p>
+            <p className="mt-4 text-gray-500">
+              Asked by: {question.asker_id ? question.asker_id : 'Anonymous User'}
+            </p>
           </div>
         ) : (
           <div className="bg-red-100 border border-red-400 text-red-700 rounded-lg p-4">
