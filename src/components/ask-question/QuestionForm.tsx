@@ -15,6 +15,9 @@ import {
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
+import { useToast } from '../ui/use-toast'
+import { useState } from 'react'
+import { LoadingSpinner } from '../ui/loading'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
@@ -27,7 +30,10 @@ const formSchema = z.object({
 })
 
 // Function that will render the question form and passes the results to the ask question page on submit
-export default function QuestionForm() {
+export default function QuestionForm({ onSubmit }: { onSubmit: (values: z.infer<typeof formSchema>) => void }) {
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+
   // Define the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,11 +42,6 @@ export default function QuestionForm() {
       description: '',
     },
   })
-
-  // Function that runs when the form is submitted
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-  }
 
   return (
     <Form {...form}>

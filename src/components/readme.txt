@@ -1,1 +1,0 @@
-[use this folder for all app related components (then delete this file)]
