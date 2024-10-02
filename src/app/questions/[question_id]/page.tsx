@@ -1,7 +1,7 @@
 'use client'
 
 import { LoadingSpinner } from '@/components/ui/loading'
-import { Question } from '@/types/Question'
+import { type Question } from '@/types/Question'
 import { useEffect, useState } from 'react'
 
 export default function QuestionPage({
