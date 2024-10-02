@@ -8,3 +8,7 @@ export interface Question {
   description: string
   created_at: Date
 }
+
+export interface AskQuestion {
+  question_id: UUID
+}

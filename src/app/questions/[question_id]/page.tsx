@@ -32,10 +32,7 @@ export default function QuestionPage({
         }
 
         // Extract the JSON data from the response
-        const responseData = await response.json()
-
-        // Get the data as type Question
-        const questionData: Question = responseData 
+        const questionData = await response.json() as Question
 
         setQuestion(questionData)
       } catch (error) {
@@ -45,7 +42,7 @@ export default function QuestionPage({
       }
     }
 
-    fetchQuestion()
+    void fetchQuestion()
   }, [params.question_id])
 
   // Conditional rendering for loading state
