@@ -53,6 +53,7 @@ export default function AskQuestion() {
         title: 'Error',
         description: 'There was an error submitting your question.',
       })
+      console.error("Error creating question:", error);
     } finally {
       setIsLoading(false)
     }

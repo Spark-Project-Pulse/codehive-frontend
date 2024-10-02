@@ -47,7 +47,7 @@ export default function QuestionPage({
     }
 
     fetchQuestion()
-  }, [])
+  }, [params.question_id])
 
   // Conditional rendering for loading state
   if (isLoading) {
