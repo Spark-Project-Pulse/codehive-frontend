@@ -16,9 +16,8 @@ export default function QuestionPage({
     //TODO: Move API to seperate place for all question API calls
     const fetchQuestion = async () => {
       try {
-        //TODO: Switch url to be different based on dev environment and prod
         const response = await fetch(
-          `http://127.0.0.1:8000/questions/getById/${params.question_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${params.question_id}`,
           {
             method: 'GET',
             headers: {
