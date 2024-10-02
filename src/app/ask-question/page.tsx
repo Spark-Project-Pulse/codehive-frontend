@@ -4,7 +4,6 @@ import { useState } from 'react'
 import QuestionForm from '@/components/ask-question/QuestionForm'
 import { useToast } from '../../components/ui/use-toast'
 import { LoadingSpinner } from '../../components/ui/loading'
-import { Question } from '@/types/Question'
 import { useRouter } from 'next/navigation'
 
 // Main page for asking a question
