@@ -36,7 +36,7 @@ export default function QuestionPage({
         const responseData = await response.json()
 
         // Get the data as type Question
-        const questionData: Question = responseData.data[0]
+        const questionData: Question = responseData 
 
         setQuestion(questionData)
       } catch (error) {

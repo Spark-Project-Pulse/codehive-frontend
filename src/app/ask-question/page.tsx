@@ -38,11 +38,8 @@ export default function AskQuestion() {
       // Extract the JSON data from the response
       const responseData = await response.json()
 
-      // Get the data as type Question
-      const questionData: Question = responseData.data[0]
-
       // Access the question_id
-      const questionId = questionData.question_id
+      const questionId = responseData["question_id"]
 
       // Navigate to the new question page using question_id
       router.push(`/questions/${questionId}`) // Change to the desired route format
