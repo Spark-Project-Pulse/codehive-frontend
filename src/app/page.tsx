@@ -1,4 +1,5 @@
 "use client"
+import { LoadingSpinner } from '@/components/ui/loading';
 import { HelloWorld } from '@/types/Home';
 import { useEffect, useState } from 'react';
 
@@ -36,7 +37,7 @@ export default function Home() {
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />
   }
 
   return (
