@@ -13,7 +13,7 @@
   "rules": {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/no-misused-promises": "off", // TBD: maybe remove this (promises are a bit tedious to deal with, but we may want a better way)
+    "@typescript-eslint/no-misused-promises": "off", // TODO: maybe remove this (promises are a bit tedious to deal with, but we may want a better way)
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
