@@ -1,7 +1,7 @@
 'use client'
 
 import { LoadingSpinner } from '@/components/ui/loading'
-import { Question } from '@/types/Question'
+import { type Question } from '@/types/Question'
 import { useEffect, useState } from 'react'
 
 export default function QuestionPage({
@@ -32,10 +32,7 @@ export default function QuestionPage({
         }
 
         // Extract the JSON data from the response
-        const responseData = await response.json()
-
-        // Get the data as type Question
-        const questionData: Question = responseData 
+        const questionData = await response.json() as Question
 
         setQuestion(questionData)
       } catch (error) {
@@ -45,7 +42,7 @@ export default function QuestionPage({
       }
     }
 
-    fetchQuestion()
+    void fetchQuestion()
   }, [params.question_id])
 
   // Conditional rendering for loading state

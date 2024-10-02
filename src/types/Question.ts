@@ -1,4 +1,4 @@
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 export interface Question {
   question_id: UUID
@@ -7,4 +7,8 @@ export interface Question {
   title: string
   description: string
   created_at: Date
+}
+
+export interface AskQuestion {
+  question_id: UUID
 }

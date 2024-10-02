@@ -5,6 +5,7 @@ import QuestionForm from '@/components/ask-question/QuestionForm'
 import { useToast } from '../../components/ui/use-toast'
 import { LoadingSpinner } from '../../components/ui/loading'
 import { useRouter } from 'next/navigation'
+import { type AskQuestion } from '@/types/Question'
 
 // Main page for asking a question
 export default function AskQuestion() {
@@ -21,7 +22,6 @@ export default function AskQuestion() {
 
     //TODO: Move API to seperate place for all question API calls
     try {
-      //TODO: Switch url to be different based on dev environment and prod
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/create/`, {
         method: 'POST',
         headers: {
@@ -35,10 +35,10 @@ export default function AskQuestion() {
       }
 
       // Extract the JSON data from the response
-      const responseData = await response.json()
+      const responseData = await response.json() as AskQuestion
 
       // Access the question_id
-      const questionId = responseData["question_id"]
+      const questionId = responseData.question_id
 
       // Navigate to the new question page using question_id
       router.push(`/questions/${questionId}`) // Change to the desired route format
