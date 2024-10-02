@@ -21,7 +21,6 @@ export default function AskQuestion() {
 
     //TODO: Move API to seperate place for all question API calls
     try {
-      //TODO: Switch url to be different based on dev environment and prod
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/create/`, {
         method: 'POST',
         headers: {
