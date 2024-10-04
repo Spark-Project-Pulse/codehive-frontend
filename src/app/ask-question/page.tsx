@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import QuestionForm from '@/components/ask-question/QuestionForm'
-import { useToast } from '../../components/ui/use-toast'
-import { LoadingSpinner } from '../../components/ui/loading'
+import { useToast } from '@/components/ui/use-toast'
+import { LoadingSpinner } from '@/components/ui/loading'
 import { useRouter } from 'next/navigation'
 import { type AskQuestion } from '@/types/Question'
 
