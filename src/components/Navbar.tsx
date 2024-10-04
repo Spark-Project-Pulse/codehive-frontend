@@ -1,5 +1,16 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  // NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  // NavigationMenuViewport,
+  navigationMenuTriggerStyle
+} from "@/components/ui/navigation-menu"
+
 
 export default function Navbar() {
   return (
@@ -9,18 +20,37 @@ export default function Navbar() {
           Logo
         </Link>
         <div className="flex space-x-4">
-          <Button asChild>
-            <Link href="/ask-question">Ask a Question</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/answer-question">Answer a Question</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/sign-up">Signup</Link>
-          </Button>
+          <NavigationMenu>
+            <NavigationMenuList>
+              
+              {/* Questions */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Questions</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <Link href="/ask-question" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Ask a Question
+                    </NavigationMenuLink>
+                  </Link>
+                  <Link href="/answer-question" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Answer a Question
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Sign In (and Sign Up) */}
+              <NavigationMenuItem>
+                <Link href="/sign-in" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Sign In
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
         </div>
       </div>
     </nav>
