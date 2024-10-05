@@ -9,7 +9,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '../ui/form'
 import { Button } from '../ui/button'
@@ -17,8 +16,8 @@ import { Textarea } from '../ui/textarea'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
-  answer_field: z.string().min(1, {
-    message: 'Answer field cannot be empty.',
+  response: z.string().min(1, {
+    message: 'Response field cannot be empty.',
   }),
 })
 
@@ -32,7 +31,7 @@ export default function AnswerForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      answer_field: '',
+      response: '',
     },
   })
 
@@ -41,7 +40,7 @@ export default function AnswerForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="answer_field"
+          name="response"
           render={({ field }) => (
             <FormItem>
               <FormControl>

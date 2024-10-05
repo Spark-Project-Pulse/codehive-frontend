@@ -19,23 +19,26 @@ export default function QuestionPage({
 
   // Function to handle answer form submission and perform API call
   async function handleAnswerSubmit(values: {
-    answer_field: string
+    response: string
   }) {
     setIsLoading(true)
 
     //TODO: Move API to seperate place for all answer API calls
+
+    // Append question_id to the values object
+    const requestData = {
+      ...values,
+      "question": params.question_id,
+    };
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(requestData),
       })
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
 
       // Extract the JSON data from the response
       const responseData = await response.json() as Answer
@@ -48,9 +51,9 @@ export default function QuestionPage({
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'There was an error submitting your question.',
+        description: 'There was an error submitting your answer.',
       })
-      console.error("Error creating question:", error);
+      console.error("Error creating answer:", error);
     } finally {
       setIsLoading(false)
     }
@@ -86,6 +89,38 @@ export default function QuestionPage({
       }
     }
 
+    //TODO: Move API to seperate place for all answer API calls
+    const fetchAnswers = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionId/${params.question_id}`,
+          {
+            method: 'GET',
+            headers: {
+              // Authorization: `Bearer ${token}`, // Uncomment if using auth
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        // Extract the JSON data from the response
+        const AnswersData = await response.json() as Answer[]
+
+        // Update the answers state to include the new answer
+        setAnswers(AnswersData);
+
+      } catch (error) {
+        console.error('Error fetching question:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void fetchAnswers()
     void fetchQuestion()
   }, [params.question_id])
 
@@ -113,13 +148,15 @@ export default function QuestionPage({
             {answers.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-lg font-bold">Current Answers:</h2>
-                <ul className="list-disc pl-5">
-                  {answers.map((answer) => (
-                    <li key={answer.answer_id}>
-                      Answer ID: {answer.answer_id}
-                    </li>
-                  ))}
-                </ul>
+                <div className="list-disc pl-5">{answers.map((answer) => (
+                  <div key={answer.answer_id} className="rounded-lg bg-white p-6 shadow-lg mb-6 mt-6">
+                    Answer: {answer.response}
+                    <p className="mt-4 text-gray-500">
+                      Answered by:{' '}
+                      {answer.expert_id ? answer.expert_id : 'Anonymous User'}
+                    </p>
+                  </div>
+                ))}</div>
               </div>
             )}
             {/* Answer button */}
