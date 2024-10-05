@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function Navbar() {
   return (
     <nav className="bg-white shadow">
-      <div className=" mx-auto px-4 py-2 flex items-center justify-between">
+      <div className="mx-auto px-4 py-2 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold">
           Logo
         </Link>
@@ -14,6 +14,9 @@ export default function Navbar() {
           </Button>
           <Button asChild>
             <Link href="/answer-question">Answer a Question</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/view-all-questions">View All Questions</Link>
           </Button>
           <Button asChild>
             <Link href="/login">Login</Link>
