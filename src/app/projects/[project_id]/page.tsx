@@ -3,6 +3,7 @@
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { type Project } from '@/types/Projects'
+import { Badge } from '@/components/ui/badge'
 
 export default function ProjectPage({
   params,
@@ -32,7 +33,7 @@ export default function ProjectPage({
         }
 
         // Extract the JSON data from the response
-        const projectData = await response.json() as Project
+        const projectData = (await response.json()) as Project
 
         setProject(projectData)
       } catch (error) {
@@ -56,18 +57,23 @@ export default function ProjectPage({
         {project ? (
           <div>
             <div className="rounded-lg bg-white p-6 shadow-lg">
-              <h1 className="mb-4 text-3xl font-bold text-gray-800">
-                {project.title}
-              </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="mb-4 text-3xl font-bold text-gray-800">
+                  {project.title}
+                </h1>
+                {project.public ? (
+                  <Badge>Public</Badge>
+                ) : (
+                  <Badge variant="secondary">Private</Badge>
+                )}
+              </div>
               <p className="text-lg text-gray-600">{project.description}</p>
-              <p className="mt-4 text-gray-500">
-                Author: Anonymous User
-              </p>
+              <p className="mt-4 text-gray-500">Author: Anonymous User</p>
             </div>
           </div>
         ) : (
           <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-            <h2 className="text-lg font-bold">project not found</h2>
+            <h2 className="text-lg font-bold">Project not found</h2>
           </div>
         )}
       </div>
