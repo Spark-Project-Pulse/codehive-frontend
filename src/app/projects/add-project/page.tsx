@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import QuestionForm from '@/components/ask-question/QuestionForm'
 import { useToast } from '@/components/ui/use-toast'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useRouter } from 'next/navigation'
 import { type AddProject } from '@/types/Projects'
+import ProjectForm from '@/components/projects/add-project/ProjectForm'
 
 // Main page for adding a project
 export default function AddProject() {
@@ -21,7 +21,7 @@ export default function AddProject() {
   }) {
     setIsLoading(true)
 
-    //TODO: Move API to seperate place for all question API calls
+    //TODO: Move API to seperate place for all project API calls
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/create/`, {
         method: 'POST',
@@ -38,19 +38,19 @@ export default function AddProject() {
       // Extract the JSON data from the response
       const responseData = await response.json() as AddProject
 
-      // Access the question_id
-      const questionId = responseData.project_id
+      // Access the project_id
+      const projectId = responseData.project_id
 
-      // Navigate to the new question page using question_id
-      router.push(`/projects/${questionId}`) // Change to the desired route format
+      // Navigate to the new project page using project_id
+      router.push(`/projects/${projectId}`) // Change to the desired route format
     } catch (error) {
       // Show error toast if an error occurs
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'There was an error submitting your question.',
+        description: 'There was an error creating your project.',
       })
-      console.error("Error creating question:", error);
+      console.error("Error creating project:", error);
     } finally {
       setIsLoading(false)
     }
@@ -66,7 +66,7 @@ export default function AddProject() {
       <h1 className="text-center text-2xl font-bold text-gray-900">
         Add a project
       </h1>
-      <QuestionForm onSubmit={handleFormSubmit} />
+      <ProjectForm onSubmit={handleFormSubmit} />
     </div>
   )
 }
