@@ -17,7 +17,7 @@ const QuestionsPage: React.FC = () => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
-        const data: Question[] = await res.json();
+        const data = await res.json() as Question[];
         const sortedQuestions = data.sort(
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
@@ -30,7 +30,7 @@ const QuestionsPage: React.FC = () => {
       }
     };
 
-    fetchQuestions();
+    void fetchQuestions();
   }, []);
 
   return (
