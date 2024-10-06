@@ -10,9 +10,9 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '../ui/form'
-import { Button } from '../ui/button'
-import { Textarea } from '../ui/textarea'
+} from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
