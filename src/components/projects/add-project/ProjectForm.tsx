@@ -102,7 +102,7 @@ export default function ProjectForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What would you like to know?</FormLabel>
+              <FormLabel>What is your project about?</FormLabel>
               <FormControl>
                 <Textarea placeholder="Description" {...field} />
               </FormControl>
