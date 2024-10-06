@@ -48,6 +48,7 @@ export default function ProjectForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      public: false,
       title: '',
       description: '',
     },
