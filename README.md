@@ -119,21 +119,57 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/Spark-Project-Pulse/frontend.git
    ```
-2. Navigate to `frontend` folder and create `.env.local` file
-   ``` env
-   TBD
-   ```
+2. Install NPM packages
+   ```sh
+    npm install
+    ```
+
+### Environment Variables
+See the following article for a detailed explanation of how to manage environment variables in a Next.js project: [https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables)
+
+- TLDR:
+- Environment variables are NOT to be used as secret. To add a secret to the project, use the get_secret function in your code and follow [these directions](#updating-secrets) to add the secret to Google Secret Manager.
+- To add an environment variable to the project (for example, anything with the name `NEXT_PUBLIC_*`), add the development value of the variable to .env.development in the format `VARIABLE_NAME=value` and the production value to .env.production in the format `VARIABLE_NAME=value`. The variable will be available in the project as `process.env.VARIABLE_NAME`.
+
+### Secret Management
+#### Accessing Secrets locally
+1. Add a `.env.local` file to the root of the project with the following contents:
+``` bash
+GOOGLE_CLIENT_ID=your_google_client_id
+GCP_SEVICE_ACCOUNT=your_gcp_service_account
+```
+2. Download the service account key from Google Cloud Console and save it as `service-account-key.json` in the root of the project. Go to the Google Cloud Console, navigate to `IAM & Admin` > `Service Accounts`, and create a new service account. Download the key and save it as `service-account-key.json` in the root of the project.
+3. Use the get_secret function in `pulse/utils.py` to access secrets stored in Google Secret Manager. The function takes the secret name as an argument and returns the secret value.
+
+#### Updating Secrets
+To ensure they will be available in production and consistent across all environments and between developers, secrets should be stored in Google Secret Manager. To update a secret:
+1. Navigate to the Google Cloud Console
+2. Select the project `spark-project-pulse`
+3. Navigate to `Secret Manager`
+4. Select the secret you want to update
+5. Click `Edit`
+6. Update the secret value
 
 ### Run locally
 
 #### Docker 
+##### Running the frontend
 1. Make sure the Docker daemon is running (open Docker Desktop)
-2. Make sure the backend repository is in the same directory as the frontend repository
-3. Use this command to run the project locally:
+2. Navigate to the frontend repository
+3. Use this command to build and run the backend container:
+   ``` bash
+   docker compose up frontend --build
+   ```
+4. Navigate to `http://localhost:3000` to see an example of an API response
+
+##### Running the frontend & backend
+1. Make sure the Docker daemon is running (open Docker Desktop)
+2. Navigate to the frontend repository
+3. Make sure the backend repository is in the same directory as the frontend repository
+4. Use this command to run the project locally:
    ``` bash
    docker compose up --build
    ```
-4. Navigate to `http://localhost:3000` to view the project
 5. This will run the frontend and backend in separate containers
 
 #### Node
