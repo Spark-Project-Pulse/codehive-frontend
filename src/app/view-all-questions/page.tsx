@@ -15,7 +15,7 @@ const QuestionsPage: React.FC = () => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch('http://localhost:8000/questions/getAll');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll`);
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
