@@ -3,17 +3,19 @@
 import { useEffect, useState } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading';
 import { type Question } from '@/types/Question';
+import { useRouter } from 'next/navigation';
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch('http://localhost:8000/api/getAllQuestions');
+        const res = await fetch('http://localhost:8000/questions/getAll');
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -32,6 +34,10 @@ const QuestionsPage: React.FC = () => {
 
     void fetchQuestions();
   }, []);
+
+  const handleQuestionClick = (questionId: string) => {
+    router.push(`/questions/${questionId}`);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -53,7 +59,11 @@ const QuestionsPage: React.FC = () => {
       {!isLoading && !hasError && (
         <ul className="space-y-6">
           {questions.map((question) => (
-            <li key={question.question_id.toString()} className="p-6 rounded-lg shadow-md bg-card border border-border">
+            <li
+              key={question.question_id.toString()}
+              className="p-6 rounded-lg shadow-md bg-card border border-border cursor-pointer hover:bg-secondary"
+              onClick={() => handleQuestionClick(question.question_id.toString())}
+            >
               <div className="flex justify-between items-start">
                 <h2 className="text-xl font-semibold text-primary mb-2 text-balance">{question.title}</h2>
                 <div className="text-right">
@@ -73,5 +83,3 @@ const QuestionsPage: React.FC = () => {
 };
 
 export default QuestionsPage;
-
-
