@@ -5,9 +5,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      NODE_ENV: production
-    volumes:
-      - .:/app
-    stdin_open: true
-    tty: true
+    depends_on:
+      - backend
+    env_file:
+      - .env.local
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../backend/.env.local
