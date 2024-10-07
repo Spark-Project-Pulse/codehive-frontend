@@ -10,6 +10,9 @@ export default function Navbar() {
         </Link>
         <div className="flex space-x-4">
           <Button asChild>
+            <Link href="/projects/add-project">Add a project</Link>
+          </Button>
+          <Button asChild>
             <Link href="/ask-question">Ask a Question</Link>
           </Button>
           <Button asChild>
