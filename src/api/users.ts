@@ -36,7 +36,7 @@ export const createUser = async (user: User) => {
     return { errorMessage: null, user_id: userId }
   } catch (error) {
     console.error('Error creating user: ', error)
-    return { errorMessage: 'Error creating user' }
+    return { errorMessage: 'Error creating user', user_id: null }
   }
 }
 
@@ -72,7 +72,7 @@ export const getUserById = async (user_id: string) => {
         return { errorMessage: null, user: user }
       } catch (error) {
         console.error('Error getting user: ', error)
-        return { errorMessage: 'Error getting user' }
+        return { errorMessage: 'Error getting user', user: null }
       }
 }
 
@@ -108,6 +108,6 @@ export const userExists = async (user_id: string) => {
     return { errorMessage: null, userExists: userExists }
   } catch (error) {
     console.error('Error checking if user exists: ', error)
-    return { errorMessage: 'Error checking if user exists' }
+    return { errorMessage: 'Error checking if user exists', userExists: null }
   }
 }

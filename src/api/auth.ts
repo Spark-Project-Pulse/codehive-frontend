@@ -3,7 +3,6 @@
 import { getSupabaseAuth, getUser } from '@/utils/supabase/server'
 import { type Provider } from '@supabase/supabase-js'
 import { createUser, userExists } from './users'
-import { type UUID } from 'crypto'
 
 /**
  * Handles user login via OAuth provider.
@@ -25,25 +24,25 @@ export const loginAction = async (provider: Provider) => {
 
     if (error) throw error
 
-    const authUser = await getUser()
-    if (!authUser) {
-      throw new Error('Failed to get authenticated user')
-    }
+    // const authUser = await getUser();
+    // if (!authUser) {
+    //   throw new Error('Failed to get authenticated user')
+    // }
 
-    // Check if the user exists in the database
-    const { userExists: exists } = await userExists(authUser.id)
+    // // Check if the user exists in the database
+    // const { userExists: exists } = await userExists(authUser.id)
 
-    // If the user doesn't exist, create a new user in your DB
-    if (!exists) {
-      const { errorMessage } = await createUser({
-        user_id: authUser.id,
-        username: authUser.user_metadata.username,
-      })
+    // // If the user doesn't exist, create a new user in your DB
+    // if (!exists) {
+    //   const { errorMessage } = await createUser({
+    //     user_id: authUser.id,
+    //     username: authUser.user_metadata.username,
+    //   })
 
-      if (errorMessage) {
-        throw new Error(errorMessage)
-      }
-    }
+    //   if (errorMessage) {
+    //     throw new Error(errorMessage)
+    //   }
+    // }
 
     return { errorMessage: null, url: data.url }
   } catch (error) {
