@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getUser } from "@/utils/supabase/server";
 
-export default function Navbar() {
+export default async function Navbar() {
+  const user = await getUser();
+
   return (
     <nav className="bg-white shadow">
       <div className="mx-auto px-4 py-2 flex items-center justify-between">
@@ -27,6 +30,9 @@ export default function Navbar() {
           <Button variant="ghost" asChild>
             <Link href="/sign-up">Signup</Link>
           </Button>
+        </div>
+        <div>
+          {user ? `logged in as ${user.email}` : "not logged in"}
         </div>
       </div>
     </nav>
