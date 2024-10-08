@@ -1,13 +1,13 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { getUser } from "@/utils/supabase/server";
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { getUser } from '@/utils/supabase/server'
 
 export default async function Navbar() {
-  const user = await getUser();
+  const user = await getUser()
 
   return (
     <nav className="bg-white shadow">
-      <div className="mx-auto px-4 py-2 flex items-center justify-between">
+      <div className="mx-auto flex items-center justify-between px-4 py-2">
         <Link href="/" className="text-xl font-bold">
           Logo
         </Link>
@@ -24,17 +24,22 @@ export default async function Navbar() {
           <Button asChild>
             <Link href="/view-all-questions">View All Questions</Link>
           </Button>
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/sign-up">Signup</Link>
-          </Button>
-        </div>
-        <div>
-          {user ? `logged in as ${user.email}` : "not logged in"}
+          {user ? (
+            <Button asChild>
+              <Link href={`/profiles/${user.id}`}>Profile</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/sign-up">Signup</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </nav>
-  );
+  )
 }

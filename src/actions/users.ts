@@ -19,3 +19,15 @@ export const loginAction = async (provider: Provider) => {
     return { errorMessage: 'Error logging in' }
   }
 }
+
+export const signOutAction = async () => {
+  try {
+    const { error } = await getSupabaseAuth().signOut()
+
+    if (error) throw error
+
+    return { errorMessage: null }
+  } catch (error) {
+    return { errorMessage: 'Error signing out' }
+  }
+}
