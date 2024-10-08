@@ -13,6 +13,12 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Set ARG to differentiate between environments
+ARG ENV_FILE=".env.production"
+
+# Copy the environment file
+RUN cp ${ENV_FILE} .env.production
+
 # Build the Next.js app
 RUN npm run build
 
