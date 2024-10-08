@@ -3,11 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        ENV_FILE: ".env.development"
     ports:
       - "3000:3000"
     env_file:
       - .env.local
-
   backend:
     build:
       context: ../backend
@@ -16,3 +17,5 @@ services:
       - "8080:8080"
     env_file:
       - ../backend/.env.local
+    profiles:
+      - frontend-and-backend
