@@ -1,7 +1,7 @@
-import { Provider } from '@supabase/supabase-js'
+import { type Provider } from '@supabase/supabase-js'
 import { useTransition } from 'react'
 import { Button } from '../ui/button'
-import { loginAction } from '@/actions/users'
+import { loginAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
 import { toast } from '../ui/use-toast'
 
