@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { signOutAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
@@ -32,7 +32,7 @@ export default function SignOutButton() {
 
   return (
     <Button onClick={() => handleClickSignoutButton()} disabled={isPending}>
-      {isPending ? "Signing out..." : "Sign Out"}
+      {isPending ? 'Signing out...' : 'Sign Out'}
     </Button>
   )
 }

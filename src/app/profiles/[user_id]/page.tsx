@@ -2,7 +2,8 @@
 
 import { getUserById } from '@/api/users'
 import { LoadingSpinner } from '@/components/ui/loading'
-import { User } from '@/types/User'
+import { type User } from '@/types/User'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 export default function ProfilePage({
@@ -26,7 +27,7 @@ export default function ProfilePage({
         }
 
         // Set the user state with the fetched data
-        setUser(response.user)
+        setUser(response.data ?? null)
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
@@ -34,7 +35,7 @@ export default function ProfilePage({
       }
     }
 
-    fetchUser()
+    void fetchUser()
   }, [params.user_id])
 
   // Conditional rendering for loading state
@@ -43,17 +44,21 @@ export default function ProfilePage({
   }
 
   return (
-    <section className="min-h-screen flex flex-col items-center bg-gray-100">
+    <section className="flex min-h-screen flex-col items-center bg-gray-100">
       {user ? (
-        <div className="flex flex-col items-center mt-6">
-          <img
+        <div className="mt-6 flex flex-col items-center">
+          <Image
             // Renders anon user pfp if user pfp is null
-            src={user.pfp_url || "/anon-user-pfp.jpg"}
+            src={user.pfp_url ?? '/anon-user-pfp.jpg'}
             alt="User profile picture"
-            className="h-40 w-40 rounded-lg object-cover mb-6"
+            width={200}
+            height={200}
+            className="mb-6 h-40 w-40 rounded-lg object-cover"
           />
-            <h1 className="text-3xl font-bold mb-2">{user.username}</h1>
-            <h1 className="text-lg text-gray-600 mb-4">{user.reputation} reputation</h1>
+          <h1 className="mb-2 text-3xl font-bold">{user.username}</h1>
+          <h1 className="mb-4 text-lg text-gray-600">
+            {user.reputation} reputation
+          </h1>
         </div>
       ) : (
         <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">

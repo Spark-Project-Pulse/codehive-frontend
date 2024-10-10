@@ -1,7 +1,7 @@
 export default function TutorialPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1>Tutorials here</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <h1>Tutorials here</h1>
     </div>
   )
 }

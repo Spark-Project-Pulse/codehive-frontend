@@ -1,12 +1,13 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
+import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { cookies } from 'next/headers'
 
 export const getUser = async () => {
-  const auth = getSupabaseAuth();
-  const user = (await auth.getUser()).data.user;
+  const auth = getSupabaseAuth()
+  const user = (await auth.getUser()).data.user
 
-  return user;
-};
+  return user
+}
 
 export function getSupabaseAuth() {
   const cookieStore = cookies()
@@ -19,7 +20,13 @@ export function getSupabaseAuth() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(
+          cookiesToSet: Array<{
+            name: string
+            value: string
+            options?: Partial<ResponseCookie>
+          }>
+        ) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -32,7 +39,7 @@ export function getSupabaseAuth() {
         },
       },
     }
-  );
+  )
 
-  return supabaseClient.auth;
+  return supabaseClient.auth
 }

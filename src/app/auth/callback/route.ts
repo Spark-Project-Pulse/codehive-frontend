@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAuth, getUser } from '@/utils/supabase/server'
 import { createUser, userExists } from '@/api/users'
+import { type AuthUser } from '@/types/User'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -13,27 +14,37 @@ export async function GET(request: Request) {
 
     if (!error) {
       // Get the authenticated user after exchanging the code for a session
-      const authUser = await getUser()
+      const authUser = (await getUser()) as AuthUser | null // Type 'authUser'
 
       if (authUser) {
         // Check if the user exists in the database
-        const { exists: exists } = await userExists(authUser.id)
+        const existsResponse = await userExists(authUser.id)
+
+        if (existsResponse.errorMessage) {
+          console.error(
+            'Error checking user existence: ',
+            existsResponse.errorMessage
+          )
+          return NextResponse.redirect(`${origin}/error`)
+        }
 
         // If the user doesn't exist, create a new user in the DB
-        if (!exists) {
-          const { errorMessage } = await createUser({
+        if (!existsResponse.data?.exists) {
+          const createUserResponse = await createUser({
             user: authUser.id,
             username: authUser.user_metadata.user_name,
-            reputation: 0
+            reputation: 0,
           })
 
-          if (errorMessage) {
-            console.error('Error creating user: ', errorMessage)
-            // Redirect to an error page or handle error response
+          if (createUserResponse.errorMessage) {
+            console.error(
+              'Error creating user: ',
+              createUserResponse.errorMessage
+            )
             return NextResponse.redirect(`${origin}/error`)
           }
 
-          // Since user is new, redirect them to the tutorial page instead of the home page
+          // Since the user is new, redirect them to the tutorial page instead of the home page
           next = '/tutorial'
         }
       } else {

@@ -30,7 +30,7 @@ export default async function Navbar() {
               <Button asChild>
                 <Link href={`/profiles/${user.id}`}>Profile</Link>
               </Button>
-              <SignOutButton/>
+              <SignOutButton />
             </>
           ) : (
             <Button asChild>

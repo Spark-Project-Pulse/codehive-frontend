@@ -1,6 +1,6 @@
 'use server'
 
-import { getSupabaseAuth, getUser } from '@/utils/supabase/server'
+import { getSupabaseAuth } from '@/utils/supabase/server'
 import { type Provider } from '@supabase/supabase-js'
 
 /**
