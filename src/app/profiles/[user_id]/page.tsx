@@ -1,7 +1,6 @@
 'use client'
 
 import { getUserById } from '@/api/users'
-import SignOutButton from '@/components/profiles/SignOutButton'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { User } from '@/types/User'
 import { useEffect, useState } from 'react'
@@ -44,11 +43,17 @@ export default function ProfilePage({
   }
 
   return (
-    <section className="min-h-screen bg-gray-100 py-24">
+    <section className="min-h-screen flex flex-col items-center bg-gray-100">
       {user ? (
-        <div>
-            <h1>{user.username}</h1>
-          <SignOutButton />
+        <div className="flex flex-col items-center mt-6">
+          <img
+            // Renders anon user pfp if user pfp is null
+            src={user.pfp_url || "/anon-user-pfp.jpg"}
+            alt="User profile picture"
+            className="h-40 w-40 rounded-lg object-cover mb-6"
+          />
+            <h1 className="text-3xl font-bold mb-2">{user.username}</h1>
+            <h1 className="text-lg text-gray-600 mb-4">{user.reputation} reputation</h1>
         </div>
       ) : (
         <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">

@@ -1,3 +1,5 @@
+"use client";
+
 import { signOutAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'

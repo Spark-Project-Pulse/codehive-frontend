@@ -4,6 +4,7 @@ import { Button } from '../ui/button'
 import { loginAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
 import { toast } from '../ui/use-toast'
+import { ButtonLoadingSpinner } from '../ui/loading'
 
 export default function GithubLoginButton() {
   const [isPending, startTransaction] = useTransition()
@@ -25,8 +26,27 @@ export default function GithubLoginButton() {
   }
 
   return (
-    <Button onClick={() => handleClickLoginButton('github')} disabled={isPending}>
-      {isPending ? "Logging in..." : "Login with GitHub"}
-    </Button>
+<Button
+  onClick={() => handleClickLoginButton('github')}
+  disabled={isPending}
+  className="flex items-center space-x-2"
+>
+  {isPending ? (
+    <>
+        <ButtonLoadingSpinner/>
+        <span>Logging in...</span>
+    </>
+  ) : (
+    <>
+      <img
+        src="/github-logo.png"
+        alt="Github logo"
+        className="h-5 w-5"
+      />
+      <span>Login with GitHub</span>
+    </>
+  )}
+</Button>
+
   )
 }

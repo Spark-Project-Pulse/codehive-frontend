@@ -5,7 +5,7 @@ import { createUser, userExists } from '@/api/users'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
+  let next = searchParams.get('next') ?? '/'
 
   if (code) {
     const supabase = getSupabaseAuth()
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         // Check if the user exists in the database
         const { exists: exists } = await userExists(authUser.id)
 
-        // If the user doesn't exist, create a new user in your DB
+        // If the user doesn't exist, create a new user in the DB
         if (!exists) {
           const { errorMessage } = await createUser({
             user: authUser.id,
@@ -32,6 +32,9 @@ export async function GET(request: Request) {
             // Redirect to an error page or handle error response
             return NextResponse.redirect(`${origin}/error`)
           }
+
+          // Since user is new, redirect them to the tutorial page instead of the home page
+          next = '/tutorial'
         }
       } else {
         console.error('Error: User not found after authentication')

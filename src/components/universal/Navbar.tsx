@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { getUser } from '@/utils/supabase/server'
+import SignOutButton from './SignOutButton'
 
 export default async function Navbar() {
   const user = await getUser()
@@ -25,18 +26,16 @@ export default async function Navbar() {
             <Link href="/view-all-questions">View All Questions</Link>
           </Button>
           {user ? (
-            <Button asChild>
-              <Link href={`/profiles/${user.id}`}>Profile</Link>
-            </Button>
-          ) : (
             <>
               <Button asChild>
-                <Link href="/login">Login</Link>
+                <Link href={`/profiles/${user.id}`}>Profile</Link>
               </Button>
-              <Button variant="ghost" asChild>
-                <Link href="/sign-up">Signup</Link>
-              </Button>
+              <SignOutButton/>
             </>
+          ) : (
+            <Button asChild>
+              <Link href="/login">Login</Link>
+            </Button>
           )}
         </div>
       </div>
