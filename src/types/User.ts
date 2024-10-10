@@ -1,5 +1,5 @@
 export interface User {
-  user_id: string,
+  user: string,
   username: string,
   pfp_url?: string,
   reputation?: number

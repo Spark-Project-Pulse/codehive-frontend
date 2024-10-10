@@ -1,21 +1,47 @@
 import { NextResponse } from 'next/server'
-// The client you created from the Server-Side Auth instructions
-import { getSupabaseAuth } from '@/utils/supabase/server'
+import { getSupabaseAuth, getUser } from '@/utils/supabase/server'
+import { createUser, userExists } from '@/api/users'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const supabase = getSupabaseAuth();
+    const supabase = getSupabaseAuth()
     const { error } = await supabase.exchangeCodeForSession(code)
+
     if (!error) {
+      // Get the authenticated user after exchanging the code for a session
+      const authUser = await getUser()
+
+      if (authUser) {
+        // Check if the user exists in the database
+        const { exists: exists } = await userExists(authUser.id)
+
+        // If the user doesn't exist, create a new user in your DB
+        if (!exists) {
+          const { errorMessage } = await createUser({
+            user: authUser.id,
+            username: authUser.user_metadata.user_name,
+            reputation: 0
+          })
+
+          if (errorMessage) {
+            console.error('Error creating user: ', errorMessage)
+            // Redirect to an error page or handle error response
+            return NextResponse.redirect(`${origin}/error`)
+          }
+        }
+      } else {
+        console.error('Error: User not found after authentication')
+        return NextResponse.redirect(`${origin}/error`)
+      }
+
+      // After handling user creation/check, redirect to the desired page
       const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === 'development'
       if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
         return NextResponse.redirect(`${origin}${next}`)
       } else if (forwardedHost) {
         return NextResponse.redirect(`https://${forwardedHost}${next}`)

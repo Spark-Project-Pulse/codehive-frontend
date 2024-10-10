@@ -32,7 +32,7 @@ export const createUser = async (user: User) => {
     const responseData = (await response.json()) as User
 
     // Access the user_id
-    const userId = responseData.user_id
+    const userId = responseData.user
     return { errorMessage: null, user_id: userId }
   } catch (error) {
     console.error('Error creating user: ', error)
@@ -103,11 +103,11 @@ export const userExists = async (user_id: string) => {
     }
 
     // Extract the JSON data from the response
-    const userExists = await response.json()
+    const responseData = await response.json()
 
-    return { errorMessage: null, userExists: userExists }
+    return { errorMessage: null, exists: responseData.exists }
   } catch (error) {
     console.error('Error checking if user exists: ', error)
-    return { errorMessage: 'Error checking if user exists', userExists: null }
+    return { errorMessage: 'Error checking if user exists', exists: null }
   }
 }
