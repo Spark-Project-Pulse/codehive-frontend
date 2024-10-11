@@ -1,10 +1,10 @@
 import { type Provider } from '@supabase/supabase-js'
 import { useTransition } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { loginAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
-import { toast } from '../ui/use-toast'
-import { ButtonLoadingSpinner } from '../ui/loading'
+import { toast } from '@/components/ui/use-toast'
+import { ButtonLoadingSpinner } from '@/components/ui/loading'
 import Image from 'next/image'
 
 export default function GithubLoginButton() {
@@ -15,6 +15,10 @@ export default function GithubLoginButton() {
     startTransaction(async () => {
       const { errorMessage, url } = await loginAction(provider)
       if (!errorMessage && url) {
+        toast({
+          title: 'Success!',
+          description: 'Signed in succesfully',
+        })
         router.push(url)
       } else {
         toast({
