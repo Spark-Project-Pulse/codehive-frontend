@@ -1,12 +1,11 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+'use client'
 
-export default function NotFound() {
+import GithubLoginButton from '@/components/login/GithubLoginButton'
+
+export default function LoginPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <Button asChild>
-        <Link href="/">Login With Google</Link>
-      </Button>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <GithubLoginButton />
     </div>
   )
 }
