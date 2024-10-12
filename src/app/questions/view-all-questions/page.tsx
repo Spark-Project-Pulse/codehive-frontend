@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading';
-import { type Question } from '@/types/Question';
+import { type Question } from '@/types/Questions';
 import { useRouter } from 'next/navigation';
 
 const QuestionsPage: React.FC = () => {

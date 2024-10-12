@@ -11,8 +11,8 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
@@ -50,7 +50,11 @@ export default function AnswerForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <ButtonWithLoading
+          onClick={form.handleSubmit(onSubmit)}
+          buttonText="Submit"
+          buttonType="submit"
+        />
       </form>
     </Form>
   )

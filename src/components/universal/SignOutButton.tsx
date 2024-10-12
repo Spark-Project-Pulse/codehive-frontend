@@ -3,8 +3,8 @@
 import { signOutAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
-import { toast } from '../ui/use-toast'
-import { Button } from '../ui/button'
+import { toast } from '@/components/ui/use-toast'
+import { Button } from '@/components/ui/button'
 
 export default function SignOutButton() {
   const router = useRouter()
@@ -12,11 +12,13 @@ export default function SignOutButton() {
 
   const handleClickSignoutButton = () => {
     startTransaction(async () => {
-      const { errorMessage } = await signOutAction()
+      const response = await signOutAction()
+      const { errorMessage } = response
+
       if (!errorMessage) {
         toast({
           title: 'Success!',
-          description: 'Signed out succesfully',
+          description: 'Signed out successfully',
         })
 
         router.push('/')

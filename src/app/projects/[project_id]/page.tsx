@@ -4,6 +4,7 @@ import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { type Project } from '@/types/Projects'
 import { Badge } from '@/components/ui/badge'
+import { getProjectById } from '@/api/projects'
 
 export default function ProjectPage({
   params,
@@ -14,37 +15,26 @@ export default function ProjectPage({
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    //TODO: Move API to seperate place for all project API calls
     const fetchProject = async () => {
+      setIsLoading(true)
+
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/getById/${params.project_id}`,
-          {
-            method: 'GET',
-            headers: {
-              // Authorization: `Bearer ${token}`, // Uncomment if using auth
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+        const { errorMessage, data } = await getProjectById(params.project_id)
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
+        if (!errorMessage && data) {
+          setProject(data)
+        } else {
+          console.error('Error:', errorMessage)
         }
-
-        // Extract the JSON data from the response
-        const projectData = (await response.json()) as Project
-
-        setProject(projectData)
       } catch (error) {
-        console.error('Error fetching project:', error)
+        console.error('Unexpected error:', error)
       } finally {
         setIsLoading(false)
       }
-    }
+    };
 
-    void fetchProject()
-  }, [params.project_id])
+    void fetchProject();
+  }, [params.project_id]);
 
   // Conditional rendering for loading state
   if (isLoading) {

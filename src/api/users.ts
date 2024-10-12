@@ -1,6 +1,7 @@
 'use server'
 
-import { type User, type UserApiResponse } from '@/types/User'
+import { type ApiResponse } from '@/types/Api'
+import { type User } from '@/types/Users'
 
 /**
  * Creates a new user by sending a POST request to the backend.
@@ -9,11 +10,11 @@ import { type User, type UserApiResponse } from '@/types/User'
  *   user (User): The user data to create.
  *
  * Returns:
- *   Promise<UserApiResponse<CreateUserResponse>>: The created user's ID on success, or an error message on failure.
+ *   Promise<ApiResponse<{ user_id: string}>>: The created user's ID on success, or an error message on failure.
  */
 export const createUser = async (
   user: User
-): Promise<UserApiResponse<{ user_id: string }>> => {
+): Promise<ApiResponse<{ user_id: string }>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/create/`,
@@ -46,11 +47,11 @@ export const createUser = async (
  *   user_id (string): The ID of the user to retrieve.
  *
  * Returns:
- *   Promise<UserApiResponse<User>>: The user's data on success, or an error message on failure.
+ *   Promise<ApiResponse<User>>: The user's data on success, or an error message on failure.
  */
 export const getUserById = async (
   user_id: string
-): Promise<UserApiResponse<User>> => {
+): Promise<ApiResponse<User>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getById/${user_id}`,
@@ -82,11 +83,11 @@ export const getUserById = async (
  *   user_id (string): The ID of the user to check.
  *
  * Returns:
- *   Promise<UserApiResponse<UserExistsResponse>>: Whether the user exists on success, or an error message on failure.
+ *   Promise<ApiResponse<{ exists: boolean }>>: Whether the user exists on success, or an error message on failure.
  */
 export const userExists = async (
   user_id: string
-): Promise<UserApiResponse<{ exists: boolean }>> => {
+): Promise<ApiResponse<{ exists: boolean }>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/userExists/${user_id}`,
