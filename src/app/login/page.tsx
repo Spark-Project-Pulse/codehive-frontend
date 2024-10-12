@@ -1,6 +1,6 @@
 'use client'
 
-import GithubLoginButton from '@/components/login/GithubLoginButton'
+import GithubLoginButton from '@/components/pages/login/GithubLoginButton'
 
 export default function LoginPage() {
   return (

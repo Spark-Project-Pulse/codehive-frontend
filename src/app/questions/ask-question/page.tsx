@@ -1,37 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import QuestionForm from '@/components/pages/questions/ask-question/QuestionForm'
 import { useToast } from '@/components/ui/use-toast'
-import { LoadingSpinner } from '@/components/ui/loading'
 import { useRouter } from 'next/navigation'
-import { type AddProject } from '@/types/Projects'
-import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
-import { createProject } from '@/api/projects'
+import { createQuestion } from '@/api/questions'
 
-// Main page for adding a project
-export default function AddProject() {
+// Main page for asking a question
+export default function AskQuestion() {
   const { toast } = useToast()
   const router = useRouter()
 
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
-    public: boolean
     title: string
     description: string
   }) {
     try {
-      const response = await createProject(values)
+      const response = await createQuestion(values)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data?.project_id) {
-        // Navigate to the new question page using project_id
-        router.push(`/projects/${data.project_id}`)
+      if (!errorMessage && data?.question_id) {
+        // Navigate to the new question page using question_id
+        router.push(`/questions/${data.question_id}`)
       } else {
         // Show error toast if an error occurs
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'There was an error creating your project.',
+          description: 'There was an error submitting your question.',
         })
       }
     } catch (error) {
@@ -42,9 +38,9 @@ export default function AddProject() {
   return (
     <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
       <h1 className="text-center text-2xl font-bold text-gray-900">
-        Add a project
+        Ask a Question
       </h1>
-      <ProjectForm onSubmit={handleFormSubmit} />
+      <QuestionForm onSubmit={handleFormSubmit} />
     </div>
   )
 }
