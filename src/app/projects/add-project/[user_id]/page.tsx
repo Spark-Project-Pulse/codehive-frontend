@@ -22,14 +22,11 @@ export default function AddProject({
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [repos, setRepos] = useState<Repo[]>([])
-
-  console.log(user);
   
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await getUserById(params.user_id)
-        console.log("res", response, params.user_id);
         
         if (response.errorMessage) {
           console.error('Error fetching user:', response.errorMessage)
