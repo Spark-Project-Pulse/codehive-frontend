@@ -2,7 +2,7 @@
 
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
-import { type AddProject } from '@/types/Projects'
+import { Repo, type AddProject } from '@/types/Projects'
 import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
 import { LoadingSpinner } from '@/components/ui/loading'
@@ -21,6 +21,7 @@ export default function AddProject({
 
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [repos, setRepos] = useState<Repo[]>([])
 
   console.log(user);
   
@@ -37,6 +38,17 @@ export default function AddProject({
 
         // Set the user state with the fetched data
         setUser(response.data ?? null)
+
+        // Fetch GitHub repositories using the user's GitHub username
+        const githubUsername = response.data?.username
+        if (githubUsername) {
+          const reposResponse = await fetch(
+            `https://api.github.com/users/${githubUsername}/repos`
+          )
+          const reposData = await reposResponse.json() as Repo[]
+          setRepos(reposData)
+        }
+
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
@@ -52,7 +64,8 @@ export default function AddProject({
   async function handleFormSubmit(values: {
     public: boolean
     title: string
-    description: string
+    description: string,
+    repoFullName: string,
   }) {
     try {
       const response = await createProject(values)
@@ -84,7 +97,7 @@ export default function AddProject({
       <h1 className="text-center text-2xl font-bold text-gray-900">
         Add a project
       </h1>
-      <ProjectForm onSubmit={handleFormSubmit} />
+      <ProjectForm repos={repos} onSubmit={handleFormSubmit} />
     </div>
   )
 }
