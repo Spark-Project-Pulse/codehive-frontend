@@ -19,7 +19,6 @@ export default function AddProject({
   const { toast } = useToast()
   const router = useRouter()
 
-  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [repos, setRepos] = useState<Repo[]>([])
   
@@ -27,14 +26,11 @@ export default function AddProject({
     const fetchUser = async () => {
       try {
         const response = await getUserById(params.user_id)
-        
+
         if (response.errorMessage) {
           console.error('Error fetching user:', response.errorMessage)
           return
         }
-
-        // Set the user state with the fetched data
-        setUser(response.data ?? null)
 
         // Fetch GitHub repositories using the user's GitHub username
         const githubUsername = response.data?.username
