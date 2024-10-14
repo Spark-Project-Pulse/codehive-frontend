@@ -60,7 +60,15 @@ export default function AddProject({
     repoFullName: string,
   }) {
     try {
-      const response = await createProject(values)
+      // Map the form values to the expected backend names (in models.py)
+      const projectData = {
+        public: values.public,
+        title: values.title,
+        description: values.description,
+        repo_full_name: values.repoFullName,
+      }
+
+      const response = await createProject(projectData)
       const { errorMessage, data } = response
 
       if (!errorMessage && data?.project_id) {
