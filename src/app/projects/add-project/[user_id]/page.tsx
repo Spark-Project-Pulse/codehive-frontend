@@ -2,7 +2,7 @@
 
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
-import { Repo, type AddProject } from '@/types/Projects'
+import { type Repo, type AddProject } from '@/types/Projects'
 import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
 import { LoadingSpinner } from '@/components/ui/loading'

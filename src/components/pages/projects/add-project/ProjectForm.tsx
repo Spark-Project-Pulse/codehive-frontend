@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
-import { Repo } from '@/types/Projects'
+import { type Repo } from '@/types/Projects'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
