@@ -29,7 +29,7 @@ export async function getSecret(secretName: string, isProduction: boolean): Prom
         // Access the secret version
         const [version] = await client.accessSecretVersion({ name });
 
-        if (!version.payload || !version.payload.data) {
+        if (!version.payload?.data) {
             throw new Error('Secret payload data is missing.');
         }
 
@@ -37,11 +37,19 @@ export async function getSecret(secretName: string, isProduction: boolean): Prom
         const secret = version.payload.data.toString();
         return secret;
 
-    } catch (error: any) {
-        if (error.code === 16) { // Unauthorized
-            throw new Error('Failed to access Google Secret Manager: ensure your credentials are set correctly.');
-        } else {
+    } catch (error) {
+        // Type narrowing for safe access to properties like 'code'
+        if (error instanceof Error && 'code' in error) {
+            const errorCode = (error as { code?: number }).code;
+            if (errorCode === 16) {  // Unauthorized error code
+                throw new Error('Failed to access Google Secret Manager: ensure your credentials are set correctly.');
+            }
+        }
+
+        if (error instanceof Error) {
             throw new Error(`An error occurred while accessing the secret '${secretName}' from Google Secret Manager: ${error.message}`);
         }
+
+        throw new Error('An unknown error occurred.');
     }
 }
