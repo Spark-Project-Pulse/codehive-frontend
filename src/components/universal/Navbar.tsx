@@ -13,9 +13,11 @@ export default async function Navbar() {
           Logo
         </Link>
         <div className="flex space-x-4">
-          <Button asChild>
-            <Link href="/projects/add-project">Add a project</Link>
-          </Button>
+          { user && (
+            <Button asChild>
+              <Link href={`/projects/add-project/${user.id}`}>Add a project</Link>
+            </Button>
+          )}
           <Button asChild>
             <Link href="/questions/ask-question">Ask a Question</Link>
           </Button>
