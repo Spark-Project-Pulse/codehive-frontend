@@ -23,9 +23,10 @@ export default function QuestionPage({
   const [question, setQuestion] = useState<Question | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [answers, setAnswers] = useState<Answer[]>([])
-  const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(null)
-  const [comments, setComments] = useState<{ [key: UUID]: Comment[] }>({}) // Each answer_id is mapped to a list of comments
-
+  const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
+    null
+  )
+  const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -49,7 +50,9 @@ export default function QuestionPage({
     const fetchAnswers = async () => {
       //TODO: A seperate loading spinner below the question for loading answers
       try {
-        const { errorMessage, data } = await getAnswersByQuestionId(params.question_id)
+        const { errorMessage, data } = await getAnswersByQuestionId(
+          params.question_id
+        )
 
         if (!errorMessage && data) {
           setAnswers(data)
@@ -76,7 +79,7 @@ export default function QuestionPage({
         if (!errorMessage && data) {
           setComments((prevComments) => ({
             ...prevComments,
-            [answer_id]: [...(prevComments[answer_id] || []), ...data]
+            [answer_id]: data,
           }))
         } else {
           console.error('Error fetching comments:', errorMessage)
@@ -120,24 +123,27 @@ export default function QuestionPage({
   }
 
   // Function to handle add comment button
-  async function handleAddComment(answerId: UUID) {
-    if (openCommentFormId === answerId) {
-      // Close the form if it's already open for an answer
-      setOpenCommentFormId(null)
-    } else {
-      // Open the form for the clicked answer (also closes any opened commentform)
-      setOpenCommentFormId(answerId)
-    }
+  function handleAddComment(answerId: UUID): Promise<void> {
+    return new Promise((resolve) => {
+      if (openCommentFormId === answerId) {
+        // Close the form if it's already open for an answer
+        setOpenCommentFormId(null)
+      } else {
+        // Open the form for the clicked answer (also closes any opened commentform)
+        setOpenCommentFormId(answerId)
+      }
+      resolve()
+    })
   }
 
   // Function to handle submitting a comment
   async function handleCommentSubmit(values: { response: string }) {
     if (openCommentFormId == null) {
-      console.log("Error: CommentFormId empty?");
+      console.log('Error: CommentFormId empty?')
     } else {
       const requestData = {
         ...values,
-        answer: openCommentFormId
+        answer: openCommentFormId,
       }
       try {
         const response = await createComment(requestData)
@@ -147,7 +153,7 @@ export default function QuestionPage({
           // Update the comments state to include new comment
           setComments((prevComments) => ({
             ...prevComments,
-            [data.answer_id]: [...(prevComments[data.answer_id] || []), data]
+            [data.answer_id]: [...(prevComments[data.answer_id] || []), data],
           }))
         } else {
           toast({
@@ -197,25 +203,32 @@ export default function QuestionPage({
                         Answered by:{' '}
                         {answer.expert_id ? answer.expert_id : 'Anonymous User'}
                       </p>
-
                       {/* Show all current comments below answer, if comments exists */}
                       <div className="bg-slate-300">
-                        {comments[answer.answer_id] && comments[answer.answer_id].length > 0 && (
-                          <div className="mt-8">
-                            <h2 className="text-lg font-bold">Comments:</h2>
-                            <div className="list-disc pl-5">
-                              {comments[answer.answer_id].map((comment) => (
-                                <div key={comment.comment_id} className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg">
-                                  "{comment.response}" - {comment.expert_id ? comment.expert_id : 'Anonymous User'}
-                                </div>
-                              ))}
+                        {comments[answer.answer_id] &&
+                          comments[answer.answer_id].length > 0 && (
+                            <div className="mt-8">
+                              <h2 className="text-lg font-bold">Comments:</h2>
+                              <div className="list-disc pl-5">
+                                {comments[answer.answer_id].map((comment) => (
+                                  <div
+                                    key={comment.comment_id}
+                                    className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg"
+                                  >
+                                    {`"${comment.response}" - ${comment.expert_id ?? 'Anonymous User'}`}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
                         {/* Add comment option */}
                         <div className="bg-slate-300">
-                          <ButtonWithLoading buttonType="button" buttonText="Add a comment" onClick={() => handleAddComment(answer.answer_id)}></ButtonWithLoading>
+                          <ButtonWithLoading
+                            buttonType="button"
+                            buttonText="Add a comment"
+                            onClick={() => handleAddComment(answer.answer_id)}
+                          ></ButtonWithLoading>
                           {/* Only show comment form if the answer_id is in openCommentFormId state */}
                           {openCommentFormId === answer.answer_id && (
                             <CommentForm onSubmit={handleCommentSubmit} />
