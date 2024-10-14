@@ -5,12 +5,49 @@ import { useRouter } from 'next/navigation'
 import { type AddProject } from '@/types/Projects'
 import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
+import { LoadingSpinner } from '@/components/ui/loading'
+import { useEffect, useState } from 'react'
+import { type User } from '@/types/Users'
+import { getUserById } from '@/api/users'
 
 // Main page for adding a project
-export default function AddProject() {
+export default function AddProject({
+  params,
+}: {
+  params: { user_id: string }
+}) {
   const { toast } = useToast()
   const router = useRouter()
 
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  console.log(user);
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getUserById(params.user_id)
+        console.log("res", response, params.user_id);
+        
+        if (response.errorMessage) {
+          console.error('Error fetching user:', response.errorMessage)
+          return
+        }
+
+        // Set the user state with the fetched data
+        setUser(response.data ?? null)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void fetchUser()
+  }, [params.user_id])
+
+  
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
     public: boolean
@@ -35,6 +72,11 @@ export default function AddProject() {
     } catch (error) {
       console.error('Unexpected error:', error)
     }
+  }
+
+  // Conditional rendering for loading state
+  if (isLoading) {
+    return <LoadingSpinner />
   }
 
   return (
