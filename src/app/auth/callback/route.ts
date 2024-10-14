@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   let next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const supabase = getSupabaseAuth()
+    const supabase = await getSupabaseAuth()
     const { error } = await supabase.exchangeCodeForSession(code)
 
     if (!error) {
