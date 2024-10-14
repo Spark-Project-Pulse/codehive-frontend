@@ -1,20 +1,25 @@
 import { createServerClient } from '@supabase/ssr'
 import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { cookies } from 'next/headers'
+import { getSecret } from '@/lib/getSecret';
 
 export const getUser = async () => {
-  const auth = getSupabaseAuth()
+  const auth = await getSupabaseAuth()
   const user = (await auth.getUser()).data.user
 
   return user
 }
 
-export function getSupabaseAuth() {
+export async function getSupabaseAuth() {
   const cookieStore = cookies()
 
+  // Fetch secrets using getSecret
+  const supabaseUrl = await getSecret('SUPABASE_URL');
+  const supabaseAnonKey = await getSecret('SUPABASE_ANON_KEY');
+
   const supabaseClient = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
