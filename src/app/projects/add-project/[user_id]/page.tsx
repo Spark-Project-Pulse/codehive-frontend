@@ -7,7 +7,6 @@ import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
-import { type User } from '@/types/Users'
 import { getUserById } from '@/api/users'
 
 // Main page for adding a project
