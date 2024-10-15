@@ -1,8 +1,8 @@
 'use client'
 
 import { LoadingSpinner } from '@/components/ui/loading'
-import { useEffect, useState } from 'react'
-import { type Project } from '@/types/Projects'
+import { useCallback, useEffect, useState } from 'react'
+import { type RepoContent, type Project } from '@/types/Projects'
 import { getProjectById } from '@/api/projects'
 
 export default function BrowseFiles({
@@ -12,6 +12,28 @@ export default function BrowseFiles({
 }) {
   const [project, setProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [repoContents, setRepoContents] = useState<RepoContent[]>([])
+  const [currentPath, setCurrentPath] = useState<string>('')
+
+  const fetchRepoContents = async (path: string, repoFullName: string) => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${repoFullName}/contents/${path}`
+      )
+      if (res.ok) {
+        const data = (await res.json()) as RepoContent[]
+        setRepoContents(data)
+        setCurrentPath(path)
+      } else {
+        console.error('Failed to fetch repo contents')
+      }
+    } catch (error) {
+      console.error('Error fetching contents:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -22,6 +44,11 @@ export default function BrowseFiles({
 
         if (!errorMessage && data) {
           setProject(data)
+
+          if (data?.repo_full_name) {
+            void fetchRepoContents('', data.repo_full_name)
+          }
+
         } else {
           console.error('Error:', errorMessage)
         }
@@ -50,7 +77,7 @@ export default function BrowseFiles({
             </div>
           ) : (
             <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-              <h2 className="text-lg font-bold">Repository not yet linked</h2>
+              <h2 className="text-lg font-bold">GitHub repository not linked</h2>
             </div>
           )
         ) : (

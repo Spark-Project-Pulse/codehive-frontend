@@ -22,3 +22,10 @@ export interface Repo {
   private: boolean;
   // Add more fields as necessary (see docs for details https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user)
 }
+
+export interface RepoContent {
+  name: string
+  path: string
+  type: 'file' | 'dir'
+  download_url: string | null
+}
