@@ -5,22 +5,20 @@ import QuestionForm from '@/components/ask-question/QuestionForm'
 import { useToast } from '../../components/ui/use-toast'
 import { LoadingSpinner } from '../../components/ui/loading'
 import { useRouter } from 'next/navigation'
-import { type AskQuestion } from '@/types/Question'
 
-// Main page for asking a question
 export default function AskQuestion() {
   const { toast } = useToast()
   const router = useRouter()
+
+  // manage loading state
   const [isLoading, setIsLoading] = useState(false)
 
-  // Function to handle form submission and perform API call
-  async function handleFormSubmit(values: {
-    title: string
-    description: string
-  }) {
+  // Handle form submission with the tags from the form values
+  async function handleFormSubmit(values: { title: string; description: string; tags?: string[] }) {
     setIsLoading(true)
 
-    //TODO: Move API to seperate place for all question API calls
+    console.log('Payload to be sent:', values)
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/create/`, {
         method: 'POST',
@@ -34,28 +32,24 @@ export default function AskQuestion() {
         throw new Error('Network response was not ok')
       }
 
-      // Extract the JSON data from the response
-      const responseData = await response.json() as AskQuestion
-
-      // Access the question_id
+      const responseData = (await response.json()) as { question_id: string }
       const questionId = responseData.question_id
 
-      // Navigate to the new question page using question_id
-      router.push(`/questions/${questionId}`) // Change to the desired route format
+      // Redirect to the question details page
+      router.push(`/questions/${questionId}`)
     } catch (error) {
-      // Show error toast if an error occurs
       toast({
         variant: 'destructive',
         title: 'Error',
         description: 'There was an error submitting your question.',
       })
-      console.error("Error creating question:", error);
+      console.error('Error creating question:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Conditional rendering for loading state
+  // Show loading spinner while the form is being submitted
   if (isLoading) {
     return <LoadingSpinner />
   }
