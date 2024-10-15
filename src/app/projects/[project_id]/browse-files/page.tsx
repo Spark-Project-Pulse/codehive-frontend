@@ -47,6 +47,7 @@ export default function BrowseFiles({
           setProject(data)
 
           if (data?.repo_full_name) {
+            // initial call to github api (fetches top level contents)
             void fetchRepoContents('', data.repo_full_name)
           }
         } else {
@@ -103,8 +104,8 @@ export default function BrowseFiles({
               className="mb-4"
               onClick={() =>
                 fetchRepoContents(
-                  currentPath.split('/').slice(0, -1).join('/'),
-                  project.repo_full_name ?? ''
+                  currentPath.split('/').slice(0, -1).join('/'), // remove last item from path
+                  project.repo_full_name ?? '' // this is just here for the linter (it is handled in the if statements above)
                 )
               }
             >

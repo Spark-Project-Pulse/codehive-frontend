@@ -28,4 +28,5 @@ export interface RepoContent {
   path: string
   type: 'file' | 'dir'
   download_url: string | null
+  // Same as above (see docs for details https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content)
 }
