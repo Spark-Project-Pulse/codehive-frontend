@@ -2,11 +2,12 @@ import { type UUID } from 'crypto'
 
 export interface Project {
   project_id: UUID
-  owner?: UUID
   public: boolean
   title: string
   description: string
   created_at: Date
+  owner?: UUID
+  repo_full_name?: string
 }
 
 export interface AddProject {
@@ -20,4 +21,12 @@ export interface Repo {
   full_name: string;
   private: boolean;
   // Add more fields as necessary (see docs for details https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user)
+}
+
+export interface RepoContent {
+  name: string
+  path: string
+  type: 'file' | 'dir'
+  download_url: string | null
+  // Same as above (see docs for details https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content)
 }
