@@ -1,10 +1,12 @@
+import { type UUID } from 'crypto'
+
 export type Tag = {
-  tag_id: string;
+  tag_id: UUID;
   name: string;
 };
 
 export type TagOption = {
-  value: string;
+  value: UUID;
   label: string;
 };
 

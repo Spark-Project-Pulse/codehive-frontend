@@ -5,8 +5,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
-import type { TagOption} from '@/types/Tags';
-import { fetchTags } from '@/api/tags'; // Import fetchTags from API
+import type { TagOption } from '@/types/Tags';
+import { fetchTags } from '@/api/tags';
 
 import {
   Form,
@@ -19,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading';
-import { UUID } from 'crypto';
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
@@ -55,13 +54,20 @@ export default function QuestionForm({
 
   // Fetch tags from the backend when the component mounts
   useEffect(() => {
-    const getTags = async () => {
-      const tags = await fetchTags();
-      setTagOptions(tags);
+    const fetchData = async () => {
+      try {
+        const tags = await fetchTags();
+        setTagOptions(tags);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
     };
-
-    getTags();
+  
+    fetchData().catch((error) => {
+      console.error('Error in fetchData:', error);
+    });
   }, []);
+  
 
   return (
     <Form {...form}>
@@ -112,7 +118,7 @@ export default function QuestionForm({
                       )}
                       onChange={(selected) => {
                         controllerField.onChange(
-                          selected.map((option) => option.value as UUID)
+                          selected.map((option) => option.value)
                         );
                       }}
                       className="mt-1"
