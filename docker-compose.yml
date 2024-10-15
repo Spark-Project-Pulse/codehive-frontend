@@ -9,6 +9,8 @@ services:
       - "3000:3000"
     env_file:
       - .env.local
+    environment:
+      - DOCKER_LOCAL=true
   backend:
     build:
       context: ../backend
