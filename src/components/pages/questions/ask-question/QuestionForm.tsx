@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, Controller } from 'react-hook-form'
-import { z } from 'zod'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import Select from 'react-select'
-import type { Tag, TagOption } from '@/types/Tags' // Use import type
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
+import type { TagOption} from '@/types/Tags';
+import { fetchTags } from '@/api/tags'; // Import fetchTags from API
 
 import {
   Form,
@@ -15,10 +15,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading';
+import { UUID } from 'crypto';
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
@@ -28,41 +29,39 @@ const formSchema = z.object({
   description: z.string().min(1, {
     message: 'Question description cannot be empty.',
   }),
-  tags: z.array(z.string()).optional(), // Add tags field
-})
+  tags: z.array(z.string()).optional(), // Validate UUID strings
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 // Function that will render the question form and passes the results to the ask question page on submit
 export default function QuestionForm({
   onSubmit,
 }: {
-  onSubmit: (values: z.infer<typeof formSchema>) => void
+  onSubmit: (values: FormValues) => void;
 }) {
   // Define the form
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
       description: '',
       tags: [], // Initialize tags as an empty array
     },
-  })
+  });
 
   // State to store tag options
-  const [tagOptions, setTagOptions] = useState<TagOption[]>([])
+  const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
 
   // Fetch tags from the backend when the component mounts
   useEffect(() => {
-    axios
-      .get<Tag[]>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/`)
-      .then((response) => {
-        const options: TagOption[] = response.data.map((tag) => ({
-          value: tag.tag_id,
-          label: tag.name,
-        }))
-        setTagOptions(options)
-      })
-      .catch((error) => console.error('Error fetching tags:', error))
-  }, [])
+    const getTags = async () => {
+      const tags = await fetchTags();
+      setTagOptions(tags);
+    };
+
+    getTags();
+  }, []);
 
   return (
     <Form {...form}>
@@ -112,7 +111,9 @@ export default function QuestionForm({
                         controllerField.value?.includes(option.value)
                       )}
                       onChange={(selected) => {
-                        controllerField.onChange(selected.map((option) => option.value))
+                        controllerField.onChange(
+                          selected.map((option) => option.value as UUID)
+                        );
                       }}
                       className="mt-1"
                     />
@@ -130,5 +131,5 @@ export default function QuestionForm({
         />
       </form>
     </Form>
-  )
+  );
 }
