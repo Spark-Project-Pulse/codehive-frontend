@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Select from 'react-select'
-import { TagOption } from '@/types/Tags'
+import type { Tag, TagOption } from '@/types/Tags' // Use import type
 
 import {
   Form,
@@ -53,9 +53,9 @@ export default function QuestionForm({
   // Fetch tags from the backend when the component mounts
   useEffect(() => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/`)
+      .get<Tag[]>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/`)
       .then((response) => {
-        const options = response.data.map((tag: { tag_id: string; name: string }) => ({
+        const options: TagOption[] = response.data.map((tag) => ({
           value: tag.tag_id,
           label: tag.name,
         }))
@@ -108,9 +108,11 @@ export default function QuestionForm({
                       isMulti
                       options={tagOptions}
                       placeholder="Select relevant tags (optional)"
-                      value={tagOptions.filter(option => controllerField.value?.includes(option.value))}
+                      value={tagOptions.filter((option) =>
+                        controllerField.value?.includes(option.value)
+                      )}
                       onChange={(selected) => {
-                        controllerField.onChange(selected.map(option => option.value))
+                        controllerField.onChange(selected.map((option) => option.value))
                       }}
                       className="mt-1"
                     />

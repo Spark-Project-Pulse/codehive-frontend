@@ -3,6 +3,12 @@
 import { type UUID } from 'crypto'
 
 export interface TagOption {
-    value: UUID
+    value: string
     label: string
   }
+
+export type Tag = {
+  tag_id: string
+  name: string
+}
+  
