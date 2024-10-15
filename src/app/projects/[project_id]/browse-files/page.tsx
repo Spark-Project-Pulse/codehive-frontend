@@ -1,9 +1,10 @@
 'use client'
 
 import { LoadingSpinner } from '@/components/ui/loading'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type RepoContent, type Project } from '@/types/Projects'
 import { getProjectById } from '@/api/projects'
+import { Button } from '@/components/ui/button'
 
 export default function BrowseFiles({
   params,
@@ -48,7 +49,6 @@ export default function BrowseFiles({
           if (data?.repo_full_name) {
             void fetchRepoContents('', data.repo_full_name)
           }
-
         } else {
           console.error('Error:', errorMessage)
         }
@@ -62,29 +62,70 @@ export default function BrowseFiles({
     void fetchProject()
   }, [params.project_id])
 
+  const handleItemClick = (item: RepoContent, repoFullName: string) => {
+    if (item.type === 'dir') {
+      void fetchRepoContents(item.path, repoFullName)
+    } else if (item.type === 'file' && item.download_url) {
+      window.open(item.download_url, '_blank')
+    }
+  }
+
   // Conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
   }
 
+  if (!project) {
+    return (
+      <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+        <h2 className="text-lg font-bold">Project not found</h2>
+      </div>
+    )
+  }
+
+  if (!project?.repo_full_name) {
+    return (
+      <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+        <h2 className="text-lg font-bold">GitHub repository not linked</h2>
+      </div>
+    )
+  }
+
   return (
     <section className="min-h-screen bg-gray-100 py-24">
       <div className="mx-auto max-w-4xl px-4">
-        {project ? (
-          project.repo_full_name ? (
-            <div className="rounded-lg bg-white p-6 shadow-lg">
-              hello there {project.repo_full_name}
-            </div>
-          ) : (
-            <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-              <h2 className="text-lg font-bold">GitHub repository not linked</h2>
-            </div>
-          )
-        ) : (
-          <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-            <h2 className="text-lg font-bold">Project not found</h2>
-          </div>
-        )}
+        <div className="rounded-lg bg-white p-6 shadow-lg">
+          <h1 className="mb-4 text-2xl font-bold">{project.title}</h1>
+          <p className="mb-4 text-gray-600">{project.description}</p>
+
+          {currentPath && (
+            <Button
+              className="mb-4"
+              onClick={() =>
+                fetchRepoContents(
+                  currentPath.split('/').slice(0, -1).join('/'),
+                  project.repo_full_name ?? ''
+                )
+              }
+            >
+              Back
+            </Button>
+          )}
+
+          <ul className="space-y-2">
+            {repoContents.map((item) => (
+              <li
+                key={item.path}
+                className="cursor-pointer text-blue-500 hover:underline"
+                onClick={() =>
+                  handleItemClick(item, project.repo_full_name ?? '')
+                }
+              >
+                {item.type === 'dir' ? '📁' : '📄'} {item.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )
