@@ -13,11 +13,9 @@ export const getUser = async () => {
 export async function getSupabaseAuth() {
   const cookieStore = cookies()
 
-  const isProduction = process.env.NODE_ENV === 'production'
-
   // Fetch secrets using getSecret
-  const supabaseUrl = await getSecret('SUPABASE_URL', isProduction);
-  const supabaseAnonKey = await getSecret('SUPABASE_ANON_KEY', isProduction);
+  const supabaseUrl = await getSecret('SUPABASE_URL');
+  const supabaseAnonKey = await getSecret('SUPABASE_ANON_KEY');
 
   const supabaseClient = createServerClient(
     supabaseUrl,

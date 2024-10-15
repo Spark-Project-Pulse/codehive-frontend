@@ -1,12 +1,15 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
-export async function getSecret(secretName: string, isProduction: boolean): Promise<string> {
+export async function getSecret(secretName: string): Promise<string> {
     /**
      * Fetch a secret from Google Secret Manager using a service account key file locally
      * or the default service account in Cloud Run.
      */
 
     try {
+
+        const isProduction = process.env.DOCKER_LOCAL !== 'true' && process.env.NODE_ENV === 'production'
+
         // Modify secret name based on environment
         if (isProduction) {
             secretName += "_PRODUCTION";
@@ -35,6 +38,7 @@ export async function getSecret(secretName: string, isProduction: boolean): Prom
 
         // Return the secret payload as a string
         const secret = version.payload.data.toString();
+        // console.log(`Successfully accessed the secret '${secretName}' '${secret}' from Google Secret Manager.`);
         return secret;
 
     } catch (error) {

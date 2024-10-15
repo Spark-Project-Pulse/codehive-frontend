@@ -19,5 +19,7 @@ services:
       - "8000:8000"
     env_file:
       - ../backend/.env.local
+    environment:
+      - DOCKER_LOCAL=true
     profiles:
       - frontend-and-backend
