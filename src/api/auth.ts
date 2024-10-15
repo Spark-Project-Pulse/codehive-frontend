@@ -17,7 +17,11 @@ export const loginAction = async (
   provider: Provider
 ): Promise<ApiResponse<{ url: string }>> => {
   try {
-    const { data, error } = await getSupabaseAuth().signInWithOAuth({
+    // Await the promise to get the resolved SupabaseAuthClient
+    const supabaseAuthClient = await getSupabaseAuth();
+    
+    // Now you can call `signInWithOAuth` on the resolved object
+    const { data, error } = await supabaseAuthClient.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
@@ -41,7 +45,11 @@ export const loginAction = async (
  */
 export const signOutAction = async (): Promise<ApiResponse<null>> => {
   try {
-    const { error } = await getSupabaseAuth().signOut()
+    // Await the promise to get the resolved SupabaseAuthClient
+    const supabaseAuthClient = await getSupabaseAuth();
+
+    // Call the `signOut` method on the resolved object
+    const { error } = await supabaseAuthClient.signOut()
 
     if (error) throw error
 

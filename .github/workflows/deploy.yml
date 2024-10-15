@@ -61,4 +61,3 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 3000 \
-            --set-env-vars NEXT_PUBLIC_BACKEND_URL="${{ secrets.NEXT_PUBLIC_BACKEND_URL }}"
