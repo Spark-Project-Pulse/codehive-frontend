@@ -124,31 +124,43 @@ This is an example of how to list things you need to use the software and how to
     npm install
     ```
 
-### Environment Variables (This section is in progress, please ignore for now. It got merged with another fix)
+### Environment Variables
 See the following article for a detailed explanation of how to manage environment variables in a Next.js project: [https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables)
 
 - TLDR:
 - Environment variables are NOT to be used as secrets. To add a secret to the project, use the get_secret function in your code and follow [these directions](#updating-secrets) to add the secret to Google Secret Manager.
 - To add an environment variable to the project (for example, anything with the name `NEXT_PUBLIC_*`), add the development value of the variable to .env.development in the format `VARIABLE_NAME=value` and the production value to .env.production in the format `VARIABLE_NAME=value`. The variable will be available in the project as `process.env.VARIABLE_NAME`.
 
-### Secret Management (This section is in progress, please ignore for now. It got merged with another fix)
+### Secret Management
 #### Accessing Secrets locally
-1. Add a `.env.local` file to the root of the project with the following contents:
+1. Go to the Google Cloud Console, navigate to `IAM & Admin` > `Service Accounts`, and and download the already existing json key from the service acount called Secret Accessor Service Account. Download the key and save it as `pulse-some-combination-of-numbers.json` in the root of the project.
+2. Add a `.env.local` file to the root of the project with the following contents:
 ``` bash
-GOOGLE_CLOUD_PROJECT=your_google_client_id
-GCP_SERVICE_ACCOUNT_KEY=your_gcp_service_account
+GOOGLE_CLOUD_PROJECT=google_cloud_project_id
+GCP_SERVICE_ACCOUNT_KEY=pulse-some-combination-of-numbers.json
 ```
-2. Download the service account key from Google Cloud Console and save it as `service-account-key.json` in the root of the project. Go to the Google Cloud Console, navigate to `IAM & Admin` > `Service Accounts`, and create a new service account. Download the key and save it as `service-account-key.json` in the root of the project.
-3. Use the get_secret function in `pulse/utils.py` to access secrets stored in Google Secret Manager. The function takes the secret name as an argument and returns the secret value.
+3. Use the getSecret function in `src/lib/getSecret.py` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
 
 #### Updating Secrets
 To ensure they will be available in production and consistent across all environments and between developers, secrets should be stored in Google Secret Manager. To update a secret:
 1. Navigate to the Google Cloud Console
-2. Select the project `spark-project-pulse`
+2. Select the project `Pulse`
 3. Navigate to `Secret Manager`
 4. Select the secret you want to update
-5. Click `Edit`
+5. Click `Edit Secret`
 6. Update the secret value
+
+#### Creating New Secrets
+For the frontend, there are only two kinds of secrets: local and production. When creating a new secret, make sure to add the production version by appending `_PRODUCTION` to the secret name and the local version by appending `_LOCAL`. Even if the secret is the same for both environments, it should be added twice to ensure that the secret is available in both environments. The getSecret function handles the logic of which secret to return based on the environment, so after adding the secret to Google Secret Manager, it should be accessible via the function.
+
+#### Steps for creating a new secret via the Google Cloud Console UI:
+1. Navigate to the Google Cloud Console
+2. Select the project `Pulse`
+3. Navigate to `Secret Manager`
+4. Select the secret you want to update
+5. Click `Create Secret`
+6. Enter the secret's name and value
+7. Click `Create Secret`
 
 ### Run locally
 
