@@ -38,7 +38,6 @@ export async function getSecret(secretName: string): Promise<string> {
 
         // Return the secret payload as a string
         const secret = version.payload.data.toString();
-        // console.log(`Successfully accessed the secret '${secretName}' '${secret}' from Google Secret Manager.`);
         return secret;
 
     } catch (error) {
