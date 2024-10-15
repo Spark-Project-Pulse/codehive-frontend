@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { toast } from '@/components/ui/use-toast'
 
-export default function ProjectPage({
+export default function BrowseFiles({
   params,
 }: {
   params: { project_id: string }
@@ -43,32 +44,27 @@ export default function ProjectPage({
     return <LoadingSpinner />
   }
 
+  if (!project?.repo_full_name) {
+    toast({
+      variant: 'destructive',
+      title: 'Error',
+      description: 'Repo not linked yet',
+    })
+  }
+
   return (
     <section className="min-h-screen bg-gray-100 py-24">
       <div className="mx-auto max-w-4xl px-4">
         {project ? (
-          <div className="rounded-lg bg-white p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <h1 className="mb-4 text-3xl font-bold text-gray-800">
-                {project.title}
-              </h1>
-              {project.public ? (
-                <Badge>Public</Badge>
-              ) : (
-                <Badge variant="secondary">Private</Badge>
-              )}
+          project.repo_full_name ? (
+            <div className="rounded-lg bg-white p-6 shadow-lg">
+              hello there {project.repo_full_name}
             </div>
-            <p className="text-lg text-gray-600">{project.description}</p>
-            <p className="mt-4 text-gray-500">Author: Anonymous User</p>
-
-            {project.repo_full_name && (
-              <div className="mt-4 flex justify-end">
-                <Link href={`/projects/${project.project_id}/browse-files`}>
-                  <Button variant="secondary">Browse Files</Button>
-                </Link>
-              </div>
-            )}
-          </div>
+          ) : (
+            <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+              <h2 className="text-lg font-bold">Repository not yet linked</h2>
+            </div>
+          )
         ) : (
           <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
             <h2 className="text-lg font-bold">Project not found</h2>

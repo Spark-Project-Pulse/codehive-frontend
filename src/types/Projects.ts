@@ -2,11 +2,12 @@ import { type UUID } from 'crypto'
 
 export interface Project {
   project_id: UUID
-  owner?: UUID
   public: boolean
   title: string
   description: string
   created_at: Date
+  owner?: UUID
+  repo_full_name?: string
 }
 
 export interface AddProject {
