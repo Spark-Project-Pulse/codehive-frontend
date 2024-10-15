@@ -3,11 +3,7 @@
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { type Project } from '@/types/Projects'
-import { Badge } from '@/components/ui/badge'
 import { getProjectById } from '@/api/projects'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { toast } from '@/components/ui/use-toast'
 
 export default function BrowseFiles({
   params,
@@ -42,14 +38,6 @@ export default function BrowseFiles({
   // Conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
-  }
-
-  if (!project?.repo_full_name) {
-    toast({
-      variant: 'destructive',
-      title: 'Error',
-      description: 'Repo not linked yet',
-    })
   }
 
   return (
