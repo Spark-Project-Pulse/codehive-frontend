@@ -12,8 +12,3 @@ export interface AuthUser {
   }
   // Add any additional fields needed when getting auth user
 }
-
-export interface UserApiResponse<T> {
-  errorMessage: string | null
-  data?: T
-}

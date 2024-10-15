@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAuth, getUser } from '@/utils/supabase/server'
 import { createUser, userExists } from '@/api/users'
-import { type AuthUser } from '@/types/User'
+import { type AuthUser } from '@/types/Users'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)

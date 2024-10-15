@@ -13,13 +13,15 @@ export default function GithubLoginButton() {
 
   const handleClickLoginButton = (provider: Provider) => {
     startTransaction(async () => {
-      const { errorMessage, url } = await loginAction(provider)
-      if (!errorMessage && url) {
+      const response = await loginAction(provider)
+      const { errorMessage, data } = response
+
+      if (!errorMessage && data?.url) {
         toast({
           title: 'Success!',
-          description: 'Signed in succesfully',
+          description: 'Signed in successfully',
         })
-        router.push(url)
+        router.push(data.url)
       } else {
         toast({
           variant: 'destructive',

@@ -2,7 +2,7 @@
 
 import { getUserById } from '@/api/users'
 import { LoadingSpinner } from '@/components/ui/loading'
-import { type User } from '@/types/User'
+import { type User } from '@/types/Users'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
@@ -12,11 +12,9 @@ export default function ProfilePage({
   params: { user_id: string }
 }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    setIsLoading(true)
-
     const fetchUser = async () => {
       try {
         const response = await getUserById(params.user_id)
@@ -44,7 +42,7 @@ export default function ProfilePage({
   }
 
   return (
-    <section className="flex min-h-screen flex-col items-center bg-gray-100">
+    <section className="flex min-h-screen flex-col items-center">
       {user ? (
         <div className="mt-6 flex flex-col items-center">
           <Image

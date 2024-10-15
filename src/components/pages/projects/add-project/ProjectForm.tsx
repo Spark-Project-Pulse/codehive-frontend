@@ -22,12 +22,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
+import { type Repo } from '@/types/Projects'
 
 // Schema is defined for the form which helps with input requirements and error handling
 const formSchema = z.object({
-  public: z.boolean().refine(val => typeof val === 'boolean', {
+  public: z.boolean().refine((val) => typeof val === 'boolean', {
     message: 'You must select a privacy status.',
   }),
   title: z.string().min(1, {
@@ -36,12 +37,17 @@ const formSchema = z.object({
   description: z.string().min(1, {
     message: 'Question description cannot be empty.',
   }),
+  repoFullName: z.string().min(1, {
+    message: 'You must select a GitHub repository for this project.',
+  }),
 })
 
 // Function that will render the question form and passes the results to the ask question page on submit
 export default function ProjectForm({
+  repos,
   onSubmit,
 }: {
+  repos: Repo[]
   onSubmit: (values: z.infer<typeof formSchema>) => void
 }) {
   // Define the form
@@ -51,6 +57,7 @@ export default function ProjectForm({
       public: false,
       title: '',
       description: '',
+      repoFullName: '',
     },
   })
 
@@ -110,7 +117,41 @@ export default function ProjectForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <FormField
+          control={form.control}
+          name="repoFullName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Select GitHub Repository</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a repository" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Repositories</SelectLabel>
+                      {repos.map((repo) => (
+                        <SelectItem key={repo.id} value={repo.full_name}>
+                          {repo.name} {repo.private ? '(Private)' : '(Public)'}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <ButtonWithLoading
+          onClick={form.handleSubmit(onSubmit)}
+          buttonText="Submit"
+          buttonType="submit"
+        />
       </form>
     </Form>
   )

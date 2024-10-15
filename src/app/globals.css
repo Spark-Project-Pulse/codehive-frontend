@@ -1,7 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* This file is where ACTUAL values are being set for tailwind css variables */
 
+/* Sets font for body elements */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -13,6 +15,8 @@ body {
 }
 
 @layer base {
+
+  /* Color scheme for light mode */
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -40,6 +44,9 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
+  /* Color scheme for dark mode */
+  /* TODO: create a toggle system for light/dark mode in settings */
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -68,10 +75,12 @@ body {
   }
 }
 
+/* Applies tailwind css to elements */
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

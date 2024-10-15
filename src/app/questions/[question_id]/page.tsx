@@ -1,11 +1,18 @@
 'use client'
 
 import { LoadingSpinner } from '@/components/ui/loading'
-import { type Question } from '@/types/Question'
+import { type Question } from '@/types/Questions'
 import { useEffect, useState } from 'react'
-import AnswerForm from '@/components/answer-question/AnswerForm'
+import AnswerForm from '@/components/pages/questions/[question_id]/AnswerForm'
+import CommentForm from '@/components/pages/questions/[question_id]/CommentForm'
 import { useToast } from '@/components/ui/use-toast'
-import { type Answer } from '@/types/Answer'
+import { type Answer } from '@/types/Answers'
+import { type Comment } from '@/types/Comments'
+import { getQuestionById } from '@/api/questions'
+import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
+import { createComment, getCommentsByAnswerId } from '@/api/comments'
+import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
+import { type UUID } from 'crypto'
 
 export default function QuestionPage({
   params,
@@ -15,114 +22,151 @@ export default function QuestionPage({
   const { toast } = useToast()
   const [question, setQuestion] = useState<Question | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([])
+  const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
+    null
+  )
+  const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
+
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      setIsLoading(true)
+
+      try {
+        const { errorMessage, data } = await getQuestionById(params.question_id)
+
+        if (!errorMessage && data) {
+          setQuestion(data)
+        } else {
+          console.error('Error:', errorMessage)
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    const fetchAnswers = async () => {
+      //TODO: A seperate loading spinner below the question for loading answers
+      try {
+        const { errorMessage, data } = await getAnswersByQuestionId(
+          params.question_id
+        )
+
+        if (!errorMessage && data) {
+          setAnswers(data)
+
+          // Fetches comments for each answer
+          data.forEach((answer: Answer) => {
+            void fetchComments(answer.answer_id)
+          })
+        } else {
+          console.error('Error:', errorMessage)
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error)
+      } finally {
+        // End answer loading state
+      }
+    }
+
+    // Fetches the comments of an answer
+    const fetchComments = async (answer_id: UUID) => {
+      try {
+        const { errorMessage, data } = await getCommentsByAnswerId(answer_id)
+
+        if (!errorMessage && data) {
+          setComments((prevComments) => ({
+            ...prevComments,
+            [answer_id]: data,
+          }))
+        } else {
+          console.error('Error fetching comments:', errorMessage)
+        }
+      } catch (error) {
+        console.error('Unexpected error fetching comments:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void fetchQuestion()
+    void fetchAnswers()
+  }, [params.question_id])
 
   // Function to handle answer form submission and perform API call
-  async function handleAnswerSubmit(values: {
-    response: string
-  }) {
-    setIsLoading(true)
-
-    //TODO: Move API to seperate place for all answer API calls
-
+  async function handleAnswerSubmit(values: { response: string }) {
     // Append question_id to the values object
     const requestData = {
       ...values,
-      "question": params.question_id,
-    };
+      question: params.question_id,
+    }
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/create/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      })
+      const response = await createAnswer(requestData)
+      const { errorMessage, data } = response
 
-
-      // Extract the JSON data from the response
-      const responseData = await response.json() as Answer
-
-      // Update the answers state to include the new answer
-      setAnswers((prevAnswers) => [...prevAnswers, responseData]);
-
+      if (!errorMessage && data) {
+        // Update the answers state to include the new answer
+        setAnswers((prevAnswers) => [...prevAnswers, data])
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
     } catch (error) {
-      // Show error toast if an error occurs
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'There was an error submitting your answer.',
-      })
-      console.error("Error creating answer:", error);
-    } finally {
-      setIsLoading(false)
+      console.error('Unexpected error:', error)
     }
   }
 
-  useEffect(() => {
-    //TODO: Move API to seperate place for all question API calls
-    const fetchQuestion = async () => {
+  // Function to handle add comment button
+  function handleAddComment(answerId: UUID): Promise<void> {
+    return new Promise((resolve) => {
+      if (openCommentFormId === answerId) {
+        // Close the form if it's already open for an answer
+        setOpenCommentFormId(null)
+      } else {
+        // Open the form for the clicked answer (also closes any opened commentform)
+        setOpenCommentFormId(answerId)
+      }
+      resolve()
+    })
+  }
+
+  // Function to handle submitting a comment
+  async function handleCommentSubmit(values: { response: string }) {
+    if (openCommentFormId == null) {
+      console.log('Error: CommentFormId empty?')
+    } else {
+      const requestData = {
+        ...values,
+        answer: openCommentFormId,
+      }
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${params.question_id}`,
-          {
-            method: 'GET',
-            headers: {
-              // Authorization: `Bearer ${token}`, // Uncomment if using auth
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+        const response = await createComment(requestData)
+        const { errorMessage, data } = response
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
+        if (!errorMessage && data) {
+          // Update the comments state to include new comment
+          setComments((prevComments) => ({
+            ...prevComments,
+            [data.answer_id]: [...(prevComments[data.answer_id] || []), data],
+          }))
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: errorMessage,
+          })
         }
-
-        // Extract the JSON data from the response
-        const questionData = await response.json() as Question
-
-        setQuestion(questionData)
       } catch (error) {
-        console.error('Error fetching question:', error)
-      } finally {
-        setIsLoading(false)
+        console.error('Unexpected error:', error)
       }
     }
-
-    //TODO: Move API to seperate place for all answer API calls
-    const fetchAnswers = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionId/${params.question_id}`,
-          {
-            method: 'GET',
-            headers: {
-              // Authorization: `Bearer ${token}`, // Uncomment if using auth
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-
-        // Extract the JSON data from the response
-        const AnswersData = await response.json() as Answer[]
-
-        // Update the answers state to include the new answer
-        setAnswers(AnswersData);
-
-      } catch (error) {
-        console.error('Error fetching question:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    void fetchAnswers()
-    void fetchQuestion()
-  }, [params.question_id])
+  }
 
   // Conditional rendering for loading state
   if (isLoading) {
@@ -148,15 +192,52 @@ export default function QuestionPage({
             {answers.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-lg font-bold">Current Answers:</h2>
-                <div className="list-disc pl-5">{answers.map((answer) => (
-                  <div key={answer.answer_id} className="rounded-lg bg-white p-6 shadow-lg mb-6 mt-6">
-                    Answer: {answer.response}
-                    <p className="mt-4 text-gray-500">
-                      Answered by:{' '}
-                      {answer.expert_id ? answer.expert_id : 'Anonymous User'}
-                    </p>
-                  </div>
-                ))}</div>
+                <div className="list-disc pl-5">
+                  {answers.map((answer) => (
+                    <div
+                      key={answer.answer_id}
+                      className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg"
+                    >
+                      Answer: {answer.response}
+                      <p className="mt-4 text-gray-500">
+                        Answered by:{' '}
+                        {answer.expert_id ? answer.expert_id : 'Anonymous User'}
+                      </p>
+                      {/* Show all current comments below answer, if comments exists */}
+                      <div className="bg-slate-300">
+                        {comments[answer.answer_id] &&
+                          comments[answer.answer_id].length > 0 && (
+                            <div className="mt-8">
+                              <h2 className="text-lg font-bold">Comments:</h2>
+                              <div className="list-disc pl-5">
+                                {comments[answer.answer_id].map((comment) => (
+                                  <div
+                                    key={comment.comment_id}
+                                    className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg"
+                                  >
+                                    {`"${comment.response}" - ${comment.expert_id ?? 'Anonymous User'}`}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Add comment option */}
+                        <div className="bg-slate-300">
+                          <ButtonWithLoading
+                            buttonType="button"
+                            buttonText="Add a comment"
+                            onClick={() => handleAddComment(answer.answer_id)}
+                          ></ButtonWithLoading>
+                          {/* Only show comment form if the answer_id is in openCommentFormId state */}
+                          {openCommentFormId === answer.answer_id && (
+                            <CommentForm onSubmit={handleCommentSubmit} />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {/* Answer button */}

@@ -1,6 +1,7 @@
 'use server'
 
 import { getSupabaseAuth } from '@/utils/supabase/server'
+import { type ApiResponse } from '@/types/Api'
 import { type Provider } from '@supabase/supabase-js'
 
 /**
@@ -10,9 +11,11 @@ import { type Provider } from '@supabase/supabase-js'
  *   provider (Provider): The OAuth provider (e.g., GitHub, Google).
  *
  * Returns:
- *   Promise<{errorMessage: string | null, url?: string}>: The redirect URL on success, or an error message on failure.
+ *   Promise<ApiResponse<{ url: string }>>: The redirect URL on success, or an error message on failure.
  */
-export const loginAction = async (provider: Provider) => {
+export const loginAction = async (
+  provider: Provider
+): Promise<ApiResponse<{ url: string }>> => {
   try {
     const { data, error } = await getSupabaseAuth().signInWithOAuth({
       provider,
@@ -23,7 +26,7 @@ export const loginAction = async (provider: Provider) => {
 
     if (error) throw error
 
-    return { errorMessage: null, url: data.url }
+    return { errorMessage: null, data: { url: data.url } }
   } catch (error) {
     console.error('Error logging in: ', error)
     return { errorMessage: 'Error logging in' }
@@ -34,17 +37,17 @@ export const loginAction = async (provider: Provider) => {
  * Signs the user out from the application.
  *
  * Returns:
- *   Promise<{errorMessage: string | null}>: Null on success, or an error message on failure.
+ *   Promise<ApiResponse<null>>: Null on success, or an error message on failure.
  */
-export const signOutAction = async () => {
+export const signOutAction = async (): Promise<ApiResponse<null>> => {
   try {
     const { error } = await getSupabaseAuth().signOut()
 
     if (error) throw error
 
-    return { errorMessage: null }
+    return { errorMessage: null, data: null }
   } catch (error) {
     console.error('Error signing out: ', error)
-    return { errorMessage: 'Error signing out' }
+    return { errorMessage: 'Error signing out', data: null }
   }
 }
