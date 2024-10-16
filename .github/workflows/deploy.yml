@@ -10,46 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_DEPLOYMENT_SA_KEY }}
 
-      # Step 3: Set up Google Cloud SDK
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
 
-      # Step 4: Configure Docker to use gcloud as a credential helper
-      - name: Configure Docker for GAR
+      - name: Configure Docker for Google Artifact Registry
         run: |
           gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
 
-      # Step 5: Create Docker repository in Artifact Registry (if it doesn't exist)
-      - name: Create Artifact Registry Repository
+      - name: Create Artifact Registry Repository (if it doesn't exist)
         run: |
           gcloud artifacts repositories create pulse-frontend \
             --repository-format=docker \
             --location=${{ secrets.REGION }} \
             --description="Docker repository for pulse-frontend" || echo "Repository already exists."
 
-      # Step 6: Build Docker image for frontend
       - name: Build Docker image for frontend
         run: |
           docker build -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend/image-${{ github.sha }} .
 
-      # Step 7: Push Docker image to Google Artifact Registry
       - name: Push Docker image to Google Artifact Registry
         run: |
           docker push ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/pulse-frontend/image-${{ github.sha }}
 
-      # Step 8: Deploy to Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy pulse-frontend \
