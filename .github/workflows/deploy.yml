@@ -61,3 +61,4 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 3000 \
+            --set-env-vars GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}
