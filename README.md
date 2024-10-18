@@ -137,7 +137,7 @@ See the following article for a detailed explanation of how to manage environmen
 2. Add a `.env.local` file to the root of the project with the following contents:
 ``` bash
 GOOGLE_CLOUD_PROJECT=google_cloud_project_id
-GCP_SERVICE_ACCOUNT_KEY=pulse-random-letters-and-numbers.json
+GOOGLE_APPLICATION_CREDENTIALS=pulse-random-letters-and-numbers.json
 ```
 3. Use the getSecret function in `src/lib/getSecret.py` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
 
