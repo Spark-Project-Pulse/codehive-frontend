@@ -1,10 +1,42 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { getUser } from '@/utils/supabase/server_old'
 import SignOutButton from '@/components/universal/SignOutButton'
+import { useEffect, useState } from 'react'
+import { type User } from '@supabase/supabase-js'
+import { createClient } from '@/utils/supabase/client'
 
-export default async function Navbar() {
-  const user = await getUser()
+export default function Navbar() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const supabase = createClient();
+        
+        // Fetch the current session and user
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          setUser(user);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchUser();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+
+  console.log(user);
 
   return (
     <nav className="bg-white shadow">
