@@ -3,40 +3,13 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import SignOutButton from '@/components/universal/SignOutButton'
-import { useEffect, useState } from 'react'
-import { type User } from '@supabase/supabase-js'
-import { createClient } from '@/utils/supabase/client'
+import { useUser } from '@/app/contexts/UserContext'
+import { LoadingSpinner } from '@/components/ui/loading'
 
 export default function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useUser()
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const supabase = createClient();
-        
-        // Fetch the current session and user
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (user) {
-          setUser(user);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchUser();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-
-  console.log(user);
+  if (loading) return <LoadingSpinner />
 
   return (
     <nav className="bg-white shadow">
@@ -45,9 +18,11 @@ export default function Navbar() {
           Logo
         </Link>
         <div className="flex space-x-4">
-          { user && (
+          {user && (
             <Button asChild>
-              <Link href={`/projects/add-project/${user.id}`}>Add a project</Link>
+              <Link href={`/projects/add-project/${user.user}`}>
+                Add a project
+              </Link>
             </Button>
           )}
           <Button asChild>
@@ -62,7 +37,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Button asChild>
-                <Link href={`/profiles/${user.id}`}>Profile</Link>
+                <Link href={`/profiles/${user.user}`}>Profile</Link>
               </Button>
               <SignOutButton />
             </>
