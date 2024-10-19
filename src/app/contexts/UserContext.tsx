@@ -52,12 +52,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.data) {
         setUser(response.data);
       } 
-      // TODO: this shouldn't be needed, i think lol
-      // else {
-      //   const error = 'User information could not be fetched properly.'
-      //   console.error(error);
-      //   setError(error)
-      // }
 
     } catch (error) {
       console.error('Error fetching user:', error);

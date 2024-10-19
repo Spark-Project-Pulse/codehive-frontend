@@ -3,6 +3,7 @@ import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { cookies } from 'next/headers'
 import { getSecret } from '@/lib/getSecret';
 
+
 export async function createClient() {
   const cookieStore = cookies()
 
@@ -39,3 +40,10 @@ export async function createClient() {
     }
   )
 }
+
+// Create a function to get the current user
+export const getSupaUser = async () => {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+};
