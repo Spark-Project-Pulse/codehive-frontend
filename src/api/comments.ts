@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Comment } from '@/types/Comments'
-import { getUser } from '@/utils/supabase/server'
+import { getUser } from '@/utils/supabase/server_old'
 
 /**
  * Submits a comment to an answer.

@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Project } from '@/types/Projects'
-import { getUser } from '@/utils/supabase/server';
+import { getUser } from '@/utils/supabase/server_old';
 
 /**
  * Creates a new project by sending a POST request to the backend.

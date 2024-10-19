@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { getUser } from '@/utils/supabase/server'
+import { getUser } from '@/utils/supabase/server_old'
 import SignOutButton from '@/components/universal/SignOutButton'
 
 export default async function Navbar() {

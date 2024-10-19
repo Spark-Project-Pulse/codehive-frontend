@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Question } from '@/types/Questions'
-import { getUser } from '@/utils/supabase/server'
+import { getUser } from '@/utils/supabase/server_old'
 
 /**
  * Creates a new question by sending a POST request to the backend.

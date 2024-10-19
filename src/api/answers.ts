@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
-import { getUser } from '@/utils/supabase/server'
+import { getUser } from '@/utils/supabase/server_old'
 
 /**
  * Submits an answer to a question.
