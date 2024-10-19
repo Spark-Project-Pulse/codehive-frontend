@@ -41,7 +41,7 @@ export async function createClient() {
   )
 }
 
-// Create a function to get the current user
+// Return the SUPABASE user
 export const getSupaUser = async () => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
