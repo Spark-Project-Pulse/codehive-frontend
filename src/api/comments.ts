@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Comment } from '@/types/Comments'
-import { getUser } from '@/utils/supabase/server_old'
+import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Submits a comment to an answer.
@@ -18,8 +18,8 @@ export const createComment = async (commentData: {
   answer: string
 }): Promise<ApiResponse<Comment>> => {
   try {
-    // TODO: DE ROCCO Please replace this with the user id from context
-    const user = await getUser()
+
+    const user = await getSupaUser()
 
     const vals = { expert: user?.id, ...commentData }
     const response = await fetch(
