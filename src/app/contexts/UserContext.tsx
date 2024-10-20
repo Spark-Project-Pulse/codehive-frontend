@@ -40,6 +40,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       const response = await getUserById(authUser.id);
       if (response.errorMessage) {
+        
         // render error to the user
         toast({
           variant: 'destructive',

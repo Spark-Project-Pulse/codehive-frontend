@@ -20,7 +20,7 @@ export default function Navbar() {
         <div className="flex space-x-4">
           {user && (
             <Button asChild>
-              <Link href={`/projects/add-project/${user.user}`}>
+              <Link href={`/projects/add-project`}>
                 Add a project
               </Link>
             </Button>
