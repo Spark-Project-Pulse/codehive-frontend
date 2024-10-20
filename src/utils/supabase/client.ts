@@ -1,13 +1,24 @@
-import { createBrowserClient } from '@supabase/ssr'
-// import { getSecret } from '@/lib/getSecret';
+import { getSecrets } from '@/api/getSecrets';
+import { createBrowserClient } from '@supabase/ssr';
 
-export function createClient() {
-  // Fetch secrets using getSecret
-  const supabaseUrl = 'http://127.0.0.1:54321';
-  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+export const createClient = async () => {
+  try {
+    const secrets = await getSecrets()
 
-  return createBrowserClient(
-    supabaseUrl,
-    supabaseAnonKey
-  )
-}
+    if (!secrets.data) {
+      throw new Error('Failed to fetch secrets.')
+    }
+    
+    const { supabaseAnonKey, supabaseUrl } = secrets.data
+
+    if (!supabaseAnonKey ||  !supabaseUrl) {
+      throw new Error('Supabase secrets are missing: Anon Key and/or URL not found.');
+    }
+
+    // Create and return the Supabase client
+    return createBrowserClient(supabaseUrl, supabaseAnonKey);
+  } catch (error) {
+    console.error('Error creating Supabase client:', error);
+    throw new Error('Failed to create Supabase client');
+  }
+};

@@ -1,4 +1,3 @@
-// UserContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import { type User } from '@/types/Users';
 import { getUserById } from '@/api/users';
 import { toast } from '@/components/ui/use-toast';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 interface UserContextType {
   user: User | null;
@@ -20,11 +20,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [supabase, setSupabase] = useState<SupabaseClient<any, "public", any> | null>(null); // Replace 'any' with the actual type if known
 
-  const supabase = createClient();
+  // Fetch the Supabase client
+  useEffect(() => {
+    const fetchSupabaseClient = async () => {
+      try {
+        const client = await createClient();
+        setSupabase(client);
+      } catch (error) {
+        console.error('Error creating Supabase client:', error);
+        setError('Failed to create Supabase client');
+        setLoading(false);
+      }
+    };
+
+    void fetchSupabaseClient();
+  }, []);
 
   // Function to fetch and set the user from Supabase and backend
   const fetchUser = async () => {
+    if (!supabase) return; // Wait until the supabase client is ready
+
     setLoading(true);
     setError(null);
 
@@ -40,13 +58,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       const response = await getUserById(authUser.id);
       if (response.errorMessage) {
-
         // render error to the user
         toast({
           variant: 'destructive',
           title: 'Error',
           description: 'There was an error logging you in.',
-        })
+        });
         throw new Error(response.errorMessage);
       }
       
@@ -63,15 +80,17 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         variant: 'destructive',
         title: 'Error',
         description: 'There was an error logging you in.',
-      })
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    void fetchUser();
-  }, []);
+    if (supabase) {
+      void fetchUser();
+    }
+  }, [supabase]); // Fetch user when supabase client is available
 
   // manually refresh user
   const refetchUser = async () => {
