@@ -25,8 +25,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Function to fetch and set the user from Supabase and backend
   const fetchUser = async () => {
-    setLoading(true); // Set loading state before the request
-    setError(null); // Clear any previous error
+    setLoading(true);
+    setError(null);
 
     try {
       const {
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
       const response = await getUserById(authUser.id);
       if (response.errorMessage) {
-        
+
         // render error to the user
         toast({
           variant: 'destructive',
@@ -73,7 +73,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     void fetchUser();
   }, []);
 
-  // TODO: manually refresh user (optional)
+  // manually refresh user
   const refetchUser = async () => {
     await fetchUser();
   };
