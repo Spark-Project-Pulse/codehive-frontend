@@ -39,7 +39,7 @@ export async function GET(request: Request) {
         if (!existsResponse.data?.exists) {
           const createUserResponse = await createUser({
             user: authUser.id,
-            username: authUser.user_metadata.user_name,
+            username: authUser.user_metadata.user_name as string, // TODO: figure out better approach than `as string`
             reputation: 0,
           });
 

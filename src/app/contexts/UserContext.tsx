@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import { type User } from '@/types/Users';
 import { getUserById } from '@/api/users';
 import { toast } from '@/components/ui/use-toast';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { type SupabaseClient } from '@supabase/supabase-js';
 
 interface UserContextType {
   user: User | null;
