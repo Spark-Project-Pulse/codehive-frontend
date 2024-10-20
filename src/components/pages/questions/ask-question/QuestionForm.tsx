@@ -136,7 +136,7 @@ export default function QuestionForm({
         <ButtonWithLoading
           onClick={handleButtonClick} // Pass the async submission handler
           buttonText="Submit"
-          buttonType="button" // Set to 'button' to prevent default form submission
+          buttonType="button"
         />
       </form>
     </Form>
