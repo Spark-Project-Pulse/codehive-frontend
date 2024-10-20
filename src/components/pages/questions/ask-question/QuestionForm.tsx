@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import type { TagOption } from '@/types/Tags';
-import { fetchTags } from '@/api/tags';
+import { getAllTags } from '@/api/tags';
 
 import {
   Form,
@@ -56,7 +56,7 @@ export default function QuestionForm({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tags = await fetchTags();
+        const tags = await getAllTags();
         setTagOptions(tags);
       } catch (error) {
         console.error('Error fetching tags:', error);
