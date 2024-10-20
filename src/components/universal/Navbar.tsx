@@ -1,10 +1,15 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { getUser } from '@/utils/supabase/server'
 import SignOutButton from '@/components/universal/SignOutButton'
+import { useUser } from '@/app/contexts/UserContext'
+import { LoadingSpinner } from '@/components/ui/loading'
 
-export default async function Navbar() {
-  const user = await getUser()
+export default function Navbar() {
+  const { user, loading } = useUser()
+
+  if (loading) return <LoadingSpinner />
 
   return (
     <nav className="bg-white shadow">
@@ -15,7 +20,9 @@ export default async function Navbar() {
         <div className="flex space-x-4">
           {user && (
             <Button asChild variant="nav">
-              <Link href={`/projects/add-project/${user.id}`}>Add a project</Link>
+              <Link href={`/projects/add-project`}>
+                Add a project
+              </Link>
             </Button>
           )}
           <Button asChild variant="nav">
@@ -30,7 +37,7 @@ export default async function Navbar() {
           {user ? (
             <>
               <Button asChild variant="nav">
-                <Link href={`/profiles/${user.id}`}>Profile</Link>
+                <Link href={`/profiles/${user.user}`}>Profile</Link>
               </Button>
               <SignOutButton />
             </>
@@ -38,9 +45,10 @@ export default async function Navbar() {
             <Button asChild variant="nav">
               <Link href="/login">Login</Link>
             </Button>
-          )}
-        </div>
-      </div>
-    </nav>
+          )
+          }
+        </div >
+      </div >
+    </nav >
   )
 }

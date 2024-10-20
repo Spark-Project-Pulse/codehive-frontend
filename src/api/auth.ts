@@ -1,6 +1,6 @@
 'use server'
 
-import { getSupabaseAuth } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/server'
 import { type ApiResponse } from '@/types/Api'
 import { type Provider } from '@supabase/supabase-js'
 
@@ -18,10 +18,10 @@ export const loginAction = async (
 ): Promise<ApiResponse<{ url: string }>> => {
   try {
     // Await the promise to get the resolved SupabaseAuthClient
-    const supabaseAuthClient = await getSupabaseAuth();
+    const supabaseAuthClient = await createClient();
     
     // Now you can call `signInWithOAuth` on the resolved object
-    const { data, error } = await supabaseAuthClient.signInWithOAuth({
+    const { data, error } = await supabaseAuthClient.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
@@ -46,10 +46,10 @@ export const loginAction = async (
 export const signOutAction = async (): Promise<ApiResponse<null>> => {
   try {
     // Await the promise to get the resolved SupabaseAuthClient
-    const supabaseAuthClient = await getSupabaseAuth();
+    const supabaseAuthClient = await createClient();
 
     // Call the `signOut` method on the resolved object
-    const { error } = await supabaseAuthClient.signOut()
+    const { error } = await supabaseAuthClient.auth.signOut()
 
     if (error) throw error
 
