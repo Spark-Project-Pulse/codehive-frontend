@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
-import type { TagOption, Tag } from '@/types/Tags';
+import type { TagOption } from '@/types/Tags';
 import { getAllTags } from '@/api/tags';
 
 import {
