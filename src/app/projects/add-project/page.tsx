@@ -25,15 +25,9 @@ export default function AddProject() {
       if (!user) return
 
       try {
-        const response = await getUserById(user.user)
-
-        if (response.errorMessage) {
-          console.error('Error fetching user:', response.errorMessage)
-          return
-        }
-
+       
         // Fetch GitHub repositories using the user's GitHub username
-        const githubUsername = response.data?.username
+        const githubUsername = user.username
         if (githubUsername) {
           const reposResponse = await fetch(
             `https://api.github.com/users/${githubUsername}/repos`
