@@ -6,9 +6,9 @@ import type { Tag, TagOption } from '@/types/Tags';
  * Returns:
  *   Promise<TagOption[]>: An array of tag options on success, or an empty array on failure.
  */
-export const fetchTags = async (): Promise<TagOption[]> => {
+export const getAllTags = async (): Promise<TagOption[]> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/getAll`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
