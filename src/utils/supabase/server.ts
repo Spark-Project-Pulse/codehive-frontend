@@ -3,21 +3,15 @@ import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { cookies } from 'next/headers'
 import { getSecret } from '@/lib/getSecret';
 
-export const getUser = async () => {
-  const auth = await getSupabaseAuth()
-  const user = (await auth.getUser()).data.user
 
-  return user
-}
-
-export async function getSupabaseAuth() {
+export async function createClient() {
   const cookieStore = cookies()
 
   // Fetch secrets using getSecret
   const supabaseUrl = await getSecret('SUPABASE_URL');
   const supabaseAnonKey = await getSecret('SUPABASE_ANON_KEY');
 
-  const supabaseClient = createServerClient(
+  return createServerClient(
     supabaseUrl,
     supabaseAnonKey,
     {
@@ -45,6 +39,11 @@ export async function getSupabaseAuth() {
       },
     }
   )
-
-  return supabaseClient.auth
 }
+
+// Return the SUPABASE user
+export const getSupaUser = async () => {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+};
