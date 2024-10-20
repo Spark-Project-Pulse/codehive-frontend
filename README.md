@@ -139,7 +139,10 @@ See the following article for a detailed explanation of how to manage environmen
 GOOGLE_CLOUD_PROJECT=google_cloud_project_id
 GCP_SERVICE_ACCOUNT_KEY=pulse-random-letters-and-numbers.json
 ```
-3. Use the getSecret function in `src/lib/getSecret.py` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
+3. **server-side code**: Use the `getSecret` function in `src/lib/getSecret.ts` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
+   1. (you should ONLY use this function in server-side functions labelled with `'user-server'`)
+4. **client-side code**: Use the `getSecrets` function in `src/api/getSecrets.ts` which is a Next.js endpoint that is called on the server (since the `getSecret` function requires server-side dependencies)
+   1. (you should ONLY use this function in client-side functions labelled with `'use-client'` or no label)
 
 #### Updating Secrets
 To ensure they will be available in production and consistent across all environments and between developers, secrets should be stored in Google Secret Manager. To update a secret:
