@@ -9,33 +9,33 @@ export default async function Navbar() {
   return (
     <nav className="bg-white shadow">
       <div className="mx-auto flex items-center justify-between px-4 py-2">
-        <Link href="/" className="text-xl font-bold">
-          Logo
+        <Link href="/" className="text-navLogo font-bold uppercase font-heading tracking-wider">
+          CodeHive
         </Link>
         <div className="flex space-x-4">
-          { user && (
-            <Button asChild>
+          {user && (
+            <Button asChild variant="nav">
               <Link href={`/projects/add-project/${user.id}`}>Add a project</Link>
             </Button>
           )}
-          <Button asChild>
+          <Button asChild variant="nav">
             <Link href="/questions/ask-question">Ask a Question</Link>
           </Button>
-          <Button asChild>
+          <Button asChild variant="nav">
             <Link href="/questions/answer-question">Answer a Question</Link>
           </Button>
-          <Button asChild>
+          <Button asChild variant="nav">
             <Link href="/questions/view-all-questions">View All Questions</Link>
           </Button>
           {user ? (
             <>
-              <Button asChild>
+              <Button asChild variant="nav">
                 <Link href={`/profiles/${user.id}`}>Profile</Link>
               </Button>
               <SignOutButton />
             </>
           ) : (
-            <Button asChild>
+            <Button asChild variant="nav">
               <Link href="/login">Login</Link>
             </Button>
           )}
