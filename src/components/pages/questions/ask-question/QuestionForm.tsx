@@ -1,10 +1,8 @@
-"use client";
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
-import type { TagOption, Tag } from '@/types/Tags';
+import type { TagOption } from '@/types/Tags';
 import { getAllTags } from '@/api/tags';
 
 import {
@@ -20,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading';
 import { MultiSelector } from '@/components/ui/MultiSelector';
 
-// Schema is defined for the form which helps with input requirements and error handling
+// Define the schema using zod
 const formSchema = z.object({
   title: z.string().min(1, {
     message: 'Question title cannot be empty.',
@@ -33,11 +31,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Function that will render the question form and passes the results to the ask question page on submit
+// The QuestionForm component
 export default function QuestionForm({
   onSubmit,
 }: {
-  onSubmit: (values: FormValues) => void;
+  onSubmit: (values: FormValues) => Promise<void>;
 }) {
   // Initialize the form
   const form = useForm<FormValues>({
@@ -76,9 +74,14 @@ export default function QuestionForm({
     form.setValue('tags', selectedTags.map((tag) => tag.value));
   }, [selectedTags, form]);
 
+  // Define the onClick handler for ButtonWithLoading
+  const handleButtonClick = async () => {
+    await form.handleSubmit(onSubmit)();
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form className="space-y-8">
         {/* Title Field */}
         <FormField
           control={form.control}
@@ -93,7 +96,7 @@ export default function QuestionForm({
             </FormItem>
           )}
         />
-        
+
         {/* Description Field */}
         <FormField
           control={form.control}
@@ -108,7 +111,7 @@ export default function QuestionForm({
             </FormItem>
           )}
         />
-        
+
         {/* Tags Field */}
         <FormField
           control={form.control}
@@ -128,12 +131,12 @@ export default function QuestionForm({
             </FormItem>
           )}
         />
-        
+
         {/* Submit Button */}
         <ButtonWithLoading
-          isLoading={form.formState.isSubmitting}
+          onClick={handleButtonClick} // Pass the async submission handler
           buttonText="Submit"
-          buttonType="submit"
+          buttonType="button" // Set to 'button' to prevent default form submission
         />
       </form>
     </Form>

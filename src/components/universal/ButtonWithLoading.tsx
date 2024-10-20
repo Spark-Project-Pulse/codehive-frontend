@@ -1,28 +1,37 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ButtonLoadingSpinner } from '@/components/ui/loading';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { ButtonLoadingSpinner } from '@/components/ui/loading'
 
 interface ButtonWithLoadingProps {
-  isLoading: boolean; // Indicates if the button should show a loading state
-  buttonText: string; // Text displayed on the button
-  buttonType: 'button' | 'submit' | 'reset'; // The type attribute for the button
-  onClick?: () => void; // keeping this
+  onClick: () => Promise<void> // The async operation to execute
+  buttonText: string // Initial text for the button
+  buttonType: 'button' | 'submit' | 'reset' // The desired type for the button (i.e. submit, button, reset)
 }
 
 export const ButtonWithLoading: React.FC<ButtonWithLoadingProps> = ({
-  isLoading,
+  onClick,
   buttonText,
   buttonType,
-  onClick,
 }) => {
+  const [isPending, setIsPending] = useState(false)
+
+  const handleClick = async () => {
+    setIsPending(true)
+    try {
+      await onClick()
+    } finally {
+      setIsPending(false)
+    }
+  }
+
   return (
     <Button
       type={buttonType}
-      onClick={onClick}
-      disabled={isLoading}
+      onClick={handleClick}
+      disabled={isPending}
       className={`flex items-center space-x-2`}
     >
-      {isLoading ? (
+      {isPending ? (
         <>
           <ButtonLoadingSpinner />
           <span>Loading...</span>
@@ -31,5 +40,5 @@ export const ButtonWithLoading: React.FC<ButtonWithLoadingProps> = ({
         <span>{buttonText}</span>
       )}
     </Button>
-  );
-};
+  )
+}
