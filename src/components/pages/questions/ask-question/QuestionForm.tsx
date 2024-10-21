@@ -76,11 +76,6 @@ export default function QuestionForm({
     form.setValue('tags', selectedTags.map((tag) => tag.value));
   }, [selectedTags, form]);
 
-  // Define the onClick handler for ButtonWithLoading
-  const handleButtonClick = async () => {
-    await form.handleSubmit(onSubmit)();
-  };
-
   return (
     <Form {...form}>
       <form className="space-y-8">
@@ -136,7 +131,7 @@ export default function QuestionForm({
 
         {/* Submit Button */}
         <ButtonWithLoading
-          onClick={handleButtonClick} // Pass the async submission handler
+          onClick={form.handleSubmit(onSubmit)}
           buttonText="Submit"
           buttonType="button"
         />
