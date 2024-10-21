@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation';
 import { getAllTags } from '@/api/tags';
 import { TagOption } from '@/types/Tags';
 import { Question } from '@/types/Questions';
+import { getAllQuestions } from '@/api/questions';
 import { MultiSelector } from '@/components/ui/MultiSelector';
+import { ApiResponse } from '@/types/Api';
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -17,21 +19,25 @@ const QuestionsPage: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
   const router = useRouter();
 
-  // Fetch Questions
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`);
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
+        const response: ApiResponse<Question[]> = await getAllQuestions();
+  
+        if (response.errorMessage) {
+          throw new Error(response.errorMessage);
         }
-        const data = await res.json() as Question[];
-        const sortedQuestions = data.sort(
-          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-        setQuestions(sortedQuestions);
-        setFilteredQuestions(sortedQuestions);
+  
+        if (response.data) {
+          const sortedQuestions = response.data.sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          setQuestions(sortedQuestions);
+          setFilteredQuestions(sortedQuestions);
+        } else {
+          throw new Error('No data received');
+        }
       } catch (error) {
         console.error('Error fetching questions:', error);
         setHasError(true);
@@ -39,7 +45,7 @@ const QuestionsPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-
+  
     void fetchQuestions();
   }, []);
 
@@ -184,7 +190,7 @@ useEffect(() => {
                     </li>
                   ))
                 ) : (
-                  <p className="text-center text-muted">No questions match the selected tags.</p>
+                  <p className="text-center text-gray-700 text-lg">No questions match the selected tags.</p>
                 )}
               </ul>
             </>

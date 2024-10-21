@@ -117,3 +117,37 @@ export const getQuestionById = async (
     return { errorMessage: 'Error fetching question' }
   }
 }
+
+/**
+ * Fetches all questions from the backend API.
+ *
+ * Args:
+ *   No arguments over here
+ *
+ * Returns:
+ *   Promise<ApiResponse<Question[]>>: The questions data on success, or an error message on failure.
+ */
+export const getAllQuestions = async (): Promise<ApiResponse<Question[]>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`,
+    {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+    }
+
+    const questionData = (await response.json()) as Question[]
+    return { errorMessage: null, data: questionData }
+  } catch (error) {
+    console.error('Error fetching questions: ', error)
+    return { errorMessage: 'Error fetching questions' }
+  }
+};
