@@ -3,11 +3,6 @@
 @tailwind utilities;
 /* This file is where ACTUAL values are being set for tailwind css variables */
 
-/* Sets font for body elements */
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -24,10 +19,13 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+
+    /* Text / Background colors */
+    --primary: 0, 0%, 100%;
+    --primary-foreground: 47 100% 50%;
+    --secondary: 52 100% 85%;
+    --secondary-foreground: 0 0% 0%;
+
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
     --accent: 0 0% 96.1%;
@@ -72,6 +70,23 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+
+  /* For custom fonts */
+  @font-face {
+    font-family: 'Luckiest Guy';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../app/fonts/LuckiestGuy-Regular.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Ubunutu';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../app/fonts/Ubuntu-Regular.ttf') format('truetype');
   }
 }
 
