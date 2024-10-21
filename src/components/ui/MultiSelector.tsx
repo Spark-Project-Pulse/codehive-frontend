@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
+import ResizeObserver from "resize-observer-polyfill";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,20 +35,24 @@ export function MultiSelector({
   onSelectedChange,
   placeholder = "Select relevant tags...",
 }: MultiSelectorProps) {
-  const [open, setOpen] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // For dynamic maxVisibleTags calculation
+  const [maxVisibleTags, setMaxVisibleTags] = useState<number>(3);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Filter options based on search term
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
-  // Debugging logs
-  React.useEffect(() => {
-    console.log("Options:", options);
-    console.log("Search Term:", searchTerm);
-    console.log("Filtered Options:", filteredOptions);
-  }, [options, searchTerm, filteredOptions]);
+  // Reset searchTerm when the popover closes
+  useEffect(() => {
+    if (!open) {
+      setSearchTerm("");
+    }
+  }, [open]);
 
   // Handler to toggle selection
   const handleSelect = (option: TagOption) => {
@@ -60,30 +65,80 @@ export function MultiSelector({
     }
   };
 
+  // Use ResizeObserver to adjust maxVisibleTags based on available width
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    // Function to calculate maxVisibleTags based on container width
+    const calculateMaxVisibleTags = () => {
+      const containerWidth = container.offsetWidth;
+      const tagWidth = 80; 
+      const chevronWidth = 24;
+      const padding = 16;
+
+      // Calculate the number of tags that can fit
+      const availableWidth = containerWidth - chevronWidth - padding;
+      const newMaxVisibleTags = Math.max(
+        1,
+        Math.floor(availableWidth / tagWidth)
+      );
+
+      setMaxVisibleTags(newMaxVisibleTags);
+    };
+
+    // Create a ResizeObserver to observe size changes
+    const resizeObserver = new ResizeObserver(() => {
+      calculateMaxVisibleTags();
+    });
+
+    // Start observing the container
+    resizeObserver.observe(container);
+
+    // Initial calculation
+    calculateMaxVisibleTags();
+
+    // Cleanup function
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between flex-wrap gap-1" // Reduced gap
+          className="w-full max-w-full justify-between gap-1 overflow-hidden"
         >
-          <div className="flex flex-wrap gap-1"> {/* Reduced gap */}
+          <div
+            ref={containerRef}
+            className="flex flex-1 items-center gap-1 overflow-hidden"
+          >
             {selected.length > 0 ? (
-              selected.map((tag) => (
-                <span
-                  key={tag.value}
-                  className="px-1 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium" // Smaller padding and font
-                >
-                  {tag.label}
-                </span>
-              ))
+              <>
+                {selected.slice(0, maxVisibleTags).map((tag) => (
+                  <span
+                    key={tag.value}
+                    className="px-1 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium flex-shrink-0"
+                  >
+                    {tag.label}
+                  </span>
+                ))}
+                {selected.length > maxVisibleTags && (
+                  <span className="text-xs text-gray-500 flex-shrink-0">
+                    +{selected.length - maxVisibleTags} more
+                  </span>
+                )}
+              </>
             ) : (
-              <span className="text-gray-500">{placeholder}</span>
+              <span className="text-gray-500 truncate">{placeholder}</span>
             )}
           </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -91,6 +146,8 @@ export function MultiSelector({
         side="bottom"
         align="start"
         sideOffset={4}
+        avoidCollisions={true}
+        collisionPadding={10}
       >
         <Command>
           <CommandInput
@@ -98,7 +155,6 @@ export function MultiSelector({
             value={searchTerm}
             onValueChange={(value) => {
               setSearchTerm(value);
-              console.log("Updated Search Term:", value);
             }}
           />
           <CommandList>
@@ -109,10 +165,7 @@ export function MultiSelector({
                 {filteredOptions.map((option) => (
                   <CommandItem
                     key={option.value}
-                    onSelect={() => {
-                      handleSelect(option);
-                      console.log("Option selected:", option.label);
-                    }}
+                    onSelect={() => handleSelect(option)}
                   >
                     <Check
                       className={cn(
@@ -128,6 +181,8 @@ export function MultiSelector({
               </CommandGroup>
             )}
           </CommandList>
+          {/* Adjust padding at the bottom */}
+          <div className="p-2" />
         </Command>
       </PopoverContent>
     </Popover>
