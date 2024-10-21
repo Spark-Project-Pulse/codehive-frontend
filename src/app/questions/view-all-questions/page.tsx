@@ -59,17 +59,18 @@ const QuestionsPage: React.FC = () => {
   }, []);
 
   // Handle Tag Selection Change
-  useEffect(() => {
-    if (selectedTags.length === 0) {
-      setFilteredQuestions(questions);
-    } else {
-      const selectedTagValues = selectedTags.map(tag => tag.value);
-      const filtered = questions.filter(question =>
-        question.tags?.some(tagId => selectedTagValues.includes(tagId)) ?? false
-      );
-      setFilteredQuestions(filtered);
-    }
-  }, [selectedTags, questions]);
+useEffect(() => {
+  if (selectedTags.length === 0) {
+    setFilteredQuestions(questions);
+  } else {
+    const selectedTagValues = selectedTags.map(tag => tag.value);
+    const filtered = questions.filter(question =>
+      selectedTagValues.every(tagId => question.tags?.includes(tagId))
+    );
+    setFilteredQuestions(filtered);
+  }
+}, [selectedTags, questions]);
+
 
   const handleQuestionClick = (questionId: string) => {
     router.push(`/questions/${questionId}`);
