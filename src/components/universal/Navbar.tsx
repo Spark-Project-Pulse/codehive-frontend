@@ -36,13 +36,8 @@ export default function Navbar() {
           </Button>
           {user ? (
             <>
-<<<<<<< HEAD
               <Button asChild variant="nav">
-                <Link href={`/profiles/${user.user}`}>Profile</Link>
-=======
-              <Button asChild>
                 <Link href={`/profiles/${user.username}`}>Profile</Link>
->>>>>>> edaea269ae3c337acc298efffe140a8bd8820676
               </Button>
               <SignOutButton />
             </>
