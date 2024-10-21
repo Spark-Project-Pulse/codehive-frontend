@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
+import ResizeObserver from "resize-observer-polyfill";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,9 +74,9 @@ export function MultiSelector({
     // Function to calculate maxVisibleTags based on container width
     const calculateMaxVisibleTags = () => {
       const containerWidth = container.offsetWidth;
-      const tagWidth = 80; // Approximate width of a tag, adjust as needed
-      const chevronWidth = 24; // Width of the ChevronsUpDown icon
-      const padding = 16; // Total horizontal padding, adjust if needed
+      const tagWidth = 80; 
+      const chevronWidth = 24;
+      const padding = 16;
 
       // Calculate the number of tags that can fit
       const availableWidth = containerWidth - chevronWidth - padding;
