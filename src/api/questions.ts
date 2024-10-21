@@ -49,6 +49,41 @@ export const createQuestion = async (values: {
 }
 
 /**
+ * Fetches all the questions associated with a user by their ID from the backend.
+ *
+ * Args:
+ *   user_id (string): The ID of the user.
+ *
+ * Returns:
+ *   Promise<ApiResponse<Question[]>>: The questions data on success, or an error message on failure.
+ */
+export const getQuestionsByUserId = async (
+  user_id: string
+): Promise<ApiResponse<Question[]>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const questionData = (await response.json()) as Question[]
+    return { errorMessage: null, data: questionData }
+  } catch (error) {
+    console.error('Error fetching questions: ', error)
+    return { errorMessage: 'Error fetching questions' }
+  }
+}
+
+/**
  * Fetches a question by its ID from the backend.
  *
  * Args:

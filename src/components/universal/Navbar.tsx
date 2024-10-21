@@ -37,7 +37,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Button asChild>
-                <Link href={`/profiles/${user.user}`}>Profile</Link>
+                <Link href={`/profiles/${user.username}`}>Profile</Link>
               </Button>
               <SignOutButton />
             </>
