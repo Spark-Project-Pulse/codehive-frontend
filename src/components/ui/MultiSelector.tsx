@@ -4,9 +4,6 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-// If using the polyfill
-// import ResizeObserver from "resize-observer-polyfill";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
