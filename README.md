@@ -139,7 +139,10 @@ See the following article for a detailed explanation of how to manage environmen
 GOOGLE_CLOUD_PROJECT=google_cloud_project_id
 GOOGLE_APPLICATION_CREDENTIALS=pulse-random-letters-and-numbers.json
 ```
-3. Use the getSecret function in `src/lib/getSecret.py` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
+3. **server-side code**: Use the `getSecret` function in `src/lib/getSecret.ts` to access secrets stored in Google Secret Manager locally. The function takes the secret name as an argument and returns the secret value.
+   1. (you should ONLY use this function in server-side functions labelled with `'user-server'`)
+4. **client-side code**: Use the `getSecrets` function in `src/api/getSecrets.ts` which is a Next.js endpoint that is called on the server (since the `getSecret` function requires server-side dependencies)
+   1. (you should ONLY use this function in client-side functions labelled with `'use-client'` or no label)
 
 #### Updating Secrets
 To ensure they will be available in production and consistent across all environments and between developers, secrets should be stored in Google Secret Manager. To update a secret:
@@ -201,12 +204,47 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### User Authentication
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+Since we are using [Supabase Auth](https://supabase.com/docs/guides/auth), there are two types of user-schemas that we have access to (see backend `models.py` for more details on `AuthUser` and our custom `User`).
+
+#### 1. Getting Custom `User` from "client" code
+
+In general, we will want to use the custom `User` schema to get important information about the user that needs to be rendered by the client. HOWEVER, in order to do so, we first need to use Supabase's getUser function to get the user's id. You can simply use the `useUser` context to auto-"magically" fetch the user:
+
+``` ts
+import { useUser } from '@/app/contexts/UserContext'
+
+export default function YourComponent () {
+  const { user, loading } = useUser()
+  ...
+}
+
+```
+
+#### 2. Getting Custom `AuthUser` from "server" code
+
+So far, it seems that the main use for getting the `AuthUser` in server-side code (i.e. functions/files in `src/api`) would be to pass in the active `user_id` to the backend API. This is useful for creating objects associated with that user. To do so, you should use the `getSupaUser` function from `utils/supabase/server`. Here is an example for uploading projects:
+
+``` ts
+import { getSupaUser } from '@/utils/supabase/server';
+
+export const createProject = async (values: {
+    public: boolean;
+    title: string;
+    description: string;
+  }): Promise<ApiResponse<{ project_id: string }>> => {
+    try {
+      const user = await getSupaUser()
+
+      const vals = { owner: user?.id, ...values }
+
+      ...
+```
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

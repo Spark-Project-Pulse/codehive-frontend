@@ -63,6 +63,17 @@ const config: Config = {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			fontFamily: {
+				heading: ['"Luckiest Guy"', 'Georgia'],
+				subHeading: ['Ubuntu', 'serif'],
+				body: ['Ubuntu', 'serif']
+			},
+			fontSize: {
+				navLogo: '2.5rem',
+				navText: '0.9375rem',
+				h1: '6.25rem',
+				h2: '3.125rem',
 			}
 		}
 	},

@@ -77,6 +77,42 @@ export const getUserById = async (
 }
 
 /**
+ * Retrieves a user by their username from the backend.
+ *
+ * Args:
+ *   username (string): The username of the user to retrieve.
+ *
+ * Returns:
+ *   Promise<ApiResponse<User>>: The user's data on success, or an error message on failure.
+ */
+export const getUserByUsername = async (
+  username: string
+): Promise<ApiResponse<User>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getByUsername/${username}`,
+      {
+        method: 'GET',
+        headers: {
+          // Authorization: `Bearer ${token}`, // Uncomment if using auth
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const userData = (await response.json()) as User
+    return { errorMessage: null, data: userData }
+  } catch (error) {
+    console.error('Error getting user: ', error)
+    return { errorMessage: 'Error getting user' }
+  }
+}
+
+/**
  * Checks if a user exists by their ID.
  *
  * Args:

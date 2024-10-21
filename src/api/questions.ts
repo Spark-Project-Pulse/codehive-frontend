@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Question } from '@/types/Questions'
-import { getUser } from '@/utils/supabase/server'
+import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Creates a new question by sending a POST request to the backend.
@@ -18,8 +18,8 @@ export const createQuestion = async (values: {
   description: string
 }): Promise<ApiResponse<{ question_id: string }>> => {
   try {
-    // TODO: DE ROCCO Please replace this with the user id from context
-    const user = await getUser()
+
+    const user = await getSupaUser()
 
     const vals = { asker: user?.id, ...values }
     const response = await fetch(
@@ -45,6 +45,41 @@ export const createQuestion = async (values: {
   } catch (error) {
     console.error('Error creating question: ', error)
     return { errorMessage: 'Error creating question' }
+  }
+}
+
+/**
+ * Fetches all the questions associated with a user by their ID from the backend.
+ *
+ * Args:
+ *   user_id (string): The ID of the user.
+ *
+ * Returns:
+ *   Promise<ApiResponse<Question[]>>: The questions data on success, or an error message on failure.
+ */
+export const getQuestionsByUserId = async (
+  user_id: string
+): Promise<ApiResponse<Question[]>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const questionData = (await response.json()) as Question[]
+    return { errorMessage: null, data: questionData }
+  } catch (error) {
+    console.error('Error fetching questions: ', error)
+    return { errorMessage: 'Error fetching questions' }
   }
 }
 

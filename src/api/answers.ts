@@ -2,7 +2,7 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
-import { getUser } from '@/utils/supabase/server'
+import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Submits an answer to a question.
@@ -18,8 +18,8 @@ export const createAnswer = async (answerData: {
   question: string
 }): Promise<ApiResponse<Answer>> => {
   try {
-    // TODO: DE ROCCO Please replace this with the user id from context
-    const user = await getUser()
+    
+    const user = await getSupaUser()
 
     const vals = { expert: user?.id, ...answerData }
     const response = await fetch(
