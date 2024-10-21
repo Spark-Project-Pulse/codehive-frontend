@@ -3,15 +3,15 @@
 import { LoadingSpinner } from '@/components/ui/loading'
 import { type Question } from '@/types/Questions'
 import { useEffect, useState } from 'react'
+import AnswerCard from '@/components/pages/questions/[question_id]/AnswerCard'
+import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
 import AnswerForm from '@/components/pages/questions/[question_id]/AnswerForm'
-import CommentForm from '@/components/pages/questions/[question_id]/CommentForm'
 import { useToast } from '@/components/ui/use-toast'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
 import { getQuestionById } from '@/api/questions'
 import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
-import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type UUID } from 'crypto'
 
 export default function QuestionPage({
@@ -181,68 +181,21 @@ export default function QuestionPage({
       <div className="mx-auto max-w-4xl px-4">
         {question ? (
           <div>
-            <div className="rounded-lg bg-white p-6 shadow-lg">
-              <h1 className="mb-4 text-3xl font-bold text-gray-800">
-                {question.title}
-              </h1>
-              <p className="text-lg text-gray-600">{question.description}</p>
-              <p className="mt-4 text-gray-500">
-                Asked by:{' '}
-                {question.asker_info?.username
-                  ? question.asker_info?.username
-                  : 'Anonymous User'}
-              </p>
-            </div>
+            <QuestionCard question={question} />
             {/* Show all current answers below question, if answers exists */}
             {answers.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-lg font-bold">Current Answers:</h2>
                 <div className="list-disc pl-5">
                   {answers.map((answer) => (
-                    <div
+                    <AnswerCard
                       key={answer.answer_id}
-                      className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg"
-                    >
-                      Answer: {answer.response}
-                      <p className="mt-4 text-gray-500">
-                        Answered by:{' '}
-                        {answer.expert_info?.username
-                          ? answer.expert_info?.username
-                          : 'Anonymous User'}
-                      </p>
-                      {/* Show all current comments below answer, if comments exists */}
-                      <div className="bg-slate-300">
-                        {comments[answer.answer_id] &&
-                          comments[answer.answer_id].length > 0 && (
-                            <div className="mt-8">
-                              <h2 className="text-lg font-bold">Comments:</h2>
-                              <div className="list-disc pl-5">
-                                {comments[answer.answer_id].map((comment) => (
-                                  <div
-                                    key={comment.comment_id}
-                                    className="mb-6 mt-6 rounded-lg bg-white p-6 shadow-lg"
-                                  >
-                                    {`"${comment.response}" - ${comment.expert_info?.username ?? 'Anonymous User'}`}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                        {/* Add comment option */}
-                        <div className="bg-slate-300">
-                          <ButtonWithLoading
-                            buttonType="button"
-                            buttonText="Add a comment"
-                            onClick={() => handleAddComment(answer.answer_id)}
-                          ></ButtonWithLoading>
-                          {/* Only show comment form if the answer_id is in openCommentFormId state */}
-                          {openCommentFormId === answer.answer_id && (
-                            <CommentForm onSubmit={handleCommentSubmit} />
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                      answer={answer}
+                      comments={comments}
+                      onCommentSubmit={handleCommentSubmit}
+                      onAddComment={handleAddComment}
+                      openCommentFormId={openCommentFormId}
+                    />
                   ))}
                 </div>
               </div>
