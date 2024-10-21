@@ -4,9 +4,14 @@ export default function Home() {
 
   return (
     <section className="py-24">
-      <div>
-        <h1 className="text-3xl font-bold">CodeHive yuhhhhh</h1>
+      <div className="text-h1 font-bold uppercase font-heading tracking-wider">
+        <div className="text-secondary-foreground">
+          Welcome to
+        </div>
+        <div className="text-primary-foreground">
+          CodeHive
+        </div>
       </div>
-    </section>
+    </section >
   );
 }

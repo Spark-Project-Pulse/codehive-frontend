@@ -8,13 +8,11 @@ import { createProject } from '@/api/projects'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { getUserById } from '@/api/users'
+import { useUser } from '@/app/contexts/UserContext'
 
 // Main page for adding a project
-export default function AddProject({
-  params,
-}: {
-  params: { user_id: string }
-}) {
+export default function AddProject() {
+  const { user, loading } = useUser()
   const { toast } = useToast()
   const router = useRouter()
 
@@ -23,16 +21,13 @@ export default function AddProject({
   
   useEffect(() => {
     const fetchUser = async () => {
+      // safely return if user not loaded yet
+      if (!user) return
+
       try {
-        const response = await getUserById(params.user_id)
-
-        if (response.errorMessage) {
-          console.error('Error fetching user:', response.errorMessage)
-          return
-        }
-
+       
         // Fetch GitHub repositories using the user's GitHub username
-        const githubUsername = response.data?.username
+        const githubUsername = user.username
         if (githubUsername) {
           const reposResponse = await fetch(
             `https://api.github.com/users/${githubUsername}/repos`
@@ -49,7 +44,7 @@ export default function AddProject({
     }
 
     void fetchUser()
-  }, [params.user_id])
+  }, [user, loading])
 
   
   // Function to handle form submission and perform API call
@@ -88,7 +83,7 @@ export default function AddProject({
   }
 
   // Conditional rendering for loading state
-  if (isLoading) {
+  if (isLoading || loading) {
     return <LoadingSpinner />
   }
 
