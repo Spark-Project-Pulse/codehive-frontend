@@ -156,7 +156,7 @@ export default function ProfilePage({
                     {projects.map((project, index) => (
                       <li
                         key={index}
-                        className="cursor-pointer rounded-md border-b pb-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                        className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
                         onClick={() => handleProjectClick(project.project_id)}
                       >
                         <h3 className="text-lg font-semibold">
@@ -181,7 +181,7 @@ export default function ProfilePage({
                     {questions.map((question, index) => (
                       <li
                         key={index}
-                        className="cursor-pointer rounded-md border-b pb-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                        className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
                         onClick={() =>
                           handleQuestionClick(question.question_id)
                         }
