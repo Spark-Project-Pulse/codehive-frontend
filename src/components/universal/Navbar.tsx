@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import SignOutButton from '@/components/universal/SignOutButton'
 import { useUser } from '@/app/contexts/UserContext'
 import { LoadingSpinner } from '@/components/ui/loading'
+import Image from 'next/image'
 
 export default function Navbar() {
   const { user, loading } = useUser()
@@ -14,9 +15,9 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow">
       <div className="mx-auto flex items-center justify-between px-4 py-2">
-        <Link href="/" className="text-navLogo font-bold uppercase font-heading tracking-wider">
-          CodeHive
-        </Link>
+      <Link href="/" className="text-navLogo font-bold uppercase font-heading tracking-wider">
+        <Image src="/public/codehive_with_logo.svg" alt="CodeHive Logo" className="h-8" />
+      </Link>
         <div className="flex space-x-4">
           {user && (
             <Button asChild variant="nav">
