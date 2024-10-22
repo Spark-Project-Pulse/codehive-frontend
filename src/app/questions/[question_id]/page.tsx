@@ -171,6 +171,16 @@ export default function QuestionPage({
     }
   }
 
+  // Function to handle upvoting
+  async function handleUpvote() {
+    console.log("upvote clicked")
+  }
+
+  // Function to handle downvoting
+  async function handleDownvote() {
+    console.log("downvote clicked")
+  }
+
   // Conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
@@ -194,6 +204,8 @@ export default function QuestionPage({
                       comments={comments}
                       onCommentSubmit={handleCommentSubmit}
                       onAddComment={handleAddComment}
+                      onUpvote={handleUpvote}
+                      onDownvote={handleDownvote}
                       openCommentFormId={openCommentFormId}
                     />
                   ))}

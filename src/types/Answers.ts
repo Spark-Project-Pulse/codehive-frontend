@@ -4,6 +4,7 @@ import { type User } from './Users'
 export interface Answer {
   answer_id: UUID
   response: string
+  score: number
   created_at: Date
   asker_id?: UUID
   expert_id?: UUID
