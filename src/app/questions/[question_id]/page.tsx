@@ -10,7 +10,12 @@ import { useToast } from '@/components/ui/use-toast'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
 import { getQuestionById } from '@/api/questions'
-import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
+import {
+  createAnswer,
+  downvoteAnswer,
+  getAnswersByQuestionId,
+  upvoteAnswer,
+} from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
 
@@ -171,16 +176,6 @@ export default function QuestionPage({
     }
   }
 
-  // Function to handle upvoting
-  async function handleUpvote() {
-    console.log("upvote clicked")
-  }
-
-  // Function to handle downvoting
-  async function handleDownvote() {
-    console.log("downvote clicked")
-  }
-
   // Conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
@@ -204,8 +199,6 @@ export default function QuestionPage({
                       comments={comments}
                       onCommentSubmit={handleCommentSubmit}
                       onAddComment={handleAddComment}
-                      onUpvote={handleUpvote}
-                      onDownvote={handleDownvote}
                       openCommentFormId={openCommentFormId}
                     />
                   ))}

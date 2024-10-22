@@ -2,6 +2,8 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type User } from '@/types/Users'
+import { getSupaUser } from '@/utils/supabase/server'
+import { UUID } from 'crypto'
 
 /**
  * Creates a new user by sending a POST request to the backend.
@@ -37,6 +39,88 @@ export const createUser = async (
   } catch (error) {
     console.error('Error creating user: ', error)
     return { errorMessage: 'Error creating user' }
+  }
+}
+
+/**
+ * Increases the reputation of a user by 1.
+ *
+ * Args:
+ *   user_id (string): The ID of the user whose reputation should be increased.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ user_id: string; new_reputation: number }>>: The user's ID and new reputation on success, or an error message on failure.
+ */
+export const increaseReputation = async (
+  user_id: UUID
+): Promise<ApiResponse<{ user_id: string; new_reputation: number }>> => {
+  try {
+    const user = await getSupaUser()
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/increaseReputationById/${user?.id}/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Extract the JSON data from the response
+    const responseData = (await response.json()) as {
+      user_id: string
+      new_reputation: number
+    }
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error increasing reputation: ', error)
+    return { errorMessage: 'Error increasing reputation' }
+  }
+}
+
+/**
+ * Decreases the reputation of a user by 1.
+ *
+ * Args:
+ *   user_id (string): The ID of the user whose reputation should be decreased.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ user_id: string; new_reputation: number }>>: The user's ID and new reputation on success, or an error message on failure.
+ */
+export const decreaseReputation = async (
+  user_id: UUID
+): Promise<ApiResponse<{ user_id: string; new_reputation: number }>> => {
+  try {
+    const user = await getSupaUser()
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/decreaseReputationById/${user?.id}/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Extract the JSON data from the response
+    const responseData = (await response.json()) as {
+      user_id: string
+      new_reputation: number
+    }
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error increasing reputation: ', error)
+    return { errorMessage: 'Error increasing reputation' }
   }
 }
 

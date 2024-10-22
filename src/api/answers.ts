@@ -46,6 +46,98 @@ export const createAnswer = async (answerData: {
 }
 
 /**
+ * Upvotes an answer, decreasing its score by 1.
+ * If the user has already upvoted, the vote is switched to a upvote.
+ *
+ * Args:
+ *   answerId: The ID of the answer to upvote.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
+ */
+export const upvoteAnswer = async (
+  answer_id: string
+): Promise<ApiResponse<{ new_score: number }>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/upvote/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          answer_id: answer_id,
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const result = (await response.json()) as { new_score: number }
+    return { errorMessage: null, data: result }
+  } catch (error) {
+    console.error('Error downvoting answer:', error)
+    return { errorMessage: 'Error downvoting answer' }
+  }
+}
+
+/**
+ * Downvotes an answer, decreasing its score by 1.
+ * If the user has already upvoted, the vote is switched to a downvote.
+ *
+ * Args:
+ *   answerId: The ID of the answer to downvote.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
+ */
+export const downvoteAnswer = async (
+  answer_id: string
+): Promise<ApiResponse<{ new_score: number }>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/downvote/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          answer_id: answer_id,
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const result = (await response.json()) as { new_score: number }
+    return { errorMessage: null, data: result }
+  } catch (error) {
+    console.error('Error downvoting answer:', error)
+    return { errorMessage: 'Error downvoting answer' }
+  }
+}
+
+/**
  * Fetches answers by question ID from the backend.
  *
  * Args:
