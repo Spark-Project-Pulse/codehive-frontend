@@ -11,10 +11,8 @@ import { AppSidebar } from '@/components/universal/sidebar/app-sidebar'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@radix-ui/react-tooltip'
-import { Badge } from '@/components/ui/badge'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
