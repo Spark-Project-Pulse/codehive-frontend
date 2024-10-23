@@ -55,14 +55,13 @@ const data = {
       title: "Questions",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
           title: "Ask",
           url: "/questions/ask-question",
         },
         {
-          title: "View All",
+          title: "Find Questions",
           url: "/questions/view-all-questions",
         },
       ],
@@ -73,15 +72,11 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Add",
+          url: "/projects/add-project",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Explore Projects",
           url: "#",
         },
       ],
