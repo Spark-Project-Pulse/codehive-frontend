@@ -8,6 +8,13 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/universal/sidebar/app-sidebar'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@radix-ui/react-tooltip'
+import { Badge } from '@/components/ui/badge'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -28,7 +35,15 @@ export default function RootLayout({
             <SidebarInset>
               <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                 <div className="flex items-center gap-2 px-4">
-                  <SidebarTrigger className="-ml-1" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarTrigger className="-ml-1" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      {/* TODO: fix tooltip styling (doesn't seem correct) */}
+                      <p>⌘ /</p>        
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </header>
               {children}
