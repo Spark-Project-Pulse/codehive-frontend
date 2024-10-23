@@ -78,7 +78,7 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../app/fonts/LuckiestGuy-Regular.ttf') format('truetype');
+    src: url('./fonts/LuckiestGuy-Regular.ttf') format('truetype');
   }
 
   @font-face {
@@ -86,7 +86,7 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../app/fonts/Ubuntu-Regular.ttf') format('truetype');
+    src: url('./fonts/Ubuntu-Regular.ttf') format('truetype');
   }
 }
 
