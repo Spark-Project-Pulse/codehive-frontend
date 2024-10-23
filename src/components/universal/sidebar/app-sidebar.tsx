@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import * as React from "react"
+import * as React from 'react'
 import {
   AudioWaveform,
   BookOpen,
@@ -12,71 +12,64 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from 'lucide-react'
 
-import { NavMain } from "@/components/universal/sidebar/nav-main"
-import { NavProjects } from "@/components/universal/sidebar/nav-projects"
-import { NavUser } from "@/components/universal/sidebar/nav-user"
-import { TeamSwitcher } from "@/components/universal/sidebar/team-switcher"
+import { NavMain } from '@/components/universal/sidebar/nav-main'
+import { NavProjects } from '@/components/universal/sidebar/nav-projects'
+import { NavUser } from '@/components/universal/sidebar/nav-user'
+import { TeamSwitcher } from '@/components/universal/sidebar/team-switcher'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { useUser } from "@/app/contexts/UserContext"
-import { LoadingSpinner } from "@/components/ui/loading"
-
+  useSidebar,
+} from '@/components/ui/sidebar'
+import { useUser } from '@/app/contexts/UserContext'
+import Link from 'next/link'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, loading } = useUser()
+  const { user } = useUser()
+  const { open } = useSidebar()
 
-  // if (loading) return <LoadingSpinner />
-  
   const data = {
-    // user: {
-    //   name: user ? user.username : "Anonymous Atom",      // TODO: maybe use some auto-generated random user
-    //   email: "m@example.com",
-    //   // avatar: user?.pfp_url ? user.pfp_url : "../../../public/anon-user-pfp.jpg",
-    //   avatar: "../../../public/anon-user-pfp.jpg",
-    // },
     navMain: [
       {
-        title: "Questions",
-        url: "#",
+        title: 'Questions',
+        url: '#',
         icon: SquareTerminal,
         items: [
           {
-            title: "Ask",
-            url: "/questions/ask-question",
+            title: 'Ask',
+            url: '/questions/ask-question',
           },
           {
-            title: "Find Questions",
-            url: "/questions/view-all-questions",
+            title: 'Find Questions',
+            url: '/questions/view-all-questions',
           },
         ],
       },
       {
-        title: "Projects",
-        url: "#",
+        title: 'Projects',
+        url: '#',
         icon: Bot,
         items: [
           {
-            title: "Add",
-            url: "/projects/add-project",
+            title: 'Add',
+            url: '/projects/add-project',
           },
           {
-            title: "Explore Projects",
-            url: "#",
+            title: 'Explore Projects',
+            url: '#',
           },
         ],
       },
     ],
     projects: [
       {
-        name: "[projext xyz]",
-        url: "#",
+        name: '[projext xyz]',
+        url: '#',
         icon: Frame,
       },
     ],
@@ -85,7 +78,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        {/* <TeamSwitcher teams={data.teams} /> */}
+        {open ? (
+          <Link
+            href="/"
+            className="font-heading text-navLogo font-bold uppercase tracking-wider"
+          >
+            CodeHive
+          </Link>
+        ) : (
+          <></>
+        )}
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
