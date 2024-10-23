@@ -18,10 +18,11 @@ import { useUser } from '@/app/contexts/UserContext'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
-  const { open } = useSidebar()
+  const { open, toggleSidebar } = useSidebar()
 
   const data = {
     navMain: [
@@ -64,6 +65,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
   }
+  
+  useKeyboardShortcut(["cmd", "/"], () => {
+    toggleSidebar()
+  });
 
   return (
     <Sidebar collapsible="icon" {...props}>
