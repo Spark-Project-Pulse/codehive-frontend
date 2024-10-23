@@ -66,8 +66,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
   }
   
+  // MacOS
   useKeyboardShortcut(["cmd", "/"], () => {
     toggleSidebar()
+  });
+
+  // Windows/Linux
+  useKeyboardShortcut(["ctrl", "/"], () => {
+    toggleSidebar();
   });
 
   return (
