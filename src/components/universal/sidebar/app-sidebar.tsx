@@ -2,22 +2,14 @@
 
 import * as React from 'react'
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
   Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  MessageCircleQuestion,
+  FolderKanban,
 } from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
 import { NavUser } from '@/components/universal/sidebar/nav-user'
-import { TeamSwitcher } from '@/components/universal/sidebar/team-switcher'
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +20,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useUser } from '@/app/contexts/UserContext'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser()
@@ -38,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: 'Questions',
         url: '#',
-        icon: SquareTerminal,
+        icon: MessageCircleQuestion,
         items: [
           {
             title: 'Ask',
@@ -53,7 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: 'Projects',
         url: '#',
-        icon: Bot,
+        icon: FolderKanban,
         items: [
           {
             title: 'Add',
@@ -86,7 +79,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             CodeHive
           </Link>
         ) : (
-          <></>
+          <Link
+            href="/"
+            className="font-heading text-navLogo font-bold uppercase tracking-wider"
+          >
+            <Image
+              src="../../../../../logo.svg" // Reference the SVG in the public folder
+              alt="CodeHive Logo"
+              width={150}
+              height={50}
+            />
+          </Link>
         )}
       </SidebarHeader>
       <SidebarContent>
