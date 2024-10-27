@@ -27,11 +27,11 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
 import Link from 'next/link'
+import { Skeleton } from '@/components/ui/skeleton'
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -60,11 +60,11 @@ export default function QuestionForm({
       title: '',
       description: '',
       related_project: '',
-      tags: [], // Initialize tags as an empty array
+      tags: [],
     },
   })
 
-  const { user } = useUser()
+  const { user, loading } = useUser()
 
   // State to store tag options
   const [tagOptions, setTagOptions] = useState<TagOption[]>([])
@@ -75,8 +75,6 @@ export default function QuestionForm({
   // State to store tag options
   const [projectOptions, setProjectOptions] = useState<ProjectOption[]>([])
 
-  console.log(projectOptions);
-  
   // Fetch tags from the backend when the component mounts
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +105,6 @@ export default function QuestionForm({
       selectedTags.map((tag) => tag.value)
     )
   }, [selectedTags, form])
-
 
   return (
     <Form {...form}>
@@ -174,38 +171,45 @@ export default function QuestionForm({
           name="related_project"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="related_project">Connect to a Project</FormLabel>
+              <FormLabel htmlFor="related_project">
+                Connect to a Project
+              </FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  disabled={!user}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a project" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projectOptions.map((project) => (
-                      <SelectItem key={project.value} value={project.value}>
-                        {project.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {loading ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                ) : (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={!user}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projectOptions.map((project) => (
+                        <SelectItem key={project.value} value={project.value}>
+                          {project.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </FormControl>
-              {user ?
-              <FormDescription>
-                Linking a project to this question is optional, but may help
-                your question get answered faster!
-              </FormDescription>
-              :
-              <FormDescription>
-                You must be{' '}
-                <Link href="/login">logged in</Link>{' '}
-                to link a question!
-              </FormDescription>
-
-              }
+              {user ? (
+                <FormDescription>
+                  Linking a project to this question is optional, but may help
+                  your question get answered faster!
+                </FormDescription>
+              ) : (
+                <FormDescription>
+                  You must be <Link href="/login">logged in</Link> to link a
+                  question!
+                </FormDescription>
+              )}
               <FormMessage />
             </FormItem>
           )}
