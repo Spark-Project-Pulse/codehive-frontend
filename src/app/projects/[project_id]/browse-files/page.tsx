@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { type RepoContent, type Project } from '@/types/Projects'
 import { getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
+import { fetchRepoContents } from '@/lib/github'
 
 export default function BrowseFiles({
   params,
@@ -16,24 +17,18 @@ export default function BrowseFiles({
   const [repoContents, setRepoContents] = useState<RepoContent[]>([])
   const [currentPath, setCurrentPath] = useState<string>('')
 
-  const fetchRepoContents = async (path: string, repoFullName: string) => {
+  // helper function -> calls `github/fetchRepoContents` function and updates state
+  const loadRepoContents = async (path: string, repoFullName: string) => {
     setIsLoading(true)
-    try {
-      const res = await fetch(
-        `https://api.github.com/repos/${repoFullName}/contents/${path}`
-      )
-      if (res.ok) {
-        const data = (await res.json()) as RepoContent[]
-        setRepoContents(data)
-        setCurrentPath(path)
-      } else {
-        console.error('Failed to fetch repo contents')
-      }
-    } catch (error) {
-      console.error('Error fetching contents:', error)
-    } finally {
-      setIsLoading(false)
+    const { errorMessage, data } = await fetchRepoContents(path, repoFullName)
+
+    if (!errorMessage && data) {
+      setRepoContents(data.repoContent)
+      setCurrentPath(path)
+    } else {
+      console.error('Failed to load repo contents:', errorMessage)
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -48,7 +43,7 @@ export default function BrowseFiles({
 
           if (data?.repo_full_name) {
             // initial call to github api (fetches top level contents)
-            void fetchRepoContents('', data.repo_full_name)
+            void loadRepoContents('', data.repo_full_name)
           }
         } else {
           console.error('Error:', errorMessage)
@@ -65,7 +60,7 @@ export default function BrowseFiles({
 
   const handleItemClick = (item: RepoContent, repoFullName: string) => {
     if (item.type === 'dir') {
-      void fetchRepoContents(item.path, repoFullName)
+      void loadRepoContents(item.path, repoFullName)
     } else if (item.type === 'file' && item.download_url) {
       window.open(item.download_url, '_blank')
     }
@@ -103,7 +98,7 @@ export default function BrowseFiles({
             <Button
               className="mb-4"
               onClick={() =>
-                fetchRepoContents(
+                loadRepoContents(
                   currentPath.split('/').slice(0, -1).join('/'), // remove last item from path
                   project.repo_full_name ?? '' // this is just here for the linter (it is handled in the if statements above)
                 )
