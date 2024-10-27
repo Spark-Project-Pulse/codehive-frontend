@@ -152,7 +152,7 @@ export default function AnswerCard({
             onClick={() => handleUpvote()}
             variant="outline"
             className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasUpvoted ? 'bg-blue-500 text-white' : 'bg-transparent'
+              hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
             }`}
           >
             👍
@@ -162,7 +162,7 @@ export default function AnswerCard({
             onClick={() => handleDownvote()}
             variant="outline"
             className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasDownvoted ? 'bg-red-500 text-white' : 'bg-transparent'
+              hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
             }`}
           >
             👎
