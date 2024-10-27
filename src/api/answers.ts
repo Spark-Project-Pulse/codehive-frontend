@@ -3,6 +3,7 @@
 import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
 import { getSupaUser } from '@/utils/supabase/server'
+import { UUID } from 'crypto'
 
 /**
  * Submits an answer to a question.
@@ -49,19 +50,24 @@ export const createAnswer = async (answerData: {
  * If the user has already upvoted, the vote is switched to a upvote.
  *
  * Args:
- *   answerId: The ID of the answer to upvote.
+ *   answer_id: The ID of the answer to upvote.
  *
  * Returns:
  *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
  */
 export const upvoteAnswer = async (
-  answer_id: string
+  answer_id: string,
+  expert: UUID
 ): Promise<ApiResponse<{ new_score: number }>> => {
   try {
     const user = await getSupaUser()
 
     if (!user) {
       throw new Error('User not authenticated')
+    }
+
+    if (expert === user?.id) {
+      throw new Error("You cannot upvote your own answer")
     }
 
     const response = await fetch(
@@ -97,19 +103,24 @@ export const upvoteAnswer = async (
  * If the user has already upvoted, the vote is switched to a downvote.
  *
  * Args:
- *   answerId: The ID of the answer to downvote.
+ *   answer_id: The ID of the answer to downvote.
  *
  * Returns:
  *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
  */
 export const downvoteAnswer = async (
-  answer_id: string
+  answer_id: string,
+  expert: UUID
 ): Promise<ApiResponse<{ new_score: number }>> => {
   try {
     const user = await getSupaUser()
 
     if (!user) {
       throw new Error('User not authenticated')
+    }
+
+    if (expert === user?.id) {
+      throw new Error("You cannot downvote your own answer")
     }
 
     const response = await fetch(

@@ -79,7 +79,7 @@ export default function AnswerCard({
     }
 
     try {
-      const { errorMessage } = await upvoteAnswer(answer.answer_id)
+      const { errorMessage } = await upvoteAnswer(answer.answer_id, answer.expert)
       if (errorMessage) throw new Error(errorMessage)
       handleChangeReputation(reputationChange.toString())
     } catch (error) {
@@ -122,7 +122,7 @@ export default function AnswerCard({
     }
 
     try {
-      const { errorMessage } = await downvoteAnswer(answer.answer_id)
+      const { errorMessage } = await downvoteAnswer(answer.answer_id, answer.expert)
       if (errorMessage) throw new Error(errorMessage)
       await handleChangeReputation(reputationChange.toString())
     } catch (error) {
