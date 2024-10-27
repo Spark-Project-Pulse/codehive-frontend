@@ -18,7 +18,6 @@ export const createAnswer = async (answerData: {
   question: string
 }): Promise<ApiResponse<Answer>> => {
   try {
-    
     const user = await getSupaUser()
 
     const vals = { expert: user?.id, ...answerData }
@@ -86,8 +85,10 @@ export const upvoteAnswer = async (
     const result = (await response.json()) as { new_score: number }
     return { errorMessage: null, data: result }
   } catch (error) {
-    console.error('Error downvoting answer:', error)
-    return { errorMessage: 'Error downvoting answer' }
+    console.error('Error upvoting answer:', error)
+    const message =
+      error instanceof Error ? error.message : 'Error upvoting answer'
+    return { errorMessage: message }
   }
 }
 
@@ -133,7 +134,9 @@ export const downvoteAnswer = async (
     return { errorMessage: null, data: result }
   } catch (error) {
     console.error('Error downvoting answer:', error)
-    return { errorMessage: 'Error downvoting answer' }
+    const message =
+      error instanceof Error ? error.message : 'Error downvoting answer'
+    return { errorMessage: message }
   }
 }
 
@@ -150,15 +153,19 @@ export const getAnswersByQuestionId = async (
   question_id: string
 ): Promise<ApiResponse<Answer[]>> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionId/${question_id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    const user = await getSupaUser()
+
+    let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionId/${question_id}`
+
+    if (user) {
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionIdWithUser/${question_id}/${user?.id}`
+    }
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
     if (!response.ok) {
       throw new Error('Network response was not ok')

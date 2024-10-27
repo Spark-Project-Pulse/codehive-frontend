@@ -2,7 +2,6 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { type User } from '@/types/Users'
-import { getSupaUser } from '@/utils/supabase/server'
 import { UUID } from 'crypto'
 
 /**
@@ -55,10 +54,8 @@ export const increaseReputation = async (
   user_id: UUID
 ): Promise<ApiResponse<{ user_id: string; new_reputation: number }>> => {
   try {
-    const user = await getSupaUser()
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/increaseReputationById/${user?.id}/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/increaseReputationById/${user_id}/`,
       {
         method: 'POST',
         headers: {
@@ -93,13 +90,11 @@ export const increaseReputation = async (
  *   Promise<ApiResponse<{ user_id: string; new_reputation: number }>>: The user's ID and new reputation on success, or an error message on failure.
  */
 export const decreaseReputation = async (
-  user_id: UUID
+  user_id: string
 ): Promise<ApiResponse<{ user_id: string; new_reputation: number }>> => {
   try {
-    const user = await getSupaUser()
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/decreaseReputationById/${user?.id}/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/decreaseReputationById/${user_id}/`,
       {
         method: 'POST',
         headers: {

@@ -14,7 +14,7 @@ import CommentForm from '@/components/pages/questions/[question_id]/CommentForm'
 import CommentCard from '@/components/pages/questions/[question_id]/CommentCard'
 import { UUID } from 'crypto'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { downvoteAnswer, upvoteAnswer } from '@/api/answers'
 import { toast } from '@/components/ui/use-toast'
 import { decreaseReputation, increaseReputation } from '@/api/users'
@@ -22,6 +22,8 @@ import { decreaseReputation, increaseReputation } from '@/api/users'
 interface AnswerCardProps {
   answer: Answer
   comments: Record<UUID, Comment[]>
+  upvoted: boolean
+  downvoted: boolean
   onCommentSubmit: (values: { response: string }) => void
   onAddComment: (answerId: UUID) => void
   openCommentFormId: string | null
@@ -30,22 +32,21 @@ interface AnswerCardProps {
 export default function AnswerCard({
   answer,
   comments,
+  upvoted,
+  downvoted,
   onCommentSubmit,
   onAddComment,
   openCommentFormId,
 }: AnswerCardProps) {
-  // Initialize the score once, and persist it between renders
-  const [optimisticAnswer, setOptimisticAnswer] = useState<number>(answer.score)
-
-  // Sync the initial score when the answer score changes, only on mount or if the prop changes
-  useEffect(() => {
-    setOptimisticAnswer(answer.score)
-  }, [answer.score])
+  const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
+  const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
+  const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
 
   // Function to increase user's reputation
   const handleIncreaseReputation = async () => {
     try {
-      const { errorMessage, data } = await increaseReputation(answer.asker_id)
+      console.log(answer)
+      const { errorMessage, data } = await increaseReputation(answer.expert)
       if (errorMessage) {
         throw new Error(errorMessage)
       }
@@ -57,7 +58,7 @@ export default function AnswerCard({
   // Function to decrease user's reputation
   const handleDecreaseReputation = async () => {
     try {
-      const { errorMessage, data } = await decreaseReputation(answer.asker_id)
+      const { errorMessage, data } = await decreaseReputation(answer.expert)
       if (errorMessage) {
         throw new Error(errorMessage)
       }
@@ -68,44 +69,66 @@ export default function AnswerCard({
 
   // Function to handle upvoting
   const handleUpvote = async () => {
-    setOptimisticAnswer((currentScore) => currentScore + 1)
+    const prevScore = optimisticScore
+    const prevUpvoted = hasUpvoted
+    const prevDownvoted = hasDownvoted
+
+    // Toggle UI immediately
+    setHasUpvoted(!hasUpvoted)
+    setHasDownvoted(false)
+    setOptimisticScore(prevScore + (hasUpvoted ? -1 : hasDownvoted ? 2 : 1))
 
     try {
-      const { errorMessage, data } = await upvoteAnswer(answer.answer_id)
-      if (errorMessage) {
-        throw new Error(errorMessage)
-      } else {
-        handleIncreaseReputation()
-      }
+      const { errorMessage } = await upvoteAnswer(answer.answer_id)
+      if (errorMessage) throw new Error(errorMessage)
+      handleIncreaseReputation()
     } catch (error) {
-      // Revert optimistic state in case of error and show a toast notification
-      setOptimisticAnswer((currentScore) => currentScore - 1)
+      // Revert changes if API call fails
+      setOptimisticScore(prevScore)
+      setHasUpvoted(prevUpvoted)
+      setHasDownvoted(prevDownvoted)
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Upvote failed. Please try again.'
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Upvote failed. Please try again.',
+        description: errorMessage,
       })
     }
   }
 
   // Function to handle downvoting
   const handleDownvote = async () => {
-    setOptimisticAnswer((currentScore) => currentScore - 1)
+    const prevScore = optimisticScore
+    const prevUpvoted = hasUpvoted
+    const prevDownvoted = hasDownvoted
+
+    // Toggle UI immediately
+    setHasDownvoted(!hasDownvoted)
+    setHasUpvoted(false)
+    setOptimisticScore(prevScore + (hasDownvoted ? 1 : hasUpvoted ? -2 : -1))
 
     try {
-      const { errorMessage, data } = await downvoteAnswer(answer.answer_id)
-      if (errorMessage) {
-        throw new Error(errorMessage)
-      } else {
-        handleDecreaseReputation()
-      }
+      const { errorMessage } = await downvoteAnswer(answer.answer_id)
+      if (errorMessage) throw new Error(errorMessage)
+      handleDecreaseReputation()
     } catch (error) {
-      // Revert optimistic state in case of error and show a toast notification
-      setOptimisticAnswer((currentScore) => currentScore + 1)
+      // Revert changes if API call fails
+      setOptimisticScore(prevScore)
+      setHasUpvoted(prevUpvoted)
+      setHasDownvoted(prevDownvoted)
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Downvote failed. Please try again.'
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Downvote failed. Please try again.',
+        description: errorMessage,
       })
     }
   }
@@ -118,15 +141,19 @@ export default function AnswerCard({
           <Button
             onClick={() => handleUpvote()}
             variant="outline"
-            className="flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground"
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+              hasUpvoted ? 'bg-blue-500 text-white' : 'bg-transparent'
+            }`}
           >
             👍
           </Button>
-          <h1>{optimisticAnswer}</h1>
+          <h1>{optimisticScore}</h1>
           <Button
             onClick={() => handleDownvote()}
             variant="outline"
-            className="flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground"
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+              hasDownvoted ? 'bg-red-500 text-white' : 'bg-transparent'
+            }`}
           >
             👎
           </Button>
