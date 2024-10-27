@@ -1,8 +1,8 @@
 'use server'
 
-import { type ApiResponse } from '@/types/Api'
+import { type ErrorResponse, type ApiResponse } from '@/types/Api'
 import { type User } from '@/types/Users'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 /**
  * Creates a new user by sending a POST request to the backend.
@@ -67,8 +67,8 @@ export const changeReputationByAmount = async (
     )
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData?.message || 'Network response was not ok')
+      const errorData = (await response.json()) as ErrorResponse;
+      throw new Error(errorData.message ?? 'Network response was not ok')
     }
 
     // Extract the JSON data from the response

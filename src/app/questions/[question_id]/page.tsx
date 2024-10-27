@@ -13,7 +13,6 @@ import { getQuestionById } from '@/api/questions'
 import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
-import { userHasDownvoted, userHasUpvoted } from '@/api/votes'
 
 export default function QuestionPage({
   params,
@@ -191,8 +190,8 @@ export default function QuestionPage({
                       key={answer.answer_id}
                       answer={answer}
                       comments={comments}
-                      upvoted={answer.curr_user_upvoted || false}
-                      downvoted={answer.curr_user_downvoted || false}
+                      upvoted={answer.curr_user_upvoted ?? false}
+                      downvoted={answer.curr_user_downvoted ?? false}
                       onCommentSubmit={handleCommentSubmit}
                       onAddComment={handleAddComment}
                       openCommentFormId={openCommentFormId}

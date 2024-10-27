@@ -3,7 +3,7 @@
 import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
 import { getSupaUser } from '@/utils/supabase/server'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 /**
  * Submits an answer to a question.

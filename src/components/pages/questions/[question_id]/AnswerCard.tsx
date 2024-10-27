@@ -12,7 +12,7 @@ import { type Comment } from '@/types/Comments'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import CommentForm from '@/components/pages/questions/[question_id]/CommentForm'
 import CommentCard from '@/components/pages/questions/[question_id]/CommentCard'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { downvoteAnswer, upvoteAnswer } from '@/api/answers'
@@ -45,7 +45,7 @@ export default function AnswerCard({
   // Function to change user's reputation
   const handleChangeReputation = async (amount: string) => {
     try {
-      const { errorMessage, data } = await changeReputationByAmount(
+      const { errorMessage } = await changeReputationByAmount(
         answer.expert,
         amount
       )
@@ -79,9 +79,12 @@ export default function AnswerCard({
     }
 
     try {
-      const { errorMessage } = await upvoteAnswer(answer.answer_id, answer.expert)
+      const { errorMessage } = await upvoteAnswer(
+        answer.answer_id,
+        answer.expert
+      )
       if (errorMessage) throw new Error(errorMessage)
-      handleChangeReputation(reputationChange.toString())
+      await handleChangeReputation(reputationChange.toString())
     } catch (error) {
       // Revert changes if API call fails
       setOptimisticScore(prevScore)
@@ -122,7 +125,10 @@ export default function AnswerCard({
     }
 
     try {
-      const { errorMessage } = await downvoteAnswer(answer.answer_id, answer.expert)
+      const { errorMessage } = await downvoteAnswer(
+        answer.answer_id,
+        answer.expert
+      )
       if (errorMessage) throw new Error(errorMessage)
       await handleChangeReputation(reputationChange.toString())
     } catch (error) {
@@ -199,9 +205,7 @@ export default function AnswerCard({
             <ButtonWithLoading
               buttonType="button"
               buttonText="Add a comment"
-              onClick={async () => {
-                await onAddComment(answer.answer_id)
-              }}
+              onClick={() => Promise.resolve(onAddComment(answer.answer_id))}
             />
             {/* Display comment form if applicable */}
             {openCommentFormId === answer.answer_id && (
