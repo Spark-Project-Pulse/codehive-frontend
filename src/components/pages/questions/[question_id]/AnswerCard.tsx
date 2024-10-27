@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { downvoteAnswer, upvoteAnswer } from '@/api/answers'
 import { toast } from '@/components/ui/use-toast'
-import { decreaseReputation, increaseReputation } from '@/api/users'
+import { changeReputationByAmount } from '@/api/users'
 
 interface AnswerCardProps {
   answer: Answer
@@ -42,23 +42,13 @@ export default function AnswerCard({
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
   const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
 
-  // Function to increase user's reputation
-  const handleIncreaseReputation = async () => {
+  // Function to change user's reputation
+  const handleChangeReputation = async (amount: string) => {
     try {
-      console.log(answer)
-      const { errorMessage, data } = await increaseReputation(answer.expert)
-      if (errorMessage) {
-        throw new Error(errorMessage)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  // Function to decrease user's reputation
-  const handleDecreaseReputation = async () => {
-    try {
-      const { errorMessage, data } = await decreaseReputation(answer.expert)
+      const { errorMessage, data } = await changeReputationByAmount(
+        answer.expert,
+        amount
+      )
       if (errorMessage) {
         throw new Error(errorMessage)
       }
@@ -78,10 +68,20 @@ export default function AnswerCard({
     setHasDownvoted(false)
     setOptimisticScore(prevScore + (hasUpvoted ? -1 : hasDownvoted ? 2 : 1))
 
+    // Determine the reputation adjustment amount
+    let reputationChange = 0
+    if (!prevUpvoted && !prevDownvoted) {
+      reputationChange = 1 // Neutral to Upvote
+    } else if (prevUpvoted) {
+      reputationChange = -1 // Upvote to Neutral
+    } else if (prevDownvoted) {
+      reputationChange = 2 // Downvote to Upvote
+    }
+
     try {
       const { errorMessage } = await upvoteAnswer(answer.answer_id)
       if (errorMessage) throw new Error(errorMessage)
-      handleIncreaseReputation()
+      handleChangeReputation(reputationChange.toString())
     } catch (error) {
       // Revert changes if API call fails
       setOptimisticScore(prevScore)
@@ -111,10 +111,20 @@ export default function AnswerCard({
     setHasUpvoted(false)
     setOptimisticScore(prevScore + (hasDownvoted ? 1 : hasUpvoted ? -2 : -1))
 
+    // Determine the reputation adjustment amount
+    let reputationChange = 0
+    if (!prevUpvoted && !prevDownvoted) {
+      reputationChange = -1 // Neutral to Downvote
+    } else if (prevDownvoted) {
+      reputationChange = 1 // Downvote to Neutral
+    } else if (prevUpvoted) {
+      reputationChange = -2 // Upvote to Downvote
+    }
+
     try {
       const { errorMessage } = await downvoteAnswer(answer.answer_id)
       if (errorMessage) throw new Error(errorMessage)
-      handleDecreaseReputation()
+      await handleChangeReputation(reputationChange.toString())
     } catch (error) {
       // Revert changes if API call fails
       setOptimisticScore(prevScore)
