@@ -17,16 +17,13 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   language = 'javascript',
 }) => {
   const [hoveredLine, setHoveredLine] = useState<number | null>(null)
+  console.log(hoveredLine)
 
   useEffect(() => {
     Prism.highlightAll()
   }, [fileContent])
 
   const lines = fileContent ? fileContent.split('\n') : []
-
-  console.log(fileContent)
-
-  console.log(lines)
 
   return (
     <div className="overflow-hidden rounded-lg bg-gray-100 text-gray-900 shadow-lg dark:bg-gray-800 dark:text-white">
@@ -46,12 +43,20 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               onMouseLeave={() => setHoveredLine(null)}
               className="group relative flex"
             >
+              {lineNumbers && (
+                <span
+                  className="bg-gray-100 pr-4 text-gray-900 dark:bg-gray-800 dark:text-white"
+                  style={{ userSelect: 'none' }}
+                >
+                  {index + 1}
+                </span>
+              )}
               <code
                 className={`language-${language} flex-1`}
                 style={{ whiteSpace: 'pre' }}
               >
                 {line === '' ? '\n' : line}
-                </code>
+              </code>
               {hoveredLine === index && (
                 <button
                   onClick={() => console.log(`Line ${index + 1}: ${line}`)} // replace with popover logic
