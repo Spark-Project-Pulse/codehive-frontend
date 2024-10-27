@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Prism from 'prismjs'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
+import { Button } from '@/components/ui/button'
+import { MessageCirclePlus } from 'lucide-react'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -43,9 +45,18 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               onMouseLeave={() => setHoveredLine(null)}
               className="group relative flex"
             >
+              {hoveredLine === index && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-0 -translate-x-0 transform"
+                >
+                  <MessageCirclePlus className="h-4 w-4" />
+                </Button>
+              )}
               {lineNumbers && (
                 <span
-                  className="bg-gray-100 pr-4 text-gray-900 dark:bg-gray-800 dark:text-white"
+                  className="bg-gray-100 pr-4 pl-12 text-gray-900 dark:bg-gray-800 dark:text-white"
                   style={{ userSelect: 'none' }}
                 >
                   {index + 1}
@@ -57,14 +68,6 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               >
                 {line === '' ? '\n' : line}
               </code>
-              {hoveredLine === index && (
-                <button
-                  onClick={() => console.log(`Line ${index + 1}: ${line}`)} // replace with popover logic
-                  className="ml-2 text-sm text-blue-500 opacity-0 transition-opacity hover:text-blue-700 group-hover:opacity-100"
-                >
-                  •••
-                </button>
-              )}
             </div>
           ))}
         </pre>
