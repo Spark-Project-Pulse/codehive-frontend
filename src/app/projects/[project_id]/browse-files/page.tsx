@@ -6,6 +6,15 @@ import { type RepoContent, type Project } from '@/types/Projects'
 import { getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
 import { fetchRepoContents } from '@/lib/github'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function BrowseFiles({
   params,
@@ -15,21 +24,28 @@ export default function BrowseFiles({
   const [project, setProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [repoContents, setRepoContents] = useState<RepoContent[]>([])
-  const [currentPath, setCurrentPath] = useState<string>('')
+  const [fileContent, setFileContent] = useState<string | null>(null)
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const currentPath = searchParams.get('path') ?? '' // Use URL search param 'path' for currentPath
 
   // helper function -> calls `github/fetchRepoContents` function and updates state
   const loadRepoContents = async (path: string, repoFullName: string) => {
     setIsLoading(true)
+    setFileContent(null)
     const { errorMessage, data } = await fetchRepoContents(path, repoFullName)
 
     if (!errorMessage && data) {
       setRepoContents(data.repoContent)
-      setCurrentPath(path)
+      router.replace(`?path=${path}`)
     } else {
       console.error('Failed to load repo contents:', errorMessage)
     }
     setIsLoading(false)
   }
+
+  // const loadFileContents = async
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -58,13 +74,25 @@ export default function BrowseFiles({
     void fetchProject()
   }, [params.project_id])
 
-  const handleItemClick = (item: RepoContent, repoFullName: string) => {
+  const handleItemClick = async (item: RepoContent, repoFullName: string) => {
     if (item.type === 'dir') {
       void loadRepoContents(item.path, repoFullName)
     } else if (item.type === 'file' && item.download_url) {
-      window.open(item.download_url, '_blank')
+      try {
+        setIsLoading(true)
+        const response = await fetch(item.download_url)
+        const content = await response.text()
+        setFileContent(content)
+        router.replace(`?path=${item.path}`)
+      } catch (error) {
+        console.error('Error fetching file contents:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
+
+  const breadcrumbSegments = currentPath.split('/').filter(Boolean)
 
   // Conditional rendering for loading state
   if (isLoading) {
@@ -94,33 +122,83 @@ export default function BrowseFiles({
           <h1 className="mb-4 text-2xl font-bold">{project.title}</h1>
           <p className="mb-4 text-gray-600">{project.description}</p>
 
-          {currentPath && (
-            <Button
-              className="mb-4"
-              onClick={() =>
-                loadRepoContents(
-                  currentPath.split('/').slice(0, -1).join('/'), // remove last item from path
-                  project.repo_full_name ?? '' // this is just here for the linter (it is handled in the if statements above)
-                )
-              }
-            >
-              Back
-            </Button>
-          )}
+          {/* render breadcrumbs + back button */}
+          <div className="mb-4 flex flex-row items-center justify-between">
+            <Breadcrumb className="mb-4">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    href={`?path=`}
+                    onClick={() =>
+                      loadRepoContents('', project?.repo_full_name ?? '')
+                    }
+                  >
+                    {project.title}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                {breadcrumbSegments.map((segment, index) => {
+                  const path = breadcrumbSegments.slice(0, index + 1).join('/')
+                  const isLast = index === breadcrumbSegments.length - 1
+                  return (
+                    <BreadcrumbItem key={path}>
+                      <BreadcrumbSeparator />
+                      {isLast ? (
+                        <BreadcrumbPage>{segment}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink
+                          href={`?path=${path}`}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            void loadRepoContents(
+                              path,
+                              project?.repo_full_name ?? ''
+                            )
+                          }}
+                        >
+                          {segment}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                  )
+                })}
+              </BreadcrumbList>
+            </Breadcrumb>
 
-          <ul className="space-y-2">
-            {repoContents.map((item) => (
-              <li
-                key={item.path}
-                className="cursor-pointer text-blue-500 hover:underline"
+            {currentPath && (
+              <Button
                 onClick={() =>
-                  handleItemClick(item, project.repo_full_name ?? '')
+                  loadRepoContents(
+                    currentPath.split('/').slice(0, -1).join('/'), // remove last item from path
+                    project.repo_full_name ?? '' // this is just here for the linter (it is handled in the if statements above)
+                  )
                 }
               >
-                {item.type === 'dir' ? '📁' : '📄'} {item.name}
-              </li>
-            ))}
-          </ul>
+                Back
+              </Button>
+            )}
+          </div>
+
+          {/* Conditionally render the file content or directory contents */}
+          {fileContent ? (
+            <div className="rounded-lg bg-gray-200 p-4">
+              <h2 className="mb-2 text-lg font-bold">File Content:</h2>
+              <pre className="whitespace-pre-wrap">{fileContent}</pre>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {repoContents.map((item) => (
+                <li
+                  key={item.path}
+                  className="cursor-pointer text-blue-500 hover:underline"
+                  onClick={() =>
+                    handleItemClick(item, project.repo_full_name ?? '')
+                  }
+                >
+                  {item.type === 'dir' ? '📁' : '📄'} {item.name}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>
