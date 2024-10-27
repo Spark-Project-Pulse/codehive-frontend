@@ -187,9 +187,10 @@ export default function QuestionForm({
                     disabled={!user}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a project" />
+                      <SelectValue placeholder="Select a project (optional)" />
                     </SelectTrigger>
                     <SelectContent>
+                      {/* TODO: find way to clear select menu (this is a shad issue: https://github.com/shadcn-ui/ui/issues/2054#issuecomment-2295431544) */}
                       {projectOptions.map((project) => (
                         <SelectItem key={project.value} value={project.value}>
                           {project.label}
