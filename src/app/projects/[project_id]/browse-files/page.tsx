@@ -28,7 +28,7 @@ export default function BrowseFiles({
 
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentPath = searchParams.get('path') ?? '' // Use URL search param 'path' for currentPath
+  const currentPath = searchParams.get('path') ?? '' // use URL search param 'path' for currentPath
 
   // helper function -> calls `github/fetchRepoContents` function and updates state
   const loadRepoContents = async (path: string, repoFullName: string) => {
@@ -94,7 +94,7 @@ export default function BrowseFiles({
 
   const breadcrumbSegments = currentPath.split('/').filter(Boolean)
 
-  // Conditional rendering for loading state
+  // conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
   }
@@ -178,7 +178,7 @@ export default function BrowseFiles({
             )}
           </div>
 
-          {/* Conditionally render the file content or directory contents */}
+          {/* conditionally render the file content or directory contents */}
           {fileContent ? (
             <div className="rounded-lg bg-gray-200 p-4">
               <h2 className="mb-2 text-lg font-bold">File Content:</h2>
