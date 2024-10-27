@@ -181,7 +181,12 @@ export default function BrowseFiles({
 
           {/* conditionally render the file content or directory contents */}
           {fileContent ? (
-            <CodeViewer fileContent={fileContent} />
+            <CodeViewer
+              filename={
+                breadcrumbSegments[breadcrumbSegments.length - 1] ?? null
+              }
+              fileContent={fileContent}
+            />
           ) : (
             <ul className="space-y-2">
               {repoContents.map((item) => (
