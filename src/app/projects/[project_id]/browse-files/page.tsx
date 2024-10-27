@@ -15,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { CodeViewer } from '@/components/universal/code/CodeViewer'
 
 export default function BrowseFiles({
   params,
@@ -116,7 +117,7 @@ export default function BrowseFiles({
   }
 
   return (
-    <section className="min-h-screen bg-gray-100 py-24">
+    <section className="min-h-screen py-24">
       <div className="mx-auto max-w-4xl px-4">
         <div className="rounded-lg bg-white p-6 shadow-lg">
           <h1 className="mb-4 text-2xl font-bold">{project.title}</h1>
@@ -180,10 +181,7 @@ export default function BrowseFiles({
 
           {/* conditionally render the file content or directory contents */}
           {fileContent ? (
-            <div className="rounded-lg bg-gray-200 p-4">
-              <h2 className="mb-2 text-lg font-bold">File Content:</h2>
-              <pre className="whitespace-pre-wrap">{fileContent}</pre>
-            </div>
+            <CodeViewer fileContent={fileContent} />
           ) : (
             <ul className="space-y-2">
               {repoContents.map((item) => (
