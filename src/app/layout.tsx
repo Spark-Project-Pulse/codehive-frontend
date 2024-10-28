@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
@@ -13,6 +14,29 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@radix-ui/react-tooltip'
+=======
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/universal/Navbar";
+import { UserProvider } from "@/app/contexts/UserContext";
+import { NextStepProvider, NextStep } from 'nextstepjs'
+import CustomCard from "@/components/tutorial/Card";
+import { steps } from "@/app/tutorial/steps";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+>>>>>>> 6c72c4d (inistal version of website tour)
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -28,6 +52,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <UserProvider>
+<<<<<<< HEAD
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
@@ -48,6 +73,16 @@ export default function RootLayout({
               <Toaster />
             </SidebarInset>
           </SidebarProvider>
+=======
+          <NextStepProvider>
+            <NextStep steps={steps} cardComponent={CustomCard}>
+              <Navbar />
+              {children}
+              <Toaster />
+            </NextStep>
+          </NextStepProvider>
+
+>>>>>>> 6c72c4d (inistal version of website tour)
         </UserProvider>
       </body>
     </html>
