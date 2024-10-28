@@ -151,3 +151,38 @@ export const getAllQuestions = async (): Promise<ApiResponse<Question[]>> => {
     return { errorMessage: 'Error fetching questions' }
   }
 };
+
+/**
+ * Searches questions based on a query string.
+ *
+ * args: takes a query
+ * 
+ * returns: A promise that resolves to an ApiResponse containing an array of Questions or an error message.
+ */
+
+export const searchQuestions = async (
+  query: string
+): Promise<ApiResponse<Question[]>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/search/?q=${encodeURIComponent(query)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+    }
+
+    const data = (await response.json()) as { results: Question[] };
+    return { errorMessage: null, data: data.results };
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+    return { errorMessage: 'Failed to fetch search results' };
+  }
+};
