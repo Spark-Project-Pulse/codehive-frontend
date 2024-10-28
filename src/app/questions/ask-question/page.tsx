@@ -13,6 +13,7 @@ export default function AskQuestion() {
   async function handleFormSubmit(values: {
     title: string
     description: string
+    related_project?: string
     tags?: string[] // Accept tags from form values
   }) {
     try {
