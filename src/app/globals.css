@@ -3,11 +3,6 @@
 @tailwind utilities;
 /* This file is where ACTUAL values are being set for tailwind css variables */
 
-/* prism code editor themes */
-@import 'prismjs/themes/prism.css';
-/* TODO: figure out how to syncc prism themes with dark mode... */
-/* @import 'prismjs/themes/prism-okaidia.css'; */
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
