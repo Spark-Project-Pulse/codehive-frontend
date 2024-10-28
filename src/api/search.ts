@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { type ApiResponse } from '@/types/Api';
 import { type Question } from '@/types/Questions';
 
 // Define the response structure
@@ -43,22 +42,20 @@ export default async function handler(
 
     // Check if the backend response is OK
     if (!backendResponse.ok) {
-      const errorData = await backendResponse.json();
-      const errorMessage = errorData.error || 'Failed to fetch search results.';
-      throw new Error(`Backend Error: ${backendResponse.status} - ${errorMessage}`);
+      const errorText = await backendResponse.text();
+      throw new Error(`Backend Error: ${backendResponse.status} - ${errorText}`);
     }
 
-    // Parse the JSON response from the backend
-    const data = (await backendResponse.json()) as SearchResponse;
+    // Parse the JSON response from the backend with a defined type
+    const data: SearchResponse = await backendResponse.json();
 
     // Return the search results
     return res.status(200).json(data);
-  } catch (error: any) {
-    console.error('Search API Error:', error);
+  } catch (error) {
+    // Type guard for error messages
+    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+    console.error('Search API Error:', errorMessage);
 
-    // Determine the status code based on the error
-    const statusCode = error.message.includes('Backend Error') ? 502 : 500;
-
-    return res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+    return res.status(500).json({ error: errorMessage });
   }
 }

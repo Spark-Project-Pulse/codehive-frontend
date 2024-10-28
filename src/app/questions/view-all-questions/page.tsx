@@ -9,9 +9,9 @@ import { type Question } from '@/types/Questions';
 import { getAllQuestions } from '@/api/questions';
 import { searchQuestions } from '@/api/questions';
 import { MultiSelector } from '@/components/ui/MultiSelector';
-import { Input } from '@/components/ui/input'; // Shadcn Input component
-import { Search } from 'lucide-react'; // Search icon
-import { useDebounce } from '@/hooks/useDebounce'; // Custom debounce hook
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -20,14 +20,13 @@ const QuestionsPage: React.FC = () => {
   const [hasError, setHasError] = useState<boolean>(false);
   const [tags, setTags] = useState<TagOption[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
-  
-  // Search States
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<Question[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 500); // 500ms delay
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const router = useRouter();
 
@@ -61,7 +60,6 @@ const QuestionsPage: React.FC = () => {
     void fetchQuestions();
   }, []);
 
-  // Fetch Tags
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -69,14 +67,12 @@ const QuestionsPage: React.FC = () => {
         setTags(fetchedTags);
       } catch (error) {
         console.error('Error fetching tags:', error);
-        // Optionally, handle tag fetching errors
       }
     };
 
     void fetchTags();
   }, []);
 
-  // Debounced Search Effect
   useEffect(() => {
     const performSearch = async () => {
       if (!debouncedSearchQuery.trim()) {
@@ -102,7 +98,6 @@ const QuestionsPage: React.FC = () => {
     void performSearch();
   }, [debouncedSearchQuery]);
 
-  // Handle Tag Selection Change
   useEffect(() => {
     if (debouncedSearchQuery && searchResults.length > 0) {
       if (selectedTags.length === 0) {
@@ -145,11 +140,9 @@ const QuestionsPage: React.FC = () => {
       <h1 className="text-h2 font-bold font-subHeading text-center text-secondary-foreground">Questions</h1>
 
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-        {/* Sidebar for Tag Filters */}
         <aside className="md:w-1/4">
           <div className="p-4 border rounded-lg bg-card">
             <h2 className="text-xl font-semibold mb-4">Filter by Tags</h2>
-            {/* Search Bar above MultiSelector */}
             <div className="mb-4">
               <div className="relative">
                 <Input
@@ -158,17 +151,15 @@ const QuestionsPage: React.FC = () => {
                   placeholder="Search questions..."
                   className="w-full pr-10"
                 />
-                {/* Positioned Search Icon Absolutely to the Right */}
                 {!isSearching && (
                   <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
                 )}
                 {isSearching && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <LoadingSpinner size={16} /> {/* Changed from size="sm" to size={16} */}
+                    <LoadingSpinner size={16} />
                   </div>
                 )}
               </div>
-              {/* Error Message Outside the Relative Container */}
               {searchError && (
                 <p className="mt-2 text-sm text-destructive">{searchError}</p>
               )}
@@ -190,7 +181,6 @@ const QuestionsPage: React.FC = () => {
           </div>
         </aside>
 
-        {/* Main Content for Questions */}
         <main className="md:w-3/4">
           {isLoading && (
             <div className="flex flex-col items-center justify-center my-10">
@@ -207,7 +197,6 @@ const QuestionsPage: React.FC = () => {
 
           {!isLoading && !hasError && (
             <>
-              {/* Active Filters Display */}
               {selectedTags.length > 0 && (
                 <div className="mb-4">
                   <p className="text-lg font-medium">Active Filters:</p>
@@ -232,7 +221,6 @@ const QuestionsPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Questions List */}
               <ul className="space-y-6">
                 {filteredQuestions.length > 0 ? (
                   filteredQuestions.map((question) => (
@@ -242,16 +230,19 @@ const QuestionsPage: React.FC = () => {
                       onClick={() => handleQuestionClick(question.question_id.toString())}
                     >
                       <div className="flex justify-between items-start">
-                        <h2 className="text-xl font-semibold text-secondary-foreground mb-2 text-balance">{question.title}</h2>
+                        <h2 className="text-xl font-semibold text-secondary-foreground mb-2 text-balance">
+                          {question.title}
+                        </h2>
                         <div className="text-right">
-                          <p className="text-base text-foreground font-medium">{question.asker_info?.username ?? 'Anonymous'}</p>
+                          <p className="text-base text-foreground font-medium">
+                            {question.asker_info?.username ?? 'Anonymous'}
+                          </p>
                           <p className="text-sm text-foreground font-medium">
-                            {new Date(question.created_at).toLocaleDateString()}
+                            {new Date(question.created_at ?? '').toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                       <p className="text-base text-foreground mt-4">{question.description}</p>
-                      {/* Display Tags */}
                       <div className="mt-4 flex flex-wrap gap-2">
                         {question.tags?.map(tagId => {
                           const tag = tags.find(t => t.value === tagId);
@@ -262,7 +253,7 @@ const QuestionsPage: React.FC = () => {
                             >
                               {tag.label}
                             </span>
-                          ) : null; // Handle cases where tag is not found
+                          ) : null;
                         })}
                       </div>
                     </li>
