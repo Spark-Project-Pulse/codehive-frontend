@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
-import { getUserByUsername, uploadProfileImage } from '@/api/users'
+import { getUserByUsername, getProfileImageByUserId, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
@@ -23,6 +23,7 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
+  const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -30,6 +31,7 @@ export default function ProfilePage({
   useEffect(() => {
     // TODO: Will need to check if the profile is the current user's, and only do this if it is someone else's profile
     // We could also keep track of this to give additional actions (such as update/delete projects or questions) to current user
+
     const fetchUser = async () => {
       try {
         const response = await getUserByUsername(params.username)
@@ -98,12 +100,83 @@ export default function ProfilePage({
       }
     }
 
-    // Only fetch questions/projects if user is set
+
+
+    // Only fetch questions/projects/profileImage if user is set
     if (user) {
       void fetchProjects()
       void fetchQuestions()
+      void fetchProfileImage()
     }
   }, [user])
+
+  // Update User object's profile once profileImage has been changed
+  useEffect(() => {
+    console.log("use effect tirggering")
+    if (user && profileImage) {
+      setUser(prevUser => {
+        if (prevUser) {
+          return {
+            ...prevUser,
+            profile_image: profileImage,
+            user: prevUser.user,
+            username: prevUser.username,
+            reputation: prevUser.reputation,
+            pfp_url: prevUser.pfp_url,
+          };
+        } else {
+          // Odd complaints from typescript requires this useless else block
+          return {
+            profile_image: profileImage,
+            user: '',
+            username: '',
+            reputation: 0,
+            pfp_url: '',
+          };
+        }
+      });
+    }
+  }, [profileImage]);
+
+
+  const fetchProfileImage = async () => {
+    // Check if user id is defined before proceeding
+    if (!user?.user) {
+      console.error('User ID is undefined.')
+      return
+    }
+
+    try {
+      const response = await getProfileImageByUserId(user.user)
+
+      if (response.errorMessage) {
+        console.error('Error fetching profile image:', response.errorMessage)
+        return
+      }
+
+      // If null return then that means no profile has been set
+      if (response.data?.base64String && response.data?.fileType) {
+        // Convert base64 image string to binary blob
+        const byteCharacters = atob(response.data.base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const fileType = response.data.fileType
+        const blob = new Blob([byteArray], { type: fileType })
+        // Convert the Blob to a File
+        const file = new File([blob], "profile-image", { type: fileType });
+        // Set the profile image state
+        if (profileImage != file) {
+          setProfileImage(file)
+        }
+      }
+      console.log(response.data)
+    } catch (error) {
+      console.error('Error fetching questions:', error)
+    }
+  }
 
   // Handle navigation on click for projects
   const handleProjectClick = (projectId: string) => {
@@ -133,7 +206,7 @@ export default function ProfilePage({
         const formData = new FormData();
         formData.append('profile_image', file);
         const response = await uploadProfileImage(user.user, formData);
-        // handle response 
+
       } catch (error) {
         console.error('File upload failed:', error);
       }
@@ -155,7 +228,7 @@ export default function ProfilePage({
             <CardHeader className="flex flex-col items-center">
               <Avatar className="h-32 w-32">
                 <AvatarImage
-                  src={user?.pfp_url ?? '/anon-user-pfp.jpg'}
+                  src={user?.profile_image ? URL.createObjectURL(user.profile_image) : '/anon-user-pfp.jpg'}
                   alt="User profile picture"
                 />
               </Avatar>

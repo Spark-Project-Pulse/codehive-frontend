@@ -157,12 +157,12 @@ export const userExists = async (
  *   file (File): The file the user is uploading for photo
  *
  * Returns:
- *   Promise<ApiResponse<{ exists: boolean }>>: Whether the user exists on success, or an error message on failure.
+ *   Promise<ApiResponse<{ user_id:string }>>: User's id on success, or error msg on failure
  */
 export const uploadProfileImage = async (
   user_id: string,
   formData: FormData,
-): Promise<ApiResponse<{ worked: boolean }>> => {
+): Promise<ApiResponse<{ user_id: string }>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/updateProfileImageById/${user_id}/`,
@@ -177,10 +177,60 @@ export const uploadProfileImage = async (
     }
 
     // Extract the JSON data from the response
-    const responseData = (await response.json()) as { worked: boolean }
-    return { errorMessage: null, data: { worked: responseData.worked } }
+    const responseData = (await response.json()) as User
+    return { errorMessage: null, data: { user_id: responseData.user } }
   } catch (error) {
     console.error('Error uploading photo image: ', error)
     return { errorMessage: 'Error uploading photo image' }
   }
 }
+
+/**
+ * Gets profile image for the user
+ *
+ * Args:
+ *   user_id (string): The ID of the user to get profile image
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ profile_image?:File }>>: User's profile image or null if no profile image on success, or error msg on failure
+ */
+export const getProfileImageByUserId = async (
+  user_id: string,
+): Promise<ApiResponse<{ base64String?: string, fileType?: string }>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getProfileImageById/${user_id}/`,
+      {
+        method: 'GET',
+        headers: {
+          // Authorization: `Bearer ${token}`, // Uncomment if using auth
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Extract the JSON data from the response
+    const responseData = await response.json()
+
+    if (responseData.profile_image) {
+      // Get the base64 string of image and the file type
+      const base64String = responseData.profile_image;
+      const fileType = 'image/jpeg'
+
+      return { errorMessage: null, data: { base64String: base64String, fileType: fileType } }
+    } else {
+      // No profile image found
+      return { errorMessage: null, data: { base64String: undefined, fileType: undefined } }
+    }
+  } catch (error) {
+    console.error('Error getting photo image: ', error)
+    return { errorMessage: 'Error getting photo image' }
+  }
+}
+
+
+
