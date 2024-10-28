@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
-import { getUserByUsername, getProfileImageByUserId, uploadProfileImage } from '@/api/users'
+import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
@@ -160,7 +160,7 @@ export default function ProfilePage({
             <CardHeader className="flex flex-col items-center">
               <Avatar className="h-32 w-32">
                 <AvatarImage
-                  src={'/anon-user-pfp.jpg'}
+                  src={user?.profile_image_url ?? '/anon-user-pfp.jpg'}
                   alt="User profile picture"
                 />
               </Avatar>
