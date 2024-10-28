@@ -118,20 +118,13 @@ export const getQuestionById = async (
 }
 
 /**
-<<<<<<< HEAD
  * Fetches questions with pagination, optional tag filtering, and search functionality.
-=======
- * Fetches questions with pagination and optional tag filtering.
->>>>>>> refs/remotes/origin/feature/pagination
  *
  * Args:
  *   pageNumber (number): The current page number.
  *   pageSize (number): The number of questions per page.
  *   selectedTags (string[]): An array of selected tag IDs.
-<<<<<<< HEAD
  *   searchQuery (string): The search query string.
-=======
->>>>>>> refs/remotes/origin/feature/pagination
  *
  * Returns:
  *   Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>: The questions data on success, or an error message on failure.
@@ -139,24 +132,17 @@ export const getQuestionById = async (
 export const getAllQuestions = async (
   pageNumber: number,
   pageSize: number,
-<<<<<<< HEAD
   selectedTags: string[],
   searchQuery: string
-=======
-  selectedTags: string[]
->>>>>>> refs/remotes/origin/feature/pagination
 ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
     // Build the query parameters
     const params = new URLSearchParams()
     params.append('page', pageNumber.toString())
     params.append('page_size', pageSize.toString())
-<<<<<<< HEAD
     if (searchQuery.trim()) {
       params.append('search', searchQuery.trim())
     }
-=======
->>>>>>> refs/remotes/origin/feature/pagination
     selectedTags.forEach((tagId) => {
       params.append('tags', tagId)
     })
