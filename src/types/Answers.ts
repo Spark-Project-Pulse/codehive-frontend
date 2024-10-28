@@ -3,9 +3,12 @@ import { type User } from './Users'
 
 export interface Answer {
   answer_id: UUID
+  expert: UUID
+  expert_info: User
   response: string
+  score: number
   created_at: Date
   asker_id?: UUID
-  expert_id?: UUID
-  expert_info?: User
+  curr_user_upvoted?: boolean
+  curr_user_downvoted?: boolean
 }
