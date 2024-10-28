@@ -32,11 +32,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: MessageCircleQuestion,
         items: [
           {
-            title: 'Ask',
+            title: 'Ask', // Should match 'Ask' in getButtonId
             url: '/questions/ask-question',
           },
           {
-            title: 'Find Questions',
+            title: 'Find Questions', // Should match 'Find Questions' in getButtonId
             url: '/questions/view-all-questions',
           },
         ],
@@ -47,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: FolderKanban,
         items: [
           {
-            title: 'Add',
+            title: 'Add', // Should match 'Add' in getButtonId
             url: '/projects/add-project',
           },
           {

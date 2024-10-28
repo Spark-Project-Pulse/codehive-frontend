@@ -1,6 +1,6 @@
 'use client';
 
-import { CardComponentProps } from 'nextstepjs';
+import { type CardComponentProps } from 'nextstepjs';
 import {
     Card,
     CardContent,
@@ -24,15 +24,15 @@ const CustomCard: React.FC<CardComponentProps> = ({
             <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                     <p>{step?.title}</p>
-                    {step.icon}
+                    {step?.icon}
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <p>{step.content}</p>
+                <p>{step?.content}</p>
                 {arrow}
             </CardContent>
             <CardFooter className="flex flex-col">
-                {step.showControls && (
+                {step?.showControls && (
                     <div className="flex justify-between w-full">
                         <Button onClick={prevStep} disabled={currentStep === 0} variant="outline">
                             Previous

@@ -1,95 +1,80 @@
-import { Tour } from 'nextstepjs';
+import { type Tour } from 'nextstepjs';
 
-export const steps: Tour[] = [
+export const getSteps = (username: string): Tour[] => [
     {
-        tour: "mainTour",
+        tour: 'mainTour',
         steps: [
             {
-                icon: "👋",
-                title: "Website Tour",
-                content: "Welcome to our website tour! We will walk you through how to buzz around CodeHive with ease.",
+                icon: '👋',
+                title: 'Welcome to CodeHive',
+                content:
+                    "Welcome to CodeHive! Let's take a quick tour to help you get started.",
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/projects/add-project",
-                prevRoute: "/tutorial",
+                nextRoute: '/dashboard',
             },
             {
-                icon: "🚀",
-                title: "Add a Project",
-                content: "This is the Add a Project page where you can add new projects.",
-                selector: "#add-project-button",
+                icon: '🏠',
+                title: 'Dashboard',
+                content:
+                    'This is your dashboard, where you can see your recent activity and navigate the site.',
+                selector: '#dashboard',
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/questions/ask-question",
-                prevRoute: "/tutorial",
-                side: "bottom"
+                nextRoute: '/questions/ask-question',
+                prevRoute: '/tutorial',
             },
             {
-                icon: "❓",
-                title: "Ask a Question",
-                content: "This is the Ask a Question page where you can ask new questions.",
-                selector: "#ask-question-button",
+                icon: '❓',
+                title: 'Ask a Question',
+                content: 'Need help? Click here to ask a question.',
+                selector: '#ask-question-button',
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/questions/answer-question",
-                prevRoute: "/projects/add-project",
-                side: "bottom"
+                nextRoute: '/questions/view-all-questions',
+                prevRoute: '/dashboard',
             },
             {
-                icon: "💬",
-                title: "Answer a Question",
-                content: "This is the Answer a Question page where you can answer existing questions.",
-                selector: "#answer-question-button",
+                icon: '📋',
+                title: 'View All Questions',
+                content: 'See all the questions in the community.',
+                selector: '#view-all-questions-button',
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/questions/view-all-questions",
-                prevRoute: "/questions/ask-question",
-                side: "bottom"
+                nextRoute: '/projects/add-project',
+                prevRoute: '/questions/ask-question',
+                side: 'right',
             },
             {
-                icon: "📋",
-                title: "View All Questions",
-                content: "This is the View All Questions page where you can see all the questions.",
-                selector: "#view-all-questions-button",
+                icon: '🚀',
+                title: 'Add a Project',
+                content: 'Click here to add a new project and showcase your work.',
+                selector: '#add-project-button',
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/profiles/:username",
-                prevRoute: "/questions/answer-question",
-                side: "bottom"
+                nextRoute: `/profiles/${username}`,
+                prevRoute: '/questions/view-all-questions',
+                side: 'right',
             },
             {
-                icon: "👤",
-                title: "Profile Page",
-                content: "This is the Profile page where you can view and edit your profile.",
-                selector: "#profile-button",
+                icon: '👤',
+                title: 'Your Profile',
+                content: 'View and edit your profile here.',
+                selector: '#profile-button',
                 showControls: true,
                 showSkip: true,
-                nextRoute: "/login",
-                prevRoute: "/questions/view-all-questions",
-                side: "bottom"
+                nextRoute: `/dashboard`,
+                prevRoute: '/projects/add-project',
+                side: 'right',
             },
             {
-                icon: "🔑",
-                title: "Login Page",
-                content: "This is the Login page where you can log into your account.",
-                selector: "#login-button",
-                showControls: true,
-                showSkip: true,
-                nextRoute: "/projects/add-project",
-                prevRoute: "/profiles/:username",
-                side: "bottom"
-            },
-            {
-                icon: "🔑",
-                title: "Login Page",
-                content: "This is the Login page where you can log into your account.",
-                selector: "#login-button",
+                icon: '🎉',
+                title: 'All Set!',
+                content: "You're all set to start using CodeHive. Enjoy!",
                 showControls: true,
                 showSkip: false,
-                nextRoute: "/projects/add-project",
-                prevRoute: "/profiles/:username",
-                side: "bottom"
-            }
-        ]
-    }
+                prevRoute: '/projects/add-project',
+            },
+        ],
+    },
 ];

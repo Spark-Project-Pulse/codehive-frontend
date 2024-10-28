@@ -1,12 +1,11 @@
-"use client"
+// src/components/universal/sidebar/nav-main.tsx
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
-
+import { ChevronRight, type LucideIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,21 +15,21 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+      title: string;
+      url: string;
+    }[];
+  }[];
 }) {
   return (
     <SidebarGroup>
@@ -56,7 +55,10 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <a
+                          id={getButtonId(subItem.title)}
+                          href={subItem.url}
+                        >
                           <span>{subItem.title}</span>
                         </a>
                       </SidebarMenuSubButton>
@@ -69,5 +71,19 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
+}
+
+function getButtonId(title: string) {
+  switch (title) {
+    case 'Ask':
+      return 'ask-question-button';
+    case 'Find Questions':
+      return 'view-all-questions-button';
+    case 'Add':
+      return 'add-project-button';
+    // Add other cases as needed
+    default:
+      return undefined;
+  }
 }

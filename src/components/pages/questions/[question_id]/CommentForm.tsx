@@ -51,10 +51,12 @@ export default function CommentForm({
           )}
         />
         <ButtonWithLoading
+          id="comment-submit-button"
           onClick={form.handleSubmit(onSubmit)}
           buttonText="Submit"
           buttonType="submit"
         />
+
       </form>
     </Form>
   )

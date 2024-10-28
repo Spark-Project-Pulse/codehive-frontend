@@ -131,6 +131,7 @@ export default function QuestionForm({
 
         {/* Submit Button */}
         <ButtonWithLoading
+          id="ask-question-submit-button"
           onClick={form.handleSubmit(onSubmit)}
           buttonText="Submit"
           buttonType="button"

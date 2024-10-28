@@ -7,7 +7,6 @@ import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
-import { getUserById } from '@/api/users'
 import { useUser } from '@/app/contexts/UserContext'
 
 // Main page for adding a project
@@ -88,7 +87,7 @@ export default function AddProject() {
   }
 
   return (
-    <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
+    <div id="add-project-page" className="items-center px-4 py-12 sm:px-6 lg:px-8">
       <h1 className="text-center text-2xl font-bold text-gray-900">
         Add a project
       </h1>
