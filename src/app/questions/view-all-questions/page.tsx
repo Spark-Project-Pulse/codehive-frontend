@@ -86,9 +86,9 @@ const QuestionsPage: React.FC = () => {
       setSearchError(null);
 
       const response = await searchQuestions(debouncedSearchQuery);
-      if (response && response.data) {
+      if (response?.data) {
         setSearchResults(response.data);
-      } else if (response && response.errorMessage) {
+      } else if (response?.errorMessage) {
         setSearchError(response.errorMessage);
       }
 

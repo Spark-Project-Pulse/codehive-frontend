@@ -47,7 +47,7 @@ export default async function handler(
     }
 
     // Parse the JSON response from the backend with a defined type
-    const data: SearchResponse = await backendResponse.json();
+    const data = (await backendResponse.json()) as SearchResponse;
 
     // Return the search results
     return res.status(200).json(data);
