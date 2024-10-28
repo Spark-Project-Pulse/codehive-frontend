@@ -148,3 +148,39 @@ export const userExists = async (
     return { errorMessage: 'Error checking if user exists' }
   }
 }
+
+/**
+ * Uploads profile image for the user
+ *
+ * Args:
+ *   user_id (string): The ID of the user to upload photo
+ *   file (File): The file the user is uploading for photo
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ exists: boolean }>>: Whether the user exists on success, or an error message on failure.
+ */
+export const uploadProfileImage = async (
+  user_id: string,
+  formData: FormData,
+): Promise<ApiResponse<{ worked: boolean }>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/updateProfileImageById/${user_id}/`,
+      {
+        method: 'PUT',
+        body: formData,
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Extract the JSON data from the response
+    const responseData = (await response.json()) as { worked: boolean }
+    return { errorMessage: null, data: { worked: responseData.worked } }
+  } catch (error) {
+    console.error('Error uploading photo image: ', error)
+    return { errorMessage: 'Error uploading photo image' }
+  }
+}

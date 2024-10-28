@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
-import { getUserByUsername } from '@/api/users'
+import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
@@ -22,6 +22,7 @@ export default function ProfilePage({
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -114,6 +115,33 @@ export default function ProfilePage({
     router.push(`/questions/${questionId}`)
   }
 
+  // Handle show edit profile on click
+  async function handleShowEditProfileClick() {
+    // If the show upload files button is there, then hide it. Else show it
+    if (showUploadFiles) {
+      setShowUploadFiles(false)
+    } else {
+      setShowUploadFiles(true)
+    }
+  }
+
+  // Handle uploading a photo
+  async function handlePhotoUpload(photo: React.ChangeEvent<HTMLInputElement>) {
+    const file = photo.target.files?.[0];
+    if (file && user) {
+      try {
+        const formData = new FormData();
+        formData.append('profile_image', file);
+        const response = await uploadProfileImage(user.user, formData);
+        // handle response 
+      } catch (error) {
+        console.error('File upload failed:', error);
+      }
+    } else {
+      console.error('File upload error')
+    }
+  }
+
   // Conditional rendering for loading state
   if (isLoading) {
     return <LoadingSpinner />
@@ -131,6 +159,12 @@ export default function ProfilePage({
                   alt="User profile picture"
                 />
               </Avatar>
+              <button onClick={() => handleShowEditProfileClick()} > Edit Photo </button>
+              {showUploadFiles && (
+                <div>
+                  <input type="file" onChange={handlePhotoUpload} />
+                </div>
+              )}
               <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
