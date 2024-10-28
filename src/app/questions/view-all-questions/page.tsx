@@ -52,7 +52,7 @@ const QuestionsPage: React.FC = () => {
           selectedTagValues,
           debouncedSearchQuery
         )
-
+        
         if (response.errorMessage) {
           throw new Error(response.errorMessage)
         }
