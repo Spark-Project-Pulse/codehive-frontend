@@ -46,8 +46,6 @@ export default function BrowseFiles({
     setIsLoading(false)
   }
 
-  // const loadFileContents = async
-
   useEffect(() => {
     const fetchProject = async () => {
       setIsLoading(true)
@@ -182,10 +180,12 @@ export default function BrowseFiles({
           {/* conditionally render the file content or directory contents */}
           {fileContent ? (
             <CodeViewer
+              fileContent={fileContent}
+              pathname={currentPath}
               filename={
                 breadcrumbSegments[breadcrumbSegments.length - 1] ?? null
               }
-              fileContent={fileContent}
+              project={project}
             />
           ) : (
             <ul className="space-y-2">

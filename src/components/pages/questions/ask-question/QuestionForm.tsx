@@ -22,7 +22,7 @@ import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { MultiSelector } from '@/components/ui/MultiSelector'
 import { useUser } from '@/app/contexts/UserContext'
 import { getProjectsByUserId } from '@/api/projects'
-import { type ProjectOption } from '@/types/Projects'
+import { type Project, type ProjectOption } from '@/types/Projects'
 import {
   Select,
   SelectContent,
@@ -42,6 +42,9 @@ const formSchema = z.object({
     message: 'Question description cannot be empty.',
   }),
   related_project: z.string().optional(), // project UUID
+  code_context: z.string().optional(),
+  code_context_full_pathname: z.string().optional(),
+  code_context_line_number: z.number().nullable(),
   tags: z.array(z.string()).optional(), // Array of tag UUIDs
 })
 
@@ -50,8 +53,18 @@ type FormValues = z.infer<typeof formSchema>
 // The QuestionForm component
 export default function QuestionForm({
   onSubmit,
+  hasContext = false,
+  project,
+  codeContext,
+  codeContextFullPathname,
+  codeContextLineNumber,
 }: {
   onSubmit: (values: FormValues) => Promise<void>
+  hasContext?: boolean
+  project?: Project
+  codeContext?: string
+  codeContextFullPathname?: string
+  codeContextLineNumber?: number
 }) {
   // Initialize the form
   const form = useForm<FormValues>({
@@ -59,10 +72,18 @@ export default function QuestionForm({
     defaultValues: {
       title: '',
       description: '',
-      related_project: '',
+      related_project: project && hasContext ? project.project_id : '',
+      code_context: project && hasContext ? codeContext : '',
+      code_context_full_pathname:
+        project && hasContext ? codeContextFullPathname : '',
+      code_context_line_number:
+        project && hasContext && codeContextLineNumber ? codeContextLineNumber : null,
       tags: [],
     },
   })
+
+  console.log(form.getValues());
+  
 
   const { user, loading } = useUser()
 
@@ -82,7 +103,7 @@ export default function QuestionForm({
         const tagOptions = await getAllTags() // Returns TagOption[]
         setTagOptions(tagOptions)
 
-        if (user) {
+        if (user && !hasContext) {
           const projectsResponse = await getProjectsByUserId(user.user)
           const projectOptions = projectsResponse?.data?.map((project) => ({
             value: project.project_id,
@@ -96,7 +117,7 @@ export default function QuestionForm({
     }
 
     void fetchData()
-  }, [user])
+  }, [user, hasContext])
 
   // Synchronize selectedTags with react-hook-form's "tags" field
   useEffect(() => {
@@ -166,55 +187,57 @@ export default function QuestionForm({
         />
 
         {/* Related Project Field */}
-        <FormField
-          control={form.control}
-          name="related_project"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel htmlFor="related_project">
-                Connect to a Project
-              </FormLabel>
-              <FormControl>
-                {loading ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-                  </div>
+        {!hasContext && (
+          <FormField
+            control={form.control}
+            name="related_project"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="related_project">
+                  Connect to a Project
+                </FormLabel>
+                <FormControl>
+                  {loading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  ) : (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!user || hasContext}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a project (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {/* TODO: find way to clear select menu (this is a shad issue: https://github.com/shadcn-ui/ui/issues/2054#issuecomment-2295431544) */}
+                        {projectOptions.map((project) => (
+                          <SelectItem key={project.value} value={project.value}>
+                            {project.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </FormControl>
+                {user ? (
+                  <FormDescription>
+                    Linking a project to this question is optional, but may help
+                    your question get answered faster!
+                  </FormDescription>
                 ) : (
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={!user}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a project (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/* TODO: find way to clear select menu (this is a shad issue: https://github.com/shadcn-ui/ui/issues/2054#issuecomment-2295431544) */}
-                      {projectOptions.map((project) => (
-                        <SelectItem key={project.value} value={project.value}>
-                          {project.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormDescription>
+                    You must be <Link href="/login">logged in</Link> to link a
+                    question!
+                  </FormDescription>
                 )}
-              </FormControl>
-              {user ? (
-                <FormDescription>
-                  Linking a project to this question is optional, but may help
-                  your question get answered faster!
-                </FormDescription>
-              ) : (
-                <FormDescription>
-                  You must be <Link href="/login">logged in</Link> to link a
-                  question!
-                </FormDescription>
-              )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {/* Submit Button */}
         <ButtonWithLoading
