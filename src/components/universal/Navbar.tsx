@@ -20,11 +20,11 @@ export default function Navbar() {
         <Link href="/" className="flex items-center">
           {!imageError && (
             <Image
-              src="/public/asdkjfnasdfcodehive_with_logo.svg"
+              src="codehive_with_logo.svg"
               alt="CodeHive"
               className="h-8"
-              width={100}
-              height={100}
+              width={500}
+              height={500}
               onError={() => setImageError(true)}
             />
           )}
