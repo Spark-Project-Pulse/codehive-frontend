@@ -37,6 +37,14 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     });
   };
 
+  if (fileContent == null) {
+    return (
+      <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+        <h2 className="text-lg font-bold">File not found</h2>
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
       <style>
@@ -52,7 +60,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
       <Editor
         height="40vh"
         language={language}
-        value={fileContent ?? ''}
+        value={fileContent}
         options={{
           selectOnLineNumbers: true,
           readOnly: true,
