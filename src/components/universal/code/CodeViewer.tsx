@@ -12,9 +12,8 @@ interface CodeViewerProps {
 
 export const CodeViewer: React.FC<CodeViewerProps> = ({
   fileContent,
-  filename,
   lineNumbers = true,
-  language = 'javascript',
+  language = 'javascript',  // TODO: dynamically pass this from parent component
 }) => {
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
   
@@ -22,8 +21,9 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     // Add click event listener
     editor.onMouseDown((e) => {
       if (e.target.position) {
-        console.log("Mouse down at line:", e.target.position.lineNumber);
-        setSelectedLine(e.target.position.lineNumber);
+        const lineNumber = e.target.position.lineNumber;
+        console.log("Mouse down at line:", lineNumber);
+        setSelectedLine(lineNumber);
       }
     });
 
