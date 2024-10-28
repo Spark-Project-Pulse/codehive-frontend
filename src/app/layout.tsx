@@ -16,8 +16,9 @@ import {
   TooltipTrigger,
 } from '@radix-ui/react-tooltip'
 import { NextStepProvider, NextStep } from 'nextstepjs'
-import CustomCard from "@/components/pages/tutorial/Card"
-import { getSteps } from "@/app/tutorial/steps"
+import CustomCard from '@/components/pages/tutorial/Card'
+import { getSteps } from '@/app/tutorial/steps'
+import { useState } from 'react' // Import useState
 
 export default function RootLayout({
   children,
@@ -40,6 +41,7 @@ export default function RootLayout({
 // Create a new component to handle dynamic steps
 function LayoutWithNextStep({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser()
+  const [currentStep, setCurrentStep] = useState<number>(0) // Add currentStep state
 
   // Wait for the user to load
   if (loading) {
@@ -51,10 +53,19 @@ function LayoutWithNextStep({ children }: { children: React.ReactNode }) {
   // Get steps with dynamic username
   const steps = getSteps(username)
 
+  // Handler for when the tutorial step changes
+  const handleStepChange = (step: number, tourName?: string | null) => {
+    setCurrentStep(step)
+  }
+
   return (
-    <NextStep steps={steps} cardComponent={CustomCard}>
+    <NextStep
+      steps={steps}
+      cardComponent={CustomCard}
+      onStepChange={handleStepChange} // Add onStepChange prop
+    >
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar currentStep={currentStep} /> {/* Pass currentStep to AppSidebar */}
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
