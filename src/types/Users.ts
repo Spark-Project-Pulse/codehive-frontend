@@ -3,7 +3,10 @@ export interface User {
   username: string
   reputation: number
   pfp_url?: string
-  profile_image?: File
+  profile_image?: {
+    base64String: string
+    fileType: string
+  }
 }
 
 export interface AuthUser {
