@@ -42,8 +42,6 @@ const QuestionsPage: React.FC = () => {
       try {
         setIsLoading(true)
         const selectedTagValues = selectedTags.map((tag) => tag.value)
-
-        // Adjust your API call to accept pagination and filtering parameters
         const response: ApiResponse<{
           questions: Question[]
           totalQuestions: number
