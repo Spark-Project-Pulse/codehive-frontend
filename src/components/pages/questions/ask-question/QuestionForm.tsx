@@ -82,9 +82,6 @@ export default function QuestionForm({
     },
   })
 
-  console.log(form.getValues());
-  
-
   const { user, loading } = useUser()
 
   // State to store tag options
