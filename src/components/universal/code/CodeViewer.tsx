@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import Prism from 'prismjs'
-import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
-import { Button } from '@/components/ui/button'
-import { MessageCirclePlus } from 'lucide-react'
+import React, { useState } from 'react';
+import Editor from '@monaco-editor/react';
+import { type editor as monacoEditor } from 'monaco-editor';
+import { Button } from '@/components/ui/button';
 
 interface CodeViewerProps {
-  fileContent: string | null
-  filename: string | null
-  lineNumbers?: boolean
-  language?: string
+  fileContent: string | null;
+  filename: string | null;
+  lineNumbers?: boolean;
+  language?: string;
 }
 
 export const CodeViewer: React.FC<CodeViewerProps> = ({
@@ -18,60 +16,65 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   lineNumbers = true,
   language = 'javascript',
 }) => {
-  const [hoveredLine, setHoveredLine] = useState<number | null>(null)
-  console.log(hoveredLine)
+  const [selectedLine, setSelectedLine] = useState<number | null>(null);
+  
+  const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
+    // Add click event listener
+    editor.onMouseDown((e) => {
+      if (e.target.position) {
+        console.log("Mouse down at line:", e.target.position.lineNumber);
+        setSelectedLine(e.target.position.lineNumber);
+      }
+    });
 
-  useEffect(() => {
-    Prism.highlightAll()
-  }, [fileContent])
-
-  const lines = fileContent ? fileContent.split('\n') : []
+    // Alternative: Listen for selection changes
+    editor.onDidChangeCursorSelection(() => {
+      const position = editor.getPosition();
+      if (position) {
+        console.log("Selection changed to line:", position.lineNumber);
+        setSelectedLine(position.lineNumber);
+      }
+    });
+  };
 
   return (
-    <div className="overflow-hidden rounded-lg bg-gray-100 text-gray-900 shadow-lg dark:bg-gray-800 dark:text-white">
-      {filename && (
-        <div className="bg-gray-200 px-4 py-2 font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-          {filename}
+    <div className="relative">
+      <style>
+        {`
+          .monaco-editor .monaco-editor-background:hover,
+          .monaco-editor .margin:hover,
+          .monaco-editor .lines-content:hover,
+          .monaco-editor .view-line:hover {
+            cursor: pointer !important;
+          }
+        `}
+      </style>
+      <Editor
+        height="40vh"
+        language={language}
+        value={fileContent ?? ''}
+        options={{
+          selectOnLineNumbers: true,
+          readOnly: true,
+          lineNumbers: lineNumbers ? "on" : "off",
+          automaticLayout: true,
+          minimap: { enabled: false },
+          renderLineHighlight: 'all',
+          scrollBeyondLastLine: false,
+          cursorStyle: "block"
+        }}
+        onMount={handleEditorMount}
+      />
+      {selectedLine !== null && (
+        <div className="absolute bottom-0 right-6 shadow-lg rounded">
+          <Button
+          variant="outline"
+            onClick={() => console.log(`Button clicked for line ${selectedLine}`)}
+          >
+            Ask on line {selectedLine}
+          </Button>
         </div>
       )}
-      <div className="p-4">
-        <pre
-          className={`${lineNumbers && 'line-numbers'} overflow-auto rounded-md bg-white dark:bg-gray-900`}
-        >
-          {lines.map((line, index) => (
-            <div
-              key={index}
-              onMouseEnter={() => setHoveredLine(index)}
-              onMouseLeave={() => setHoveredLine(null)}
-              className="group relative flex"
-            >
-              {hoveredLine === index && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="absolute left-0 -translate-x-0 transform"
-                >
-                  <MessageCirclePlus className="h-4 w-4" />
-                </Button>
-              )}
-              {lineNumbers && (
-                <span
-                  className="bg-gray-100 pr-4 pl-12 text-gray-900 dark:bg-gray-800 dark:text-white"
-                  style={{ userSelect: 'none' }}
-                >
-                  {index + 1}
-                </span>
-              )}
-              <code
-                className={`language-${language} flex-1`}
-                style={{ whiteSpace: 'pre' }}
-              >
-                {line === '' ? '\n' : line}
-              </code>
-            </div>
-          ))}
-        </pre>
-      </div>
     </div>
-  )
-}
+  );
+};
