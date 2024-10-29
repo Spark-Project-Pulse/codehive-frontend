@@ -4,6 +4,8 @@ import { getAllCommunities } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
 import CommunityCard from '@/components/pages/communities/browse/CommunityCard'
 import { LoadingSpinner } from '@/components/ui/loading'
+import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
+import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { useDebounce } from '@/hooks/useDebounce'
 import { Community } from '@/types/Communities'
@@ -42,7 +44,6 @@ export default function BrowseCommunities() {
           selectedTagValues,
           debouncedSearchQuery
         )
-
         if (response.errorMessage) {
           throw new Error(response.errorMessage)
         }
@@ -96,6 +97,12 @@ export default function BrowseCommunities() {
 
   const handleSearchChange = (query: string) => setSearchQuery(query)
 
+  const handleRemoveTag = (tagValue: string) => {
+    setSelectedTags(selectedTags.filter((tag) => tag.value !== tagValue))
+  }
+
+  const handleClearSearchQuery = () => setSearchQuery('')
+
   return (
     <div className="max-w-7xl p-6">
       <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
@@ -130,9 +137,37 @@ export default function BrowseCommunities() {
 
           {!isLoading && !hasError && (
             <>
-              {communities.map((community) => (
-                <CommunityCard community={community} />
-              ))}
+              {(selectedTags.length > 0 || searchQuery.trim()) && (
+                <ActiveFilters
+                  selectedTags={selectedTags}
+                  searchQuery={searchQuery}
+                  onRemoveTag={handleRemoveTag}
+                  onClearSearchQuery={handleClearSearchQuery}
+                />
+              )}
+
+              {communities !== undefined &&
+              communities !== null &&
+              communities.length > 0 ? (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {communities.map((community) => (
+                    <CommunityCard community={community} tags={tags} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-lg text-gray-700">
+                  No communities match your search criteria.
+                </p>
+              )}
+
+              {/* Use Pagination Component */}
+              {totalPages > 1 && (
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage} // Pass setCurrentPage directly
+                />
+              )}
             </>
           )}
         </div>

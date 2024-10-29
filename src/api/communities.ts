@@ -70,3 +70,4 @@ export const getAllCommunities = async (
       return { errorMessage: 'Error fetching communities' }
     }
   }
+  

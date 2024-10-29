@@ -31,7 +31,7 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
             <Input
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search questions..."
+              placeholder="Search..."
               className="w-full pr-10"
             />
             <Search className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />

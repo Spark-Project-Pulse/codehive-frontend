@@ -2,7 +2,7 @@ import { type UUID } from 'crypto'
 
 export interface Community {
   community_id: UUID
-  name: string
+  title: string
   description: string
   member_count: number
   created_at: Date

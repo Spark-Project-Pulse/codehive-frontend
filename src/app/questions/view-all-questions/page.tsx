@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/pagination'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
+import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -209,64 +210,13 @@ const QuestionsPage: React.FC = () => {
                 )}
               </ul>
 
-              {/* Pagination Component */}
+              {/* Use Pagination Component */}
               {totalPages > 1 && (
-                <div className="mt-6">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          href="#"
-                          onClick={() =>
-                            setCurrentPage((prev) => Math.max(prev - 1, 1))
-                          }
-                        />
-                      </PaginationItem>
-
-                      {/* Page Numbers */}
-                      {Array.from({ length: totalPages }, (_, index) => {
-                        const pageNumber = index + 1
-                        // Show only a range of pages around the current page
-                        if (
-                          pageNumber === 1 ||
-                          pageNumber === totalPages ||
-                          (pageNumber >= currentPage - 2 &&
-                            pageNumber <= currentPage + 2)
-                        ) {
-                          return (
-                            <PaginationItem key={pageNumber}>
-                              <PaginationLink
-                                href="#"
-                                isActive={currentPage === pageNumber}
-                                onClick={() => setCurrentPage(pageNumber)}
-                              >
-                                {pageNumber}
-                              </PaginationLink>
-                            </PaginationItem>
-                          )
-                        } else if (
-                          pageNumber === currentPage - 3 ||
-                          pageNumber === currentPage + 3
-                        ) {
-                          return <PaginationEllipsis key={pageNumber} />
-                        } else {
-                          return null
-                        }
-                      })}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          href="#"
-                          onClick={() =>
-                            setCurrentPage((prev) =>
-                              Math.min(prev + 1, totalPages)
-                            )
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage} // Pass setCurrentPage directly
+                />
               )}
             </>
           )}
