@@ -2,7 +2,6 @@
 
 import { type ApiResponse } from '@/types/Api'
 import { Community } from '@/types/Communities'
-import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Fetches communities with pagination, optional tag filtering, and search functionality.
@@ -70,4 +69,74 @@ export const getAllCommunities = async (
       return { errorMessage: 'Error fetching communities' }
     }
   }
+
+/**
+ * Fetches a community by its ID from the backend.
+ *
+ * Args:
+ *   community_id (string): The ID of the community to retrieve.
+ *
+ * Returns:
+ *   Promise<ApiResponse<Community>>: The community data on success, or an error message on failure.
+ */
+export const getCommunityById = async (
+    community_id: string
+  ): Promise<ApiResponse<Community>> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getById/${community_id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
   
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+  
+      const communityData = (await response.json()) as Community
+      return { errorMessage: null, data: communityData }
+    } catch (error) {
+      console.error('Error fetching community: ', error)
+      return { errorMessage: 'Error fetching community' }
+    }
+  }
+
+/**
+ * Retrieves a community by their title from the backend.
+ *
+ * Args:
+ *   title (string): The title of the community to retrieve.
+ *
+ * Returns:
+ *   Promise<ApiResponse<Community>>: The community's data on success, or an error message on failure.
+ */
+export const getCommunityByTitle = async (
+    title: string
+  ): Promise<ApiResponse<Community>> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getByTitle/${title}`,
+        {
+          method: 'GET',
+          headers: {
+            // Authorization: `Bearer ${token}`, // Uncomment if using auth
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+  
+      const communityData = (await response.json()) as Community
+      return { errorMessage: null, data: communityData }
+    } catch (error) {
+      console.error('Error getting community: ', error)
+      return { errorMessage: 'Error getting community' }
+    }
+  }

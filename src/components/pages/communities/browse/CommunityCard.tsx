@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
@@ -11,16 +11,25 @@ import {
 import { Community } from '@/types/Communities'
 import { TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
-import { Badge, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 
 interface CommunityCardProps {
   community: Community
   tags: TagOption[]
+  onCardClick: () => void
 }
 
-export default function CommunityCard({ community, tags }: CommunityCardProps) {
+export default function CommunityCard({
+  community,
+  tags,
+  onCardClick,
+}: CommunityCardProps) {
   return (
-    <Card key={community.community_id} className="flex flex-col">
+    <Card
+      key={community.community_id}
+      onClick={onCardClick}
+      className="flex transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+    >
       <CardHeader className="flex-row items-center gap-4">
         <Avatar className="h-12 w-12">
           <AvatarImage
@@ -35,14 +44,7 @@ export default function CommunityCard({ community, tags }: CommunityCardProps) {
         <div className="mb-4 flex flex-wrap gap-2">
           {community.tags?.map((tagId) => {
             const tag = tags.find((t) => t.value === tagId)
-            return tag ? (
-              <span
-                key={tag.value}
-                className="rounded-full bg-indigo-100 px-2 py-1 text-sm font-medium text-indigo-700"
-              >
-                {tag.label}
-              </span>
-            ) : null // Handle cases where tag is not found
+            return tag ? <Badge variant="secondary">{tag.label}</Badge> : null // Handle cases where tag is not found
           })}
         </div>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -52,9 +54,6 @@ export default function CommunityCard({ community, tags }: CommunityCardProps) {
           </span>
         </div>
       </CardContent>
-      <CardFooter className="mt-auto">
-        <Button className="w-full">Join Community</Button>
-      </CardFooter>
     </Card>
   )
 }
