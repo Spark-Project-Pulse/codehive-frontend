@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { Frame, MessageCircleQuestion, FolderKanban } from 'lucide-react'
+import { Frame, MessageCircleQuestion, FolderKanban, PersonStanding } from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
+import { NavCommunities } from '@/components/universal/sidebar/nav-communities'
 import { NavUser } from '@/components/universal/sidebar/nav-user'
 import {
   Sidebar,
@@ -56,10 +57,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
         ],
       },
+      {
+        title: 'Communities',
+        url: '#',
+        icon: PersonStanding,
+        items: [
+          {
+            title: 'Create Community',
+            url: '#',
+          },
+          {
+            title: 'Browse Communities',
+            url: '/communities/browse',
+          },
+        ],
+      },
     ],
     projects: [
       {
         name: '[projext xyz]',
+        url: '#',
+        icon: Frame,
+      },
+    ],
+    communities: [
+      {
+        name: '[community xyz]',
         url: '#',
         icon: Frame,
       },
@@ -103,6 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
+        <NavCommunities communities={data.communities} />
       </SidebarContent>
       <SidebarFooter>
         {loading ? (

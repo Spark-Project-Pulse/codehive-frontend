@@ -20,6 +20,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
+import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -52,7 +54,7 @@ const QuestionsPage: React.FC = () => {
           selectedTagValues,
           debouncedSearchQuery
         )
-        
+
         if (response.errorMessage) {
           throw new Error(response.errorMessage)
         }
@@ -104,58 +106,40 @@ const QuestionsPage: React.FC = () => {
     setCurrentPage(1)
   }, [selectedTags, debouncedSearchQuery])
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+  const handleSearchChange = (query: string) => setSearchQuery(query)
+
+  const handleRemoveTag = (tagValue: string) => {
+    setSelectedTags(selectedTags.filter((tag) => tag.value !== tagValue))
   }
+
+  const handleClearSearchQuery = () => setSearchQuery('')
 
   return (
     <div className="max-w-7xl p-6">
-      <h1 className="text-h2 font-bold font-subHeading text-center text-secondary-foreground">
+      <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
         Questions
       </h1>
 
-      <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-        <aside className="md:w-1/4">
-          <div className="p-4 border rounded-lg bg-card">
-            <h2 className="text-xl font-semibold mb-4">Search and Filter</h2>
-            <div className="mb-4">
-              <div className="relative">
-                <Input
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search questions..."
-                  className="w-full pr-10"
-                />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-            <MultiSelector
-              options={tags}
-              selected={selectedTags}
-              onSelectedChange={setSelectedTags}
-              placeholder="Select tags..."
-            />
-            {(selectedTags.length > 0 || searchQuery.trim()) && (
-              <button
-                onClick={clearFilters}
-                className="mt-4 w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
-        </aside>
+      <div className="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0">
+        <SearchAndTagComponent
+          tags={tags}
+          selectedTags={selectedTags}
+          onSearchChange={handleSearchChange}
+          onTagChange={setSelectedTags}
+          onClearFilters={clearFilters}
+          searchQuery={searchQuery}
+        />
 
         <main className="md:w-3/4">
           {isLoading && (
-            <div className="flex flex-col items-center justify-center my-10">
+            <div className="my-10 flex flex-col items-center justify-center">
               <LoadingSpinner />
               <p className="mt-4 text-muted">Loading questions...</p>
             </div>
           )}
 
           {hasError && (
-            <div className="text-center my-10 text-destructive">
+            <div className="my-10 text-center text-destructive">
               <p>
                 Something went wrong while fetching the questions. Please try
                 again later.
@@ -166,44 +150,12 @@ const QuestionsPage: React.FC = () => {
           {!isLoading && !hasError && (
             <>
               {(selectedTags.length > 0 || searchQuery.trim()) && (
-                <div className="mb-4">
-                  <p className="text-lg font-medium">Active Filters:</p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {selectedTags.map((tag) => (
-                      <span
-                        key={tag.value}
-                        className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium flex items-center"
-                      >
-                        {tag.label}
-                        <button
-                          onClick={() => {
-                            setSelectedTags(
-                              selectedTags.filter((t) => t.value !== tag.value)
-                            )
-                          }}
-                          className="ml-1 text-indigo-700 hover:text-indigo-900 focus:outline-none"
-                        >
-                          &times;
-                        </button>
-                      </span>
-                    ))}
-                    {searchQuery.trim() && (
-                      <span
-                        className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium flex items-center"
-                      >
-                        {searchQuery}
-                        <button
-                          onClick={() => {
-                            setSearchQuery('')
-                          }}
-                          className="ml-1 text-indigo-700 hover:text-indigo-900 focus:outline-none"
-                        >
-                          &times;
-                        </button>
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <ActiveFilters
+                  selectedTags={selectedTags}
+                  searchQuery={searchQuery}
+                  onRemoveTag={handleRemoveTag}
+                  onClearSearchQuery={handleClearSearchQuery}
+                />
               )}
 
               <ul className="space-y-6">
@@ -211,27 +163,27 @@ const QuestionsPage: React.FC = () => {
                   questions.map((question) => (
                     <li
                       key={question.question_id.toString()}
-                      className="p-6 rounded-lg shadow-md bg-card border border-border cursor-pointer hover:bg-secondary transition"
+                      className="cursor-pointer rounded-lg border border-border bg-card p-6 shadow-md transition hover:bg-secondary"
                       onClick={() =>
                         handleQuestionClick(question.question_id.toString())
                       }
                     >
-                      <div className="flex justify-between items-start">
-                        <h2 className="text-xl font-semibold text-secondary-foreground mb-2 text-balance">
+                      <div className="flex items-start justify-between">
+                        <h2 className="mb-2 text-balance text-xl font-semibold text-secondary-foreground">
                           {question.title}
                         </h2>
                         <div className="text-right">
-                          <p className="text-base text-foreground font-medium">
+                          <p className="text-base font-medium text-foreground">
                             {question.asker_info?.username ?? 'Anonymous'}
                           </p>
-                          <p className="text-sm text-foreground font-medium">
+                          <p className="text-sm font-medium text-foreground">
                             {new Date(
                               question.created_at ?? ''
                             ).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
-                      <p className="text-base text-foreground mt-4">
+                      <p className="mt-4 text-base text-foreground">
                         {question.description}
                       </p>
                       {/* Display Tags */}
@@ -241,7 +193,7 @@ const QuestionsPage: React.FC = () => {
                           return tag ? (
                             <span
                               key={tag.value}
-                              className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium"
+                              className="rounded-full bg-indigo-100 px-2 py-1 text-sm font-medium text-indigo-700"
                             >
                               {tag.label}
                             </span>
@@ -251,7 +203,7 @@ const QuestionsPage: React.FC = () => {
                     </li>
                   ))
                 ) : (
-                  <p className="text-center text-gray-700 text-lg">
+                  <p className="text-center text-lg text-gray-700">
                     No questions match your search criteria.
                   </p>
                 )}
