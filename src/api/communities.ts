@@ -1,9 +1,9 @@
 'use server'
 
-import { type ApiResponse } from '@/types/Api'
-import { Community } from '@/types/Communities'
+import { type SuccessResponse, type ApiResponse } from '@/types/Api'
+import { type Community } from '@/types/Communities'
 import { getSupaUser } from '@/utils/supabase/server'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 /**
  * Adds a user to a community.
@@ -43,7 +43,7 @@ export const addUserToCommunity = async (
       )
     }
 
-    const responseData = await response.json()
+    const responseData = await response.json() as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error adding user to community: ', error)
@@ -89,7 +89,7 @@ export const removeUserFromCommunity = async (
       )
     }
 
-    const responseData = await response.json()
+    const responseData = await response.json() as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error removing user from community: ', error)

@@ -7,19 +7,7 @@ import { getAllTags } from '@/api/tags'
 import { type TagOption } from '@/types/Tags'
 import { type Question } from '@/types/Questions'
 import { getAllQuestions } from '@/api/questions'
-import { MultiSelector } from '@/components/ui/MultiSelector'
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
@@ -76,7 +64,7 @@ const QuestionsPage: React.FC = () => {
     }
 
     void fetchQuestions()
-  }, [currentPage, selectedTags, debouncedSearchQuery])
+  }, [currentPage, pageSize, selectedTags, debouncedSearchQuery])
 
   // Fetch Tags
   useEffect(() => {

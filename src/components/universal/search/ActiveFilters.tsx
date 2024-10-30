@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { TagOption } from '@/types/Tags'
+import { type TagOption } from '@/types/Tags'
 
 interface ActiveFiltersProps {
   selectedTags: TagOption[]

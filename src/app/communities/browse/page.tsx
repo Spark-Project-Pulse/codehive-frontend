@@ -8,8 +8,8 @@ import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { useDebounce } from '@/hooks/useDebounce'
-import { Community } from '@/types/Communities'
-import { TagOption } from '@/types/Tags'
+import { type Community } from '@/types/Communities'
+import { type TagOption } from '@/types/Tags'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -73,7 +73,7 @@ export default function BrowseCommunities() {
     }
 
     void fetchCommunities()
-  }, [currentPage, selectedTags, debouncedSearchQuery])
+  }, [currentPage, pageSize, selectedTags, debouncedSearchQuery])
 
   // Handle click on a community card to navigate to the community details page
   const handleCommunityClick = (community_title: string) => {
@@ -173,6 +173,7 @@ export default function BrowseCommunities() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {communities.map((community) => (
                     <CommunityCard
+                        key={community.community_id}
                       community={community}
                       tags={tags}
                       onCardClick={() =>

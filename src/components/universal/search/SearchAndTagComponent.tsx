@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { MultiSelector } from '@/components/ui/MultiSelector'
-import { TagOption } from '@/types/Tags'
+import { type TagOption } from '@/types/Tags'
 
 interface SearchAndTagComponentProps {
   tags: TagOption[]

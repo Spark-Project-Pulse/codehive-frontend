@@ -4,12 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Community } from '@/types/Communities'
-import { TagOption } from '@/types/Tags'
+import { type Community } from '@/types/Communities'
+import { type TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { Users } from 'lucide-react'
 
@@ -44,7 +43,7 @@ export default function CommunityCard({
         <div className="mb-4 flex flex-wrap gap-2">
           {community.tags?.map((tagId) => {
             const tag = tags.find((t) => t.value === tagId)
-            return tag ? <Badge variant="secondary">{tag.label}</Badge> : null // Handle cases where tag is not found
+            return tag ? <Badge key={tagId} variant="secondary">{tag.label}</Badge> : null // Handle cases where tag is not found
           })}
         </div>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
