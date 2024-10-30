@@ -173,12 +173,10 @@ export default function BrowseCommunities() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {communities.map((community) => (
                     <CommunityCard
-                        key={community.community_id}
+                      key={community.community_id}
                       community={community}
                       tags={tags}
-                      onCardClick={() =>
-                        handleCommunityClick(community.title)
-                      }
+                      onCardClick={() => handleCommunityClick(community.title)}
                     />
                   ))}
                 </div>
