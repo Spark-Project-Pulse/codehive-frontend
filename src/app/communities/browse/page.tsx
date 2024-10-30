@@ -3,7 +3,7 @@
 import { getAllCommunities } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
 import CommunityCard from '@/components/pages/communities/browse/CommunityCard'
-import { LoadingSpinner } from '@/components/ui/loading'
+import CommunityCardSkeleton from '@/components/pages/communities/browse/CommunityCardSkeleton'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
@@ -135,11 +135,12 @@ export default function BrowseCommunities() {
           searchQuery={searchQuery}
         />
         <div className="md:w-3/4">
-          {/* Display loading spinner while fetching communities */}
+          {/* Display community card skeletons while fetching communities */}
           {isLoading && (
-            <div className="my-10 flex flex-col items-center justify-center">
-              <LoadingSpinner />
-              <p className="mt-4 text-muted">Loading communities...</p>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 30 }, (_, index) => (
+                <CommunityCardSkeleton key={index} />
+              ))}
             </div>
           )}
 
@@ -167,9 +168,7 @@ export default function BrowseCommunities() {
               )}
 
               {/* Display community cards if there are communities available */}
-              {communities !== undefined &&
-              communities !== null &&
-              communities.length > 0 ? (
+              {communities.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {communities.map((community) => (
                     <CommunityCard
