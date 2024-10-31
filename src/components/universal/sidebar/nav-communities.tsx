@@ -5,7 +5,6 @@ import {
   Forward,
   MoreHorizontal,
   Trash2,
-  type LucideIcon,
 } from "lucide-react"
 
 import {
@@ -24,15 +23,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { SidebarCommunity } from "@/types/Communities"
 
 export function NavCommunities({
   communities: communities,
 }: {
-  communities: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+  communities: SidebarCommunity[]
 }) {
   const { isMobile } = useSidebar()
 
@@ -71,7 +67,7 @@ export function NavCommunities({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Trash2 className="text-muted-foreground" />
-                  <span>Delete Community</span>
+                  <span>Leave Community</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

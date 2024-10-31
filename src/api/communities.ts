@@ -1,7 +1,7 @@
 'use server'
 
 import { type SuccessResponse, type ApiResponse } from '@/types/Api'
-import { type Community } from '@/types/Communities'
+import { type CommunityMembers, type Community } from '@/types/Communities'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
@@ -234,6 +234,43 @@ export const getCommunityByTitle = async (
   } catch (error) {
     console.error('Error getting community: ', error)
     return { errorMessage: 'Error getting community' }
+  }
+}
+
+/**
+ * Fetches all the communities associated with the current user by their ID from the backend.
+ *
+ * Returns:
+ *   Promise<ApiResponse<CommunityMembers[]>>: The communities data on success, or an error message on failure.
+ */
+export const getCurrentUserCommunities = async (
+): Promise<ApiResponse<CommunityMembers[]>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error("User is not authenticated")
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getUserCommunitiesById/${user.id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const communityData = (await response.json()) as CommunityMembers[]
+    return { errorMessage: null, data: communityData }
+  } catch (error) {
+    console.error('Error fetching communities: ', error)
+    return { errorMessage: 'Error fetching communities' }
   }
 }
 
