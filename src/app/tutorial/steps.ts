@@ -1,0 +1,80 @@
+import { type Tour } from 'nextstepjs';
+
+export const getSteps = (username: string): Tour[] => [
+    {
+        tour: 'mainTour',
+        steps: [
+            {
+                icon: '👋',
+                title: 'Welcome to CodeHive',
+                content:
+                    "Welcome to CodeHive! Let's take a quick tour to help you get started.",
+                showControls: true,
+                showSkip: true,
+                nextRoute: '/dashboard',
+            },
+            {
+                icon: '🏠',
+                title: 'Dashboard',
+                content:
+                    'This is your dashboard, where you can see your recent activity and navigate the site.',
+                selector: '#dashboard',
+                showControls: true,
+                showSkip: true,
+                nextRoute: '/questions/ask-question',
+                prevRoute: '/tutorial',
+            },
+            {
+                icon: '❓',
+                title: 'Ask a Question',
+                content: 'Need help? Click here to ask a question.',
+                selector: '#ask-question-button',
+                showControls: true,
+                showSkip: true,
+                nextRoute: '/questions/view-all-questions',
+                prevRoute: '/dashboard',
+            },
+            {
+                icon: '📋',
+                title: 'View All Questions',
+                content: 'See all the questions in the community.',
+                selector: '#view-all-questions-button',
+                showControls: true,
+                showSkip: true,
+                nextRoute: '/projects/add-project',
+                prevRoute: '/questions/ask-question',
+                side: 'right',
+            },
+            {
+                icon: '🚀',
+                title: 'Add a Project',
+                content: 'Click here to add a new project and showcase your work.',
+                selector: '#add-project-button',
+                showControls: true,
+                showSkip: true,
+                nextRoute: `/profiles/${username}`,
+                prevRoute: '/questions/view-all-questions',
+                side: 'right',
+            },
+            {
+                icon: '👤',
+                title: 'Your Profile',
+                content: 'View and edit your profile here.',
+                selector: '#profile-button',
+                showControls: true,
+                showSkip: true,
+                nextRoute: `/dashboard`,
+                prevRoute: '/projects/add-project',
+                side: 'right',
+            },
+            {
+                icon: '🎉',
+                title: 'All Set!',
+                content: "You're all set to start using CodeHive. Enjoy!",
+                showControls: true,
+                showSkip: false,
+                prevRoute: '/projects/add-project',
+            },
+        ],
+    },
+];

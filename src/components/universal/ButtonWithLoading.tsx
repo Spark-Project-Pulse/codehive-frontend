@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button'
 import { ButtonLoadingSpinner } from '@/components/ui/loading'
 
 interface ButtonWithLoadingProps {
+  id?: string // Optional id for the button
   onClick: () => Promise<void> // The async operation to execute
   buttonText: string // Initial text for the button
   buttonType: 'button' | 'submit' | 'reset' // The desired type for the button (i.e. submit, button, reset)
 }
 
 export const ButtonWithLoading: React.FC<ButtonWithLoadingProps> = ({
+  id,
   onClick,
   buttonText,
   buttonType,
@@ -26,6 +28,7 @@ export const ButtonWithLoading: React.FC<ButtonWithLoadingProps> = ({
 
   return (
     <Button
+      id={id}
       type={buttonType}
       onClick={handleClick}
       disabled={isPending}

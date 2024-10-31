@@ -120,10 +120,10 @@ export default function ProfilePage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div id="profile-page" className="container mx-auto px-4 py-8">
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">
-          <Card>
+          <Card className="profile-card">
             <CardHeader className="flex flex-col items-center">
               <Avatar className="h-32 w-32">
                 <AvatarImage

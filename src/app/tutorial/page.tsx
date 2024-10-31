@@ -1,7 +1,18 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useNextStep } from 'nextstepjs'
+import { useUser } from '@/app/contexts/UserContext'
+
 export default function TutorialPage() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <h1>Tutorials here</h1>
-    </div>
-  )
+  const { startNextStep } = useNextStep()
+  const { user, loading } = useUser()
+
+  useEffect(() => {
+    if (!loading && user) {
+      startNextStep("mainTour")
+    }
+  }, [startNextStep, user, loading])
+
+  return null
 }

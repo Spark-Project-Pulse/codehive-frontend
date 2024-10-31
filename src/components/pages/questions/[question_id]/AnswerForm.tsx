@@ -51,6 +51,7 @@ export default function AnswerForm({
           )}
         />
         <ButtonWithLoading
+          id="answer-question-submit-button"
           onClick={form.handleSubmit(onSubmit)}
           buttonText="Submit"
           buttonType="submit"

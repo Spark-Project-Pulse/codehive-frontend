@@ -1,3 +1,5 @@
+// src/components/universal/sidebar/app-sidebar.tsx
+
 'use client'
 
 import * as React from 'react'
@@ -21,7 +23,11 @@ import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  currentStep: number
+}
+
+export function AppSidebar({ currentStep, ...props }: AppSidebarProps) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
 
@@ -33,11 +39,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: MessageCircleQuestion,
         items: [
           {
-            title: 'Ask',
+            title: 'Ask', // Should match 'Ask' in getButtonId
             url: '/questions/ask-question',
           },
           {
-            title: 'Find Questions',
+            title: 'Find Questions', // Should match 'Find Questions' in getButtonId
             url: '/questions/view-all-questions',
           },
         ],
@@ -48,7 +54,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: FolderKanban,
         items: [
           {
-            title: 'Add',
+            title: 'Add', // Should match 'Add' in getButtonId
             url: '/projects/add-project',
           },
           {
@@ -75,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
     projects: [
       {
-        name: '[projext xyz]',
+        name: '[project xyz]',
         url: '#',
         icon: Frame,
       },
@@ -88,16 +94,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
   }
-  
+
   // MacOS
-  useKeyboardShortcut(["cmd", "/"], () => {
+  useKeyboardShortcut(['cmd', '/'], () => {
     toggleSidebar()
-  });
+  })
 
   // Windows/Linux
-  useKeyboardShortcut(["ctrl", "/"], () => {
-    toggleSidebar();
-  });
+  useKeyboardShortcut(['ctrl', '/'], () => {
+    toggleSidebar()
+  })
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -114,17 +120,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
           >
-            <Image
-              src="/logo.svg"
-              alt="CodeHive Logo"
-              width={150}
-              height={50}
-            />
+            <Image src="/logo.svg" alt="CodeHive Logo" width={150} height={50} />
           </Link>
         )}
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain} currentStep={currentStep} /> {/* Pass currentStep */}
         <NavProjects projects={data.projects} />
         <NavCommunities communities={data.communities} />
       </SidebarContent>

@@ -148,6 +148,7 @@ export default function ProjectForm({
           )}
         />
         <ButtonWithLoading
+          id="add-project-submit-button"
           onClick={form.handleSubmit(onSubmit)}
           buttonText="Submit"
           buttonType="submit"
