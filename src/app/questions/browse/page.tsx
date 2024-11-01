@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { LoadingSpinner } from '@/components/ui/loading'
-import { useRouter } from 'next/navigation'
 import { getAllTags } from '@/api/tags'
 import { type TagOption } from '@/types/Tags'
 import { type Question } from '@/types/Questions'
