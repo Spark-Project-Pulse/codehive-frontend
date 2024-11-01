@@ -12,6 +12,7 @@ import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTa
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
+import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -116,10 +117,11 @@ const QuestionsPage: React.FC = () => {
 
         <main className="md:w-3/4">
           {isLoading && (
-            <div className="my-10 flex flex-col items-center justify-center">
-              <LoadingSpinner />
-              <p className="mt-4 text-muted">Loading questions...</p>
-            </div>
+            <ul className="space-y-6">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SkeletonQuestionCard key={index} />
+              ))}
+            </ul>
           )}
 
           {hasError && (

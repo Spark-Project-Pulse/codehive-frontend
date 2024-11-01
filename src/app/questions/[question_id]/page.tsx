@@ -13,7 +13,7 @@ import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
 import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/SkeletonAnswerCard'
-import SkeletonQuestionsCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
+import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function QuestionPage({
@@ -163,7 +163,7 @@ export default function QuestionPage({
     <section className="min-h-screen bg-gray-100 py-24">
       <div className="mx-auto max-w-4xl px-4">
         {isLoadingQuestion ? (
-          <SkeletonQuestionsCard />
+          <SkeletonQuestionCard />
         ) : question ? (
           <QuestionCard question={question} />
         ) : (

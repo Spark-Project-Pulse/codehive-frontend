@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Skeleton } from '@/components/ui/skeleton'
 
 
-export default function SkeletonQuestionsCard() {
+export default function SkeletonQuestionCard() {
   return (
     <Card className="w-full transform">
       <CardHeader className="flex flex-col gap-2">
