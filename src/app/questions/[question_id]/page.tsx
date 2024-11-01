@@ -13,6 +13,8 @@ import { getQuestionById } from '@/api/questions'
 import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
+import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/SkeletonAnswerCard'
+import SkeletonQuestionsCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 
 export default function QuestionPage({
   params,
@@ -21,16 +23,22 @@ export default function QuestionPage({
 }) {
   const { toast } = useToast()
   const [question, setQuestion] = useState<Question | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [answers, setAnswers] = useState<Answer[]>([])
   const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
     null
   )
   const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
 
+  const [isLoadingQuestion, setIsLoadingQuestion] = useState<boolean>(true)
+  const [isLoadingAnswers, setIsLoadingAnswers] = useState<boolean>(true)
+  const [isLoadingComments, setIsLoadingComments] = useState<
+    Record<UUID, boolean>
+  >({})
+  const isLoading = isLoadingQuestion || isLoadingAnswers
+
   useEffect(() => {
     const fetchQuestion = async () => {
-      setIsLoading(true)
+      setIsLoadingQuestion(true)
 
       try {
         const { errorMessage, data } = await getQuestionById(params.question_id)
@@ -43,12 +51,13 @@ export default function QuestionPage({
       } catch (error) {
         console.error('Unexpected error:', error)
       } finally {
-        setIsLoading(false)
+        setIsLoadingQuestion(false)
       }
     }
 
     const fetchAnswers = async () => {
-      //TODO: A seperate loading spinner below the question for loading answers
+      setIsLoadingAnswers(true)
+
       try {
         const { errorMessage, data } = await getAnswersByQuestionId(
           params.question_id
@@ -67,12 +76,14 @@ export default function QuestionPage({
       } catch (error) {
         console.error('Unexpected error:', error)
       } finally {
-        // End answer loading state
+        setIsLoadingAnswers(false)
       }
     }
 
     // Fetches the comments of an answer
     const fetchComments = async (answer_id: UUID) => {
+      setIsLoadingComments((prev) => ({ ...prev, [answer_id]: true }))
+
       try {
         const { errorMessage, data } = await getCommentsByAnswerId(answer_id)
 
@@ -86,6 +97,8 @@ export default function QuestionPage({
         }
       } catch (error) {
         console.error('Unexpected error fetching comments:', error)
+      } finally {
+        setIsLoadingComments((prev) => ({ ...prev, [answer_id]: false }))
       }
     }
 
@@ -169,29 +182,38 @@ export default function QuestionPage({
     }
   }
 
-  // Conditional rendering for loading state
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
+  // // Conditional rendering for loading state
+  // if (isLoading) {
+  //   return <LoadingSpinner />
+  // }
 
   return (
     <section className="min-h-screen bg-gray-100 py-24">
       <div className="mx-auto max-w-4xl px-4">
-        {question ? (
-          <div>
-            <QuestionCard question={question} />
-            {/* Show all current answers below question, if answers exists */}
-            {answers.length > 0 && (
+        {isLoadingQuestion ? (
+          <SkeletonQuestionsCard />
+        ) : question ? (
+          <QuestionCard question={question} />
+        ) : (
+          <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+            <h2 className="text-lg font-bold">Question not found</h2>
+          </div>
+        )}
+
+          {/* Show all current answers below question, if answers exists */}
+          {isLoadingAnswers ? (
+            <div className="mt-8">
+              {Array(3).map((_, index) => (
+                <div key={index}>hello</div>
+                // <SkeletonAnswerCard key={index} />
+              ))}
+            </div>
+          ) : (
+            answers.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-lg font-bold">
-                  {answers.length > 0 ? (
-                    <>
-                      {answers.length}{' '}
-                      {answers.length === 1 ? 'Answer' : 'Answers'}
-                    </>
-                  ) : (
-                    <>No answers yet 😭</>
-                  )}
+                  {answers.length}{' '}
+                  {answers.length === 1 ? 'Answer' : 'Answers'}
                 </h2>
                 <div className="list-disc pl-5">
                   {answers.map((answer) => (
@@ -204,24 +226,23 @@ export default function QuestionPage({
                       onCommentSubmit={handleCommentSubmit}
                       onAddComment={handleAddComment}
                       openCommentFormId={openCommentFormId}
+                      // isLoadingComments={loadingComments[answer.answer_id]}
                     />
                   ))}
                 </div>
               </div>
-            )}
-            {/* Answer button */}
-            <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-              <h1 className="text-center text-2xl font-bold text-gray-900">
-                Answer Question
-              </h1>
-              <AnswerForm onSubmit={handleAnswerSubmit} />
-            </div>
+            )
+          )}
+
+          {/* Answer button */}
+          {!isLoading &&
+          <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
+            <h1 className="text-center text-2xl font-bold text-gray-900">
+              Answer Question
+            </h1>
+            <AnswerForm onSubmit={handleAnswerSubmit} />
           </div>
-        ) : (
-          <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-            <h2 className="text-lg font-bold">Question not found</h2>
-          </div>
-        )}
+          }
       </div>
     </section>
   )
