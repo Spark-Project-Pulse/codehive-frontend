@@ -104,7 +104,9 @@ export default function QuestionPage({
   }, [params.question_id])
 
   // Function to handle answer form submission and perform API call
-  async function handleAnswerSubmit(values: { response: string }): Promise<void> {
+  async function handleAnswerSubmit(values: {
+    response: string
+  }): Promise<void> {
     // Append question_id to the values object
     const requestData = {
       ...values,
@@ -131,7 +133,10 @@ export default function QuestionPage({
   }
 
   // Function to handle submitting a comment
-  async function handleCommentSubmit(values: { response: string, answer: string }): Promise<void> {
+  async function handleCommentSubmit(values: {
+    response: string
+    answer: string
+  }): Promise<void> {
     try {
       const response = await createComment(values)
       const { errorMessage, data } = response
@@ -149,7 +154,6 @@ export default function QuestionPage({
           description: errorMessage,
         })
       }
-
     } catch (error) {
       console.error('Unexpected error:', error)
     }
@@ -168,49 +172,48 @@ export default function QuestionPage({
           </div>
         )}
 
-          {/* Show all current answers below question, if answers exists */}
-          {isLoadingAnswers ? (
+        {/* Show all current answers below question, if answers exists */}
+        {isLoadingAnswers ? (
+          <div className="mt-8">
+            <Skeleton className="h-6 w-12" />
+            <div className="list-disc pl-5">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <SkeletonAnswerCard key={index} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          answers.length > 0 && (
             <div className="mt-8">
-              <Skeleton className="h-6 w-12" />
+              <h2 className="text-lg font-bold">
+                {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+              </h2>
               <div className="list-disc pl-5">
-                {Array.from({ length: 2 }).map((_, index) => (
-                  <SkeletonAnswerCard key={index} />
+                {answers.map((answer) => (
+                  <AnswerCard
+                    key={answer.answer_id}
+                    answer={answer}
+                    comments={comments}
+                    upvoted={answer.curr_user_upvoted ?? false}
+                    downvoted={answer.curr_user_downvoted ?? false}
+                    onCommentSubmit={handleCommentSubmit}
+                    isLoadingComments={isLoadingComments[answer.answer_id]}
+                  />
                 ))}
               </div>
             </div>
-          ) : (
-            answers.length > 0 && (
-              <div className="mt-8">
-                <h2 className="text-lg font-bold">
-                  {answers.length}{' '}
-                  {answers.length === 1 ? 'Answer' : 'Answers'}
-                </h2>
-                <div className="list-disc pl-5">
-                  {answers.map((answer) => (
-                    <AnswerCard
-                      key={answer.answer_id}
-                      answer={answer}
-                      comments={comments}
-                      upvoted={answer.curr_user_upvoted ?? false}
-                      downvoted={answer.curr_user_downvoted ?? false}
-                      onCommentSubmit={handleCommentSubmit}
-                      isLoadingComments={isLoadingComments[answer.answer_id]}
-                    />
-                  ))}
-                </div>
-              </div>
-            )
-          )}
+          )
+        )}
 
-          {/* Answer button */}
-          {!isLoading &&
+        {/* Answer button */}
+        {!isLoading && (
           <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
             <h1 className="text-center text-2xl font-bold text-gray-900">
               Answer Question
             </h1>
             <AnswerForm onSubmit={handleAnswerSubmit} />
           </div>
-          }
+        )}
       </div>
     </section>
   )
