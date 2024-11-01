@@ -15,6 +15,7 @@ import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
 import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/SkeletonAnswerCard'
 import SkeletonQuestionsCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function QuestionPage({
   params,
@@ -203,10 +204,12 @@ export default function QuestionPage({
           {/* Show all current answers below question, if answers exists */}
           {isLoadingAnswers ? (
             <div className="mt-8">
-              {Array(3).map((_, index) => (
-                <div key={index}>hello</div>
-                // <SkeletonAnswerCard key={index} />
-              ))}
+              <Skeleton className="h-6 w-12" />
+              <div className="list-disc pl-5">
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <SkeletonAnswerCard key={index} />
+                ))}
+              </div>
             </div>
           ) : (
             answers.length > 0 && (

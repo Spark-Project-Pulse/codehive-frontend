@@ -4,8 +4,6 @@ import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
@@ -18,6 +16,9 @@ import { useState } from 'react'
 import { downvoteAnswer, upvoteAnswer } from '@/api/answers'
 import { toast } from '@/components/ui/use-toast'
 import { changeReputationByAmount } from '@/api/users'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { CalendarIcon, UserIcon } from 'lucide-react'
+import { format } from 'date-fns'
 
 interface AnswerCardProps {
   answer: Answer
@@ -153,7 +154,7 @@ export default function AnswerCard({
     <Card className="mb-6 mt-6">
       <div className="flex">
         {/* Upvote/Downvote and Score */}
-        <div className="flex flex-col items-center space-y-2 p-4">
+        <div className="flex flex-col items-center space-y-2 pl-6 pt-6">
           <Button
             onClick={() => handleUpvote()}
             variant="outline"
@@ -177,29 +178,49 @@ export default function AnswerCard({
 
         {/* Card Content */}
         <div className="flex-1">
-          <CardHeader>
-            <CardTitle>Answer</CardTitle>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="mt-6">
             <p>{answer.response}</p>
-            <p className="mt-4 text-gray-500">
-              Answered by:{' '}
-              {answer.expert_info?.username
-                ? answer.expert_info?.username
-                : 'Anonymous User'}
-            </p>
-            {/* Comments Section */}
-            {comments[answer.answer_id] &&
-              comments[answer.answer_id].length > 0 && (
-                <div className="mt-8">
-                  <h2 className="text-lg font-bold">Comments:</h2>
-                  <div className="list-disc pl-5">
-                    {comments[answer.answer_id].map((comment) => (
-                      <CommentCard key={comment.comment_id} comment={comment} />
-                    ))}
-                  </div>
+
+            {/* Expert info */}
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={answer.expert_info.pfp_url} />
+                  <AvatarFallback>
+                    {answer.expert_info?.username?.[0] ?? (
+                      <UserIcon className="h-4 w-4" />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium">
+                    {answer.expert_info?.username ?? 'Anonymous User'}
+                  </p>
                 </div>
-              )}
+              </div>
+              <div className="flex items-center text-sm text-gray-500">
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {format(new Date(answer.created_at), 'PPP')}
+              </div>
+            </div>
+          </CardContent>
+          <CardContent>
+            {/* Comments Section */}
+            {comments[answer.answer_id]?.length > 0 && (
+              <div className="mt-8">
+                <h2 className="text-lg font-bold">
+                  {comments[answer.answer_id].length}{' '}
+                  {comments[answer.answer_id].length === 1
+                    ? 'Comment'
+                    : 'Comments'}
+                </h2>
+                <div className="list-disc pl-5">
+                  {comments[answer.answer_id].map((comment) => (
+                    <CommentCard key={comment.comment_id} comment={comment} />
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
           <CardFooter>
             <ButtonWithLoading
