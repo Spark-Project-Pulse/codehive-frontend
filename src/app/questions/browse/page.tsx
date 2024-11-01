@@ -119,7 +119,7 @@ const QuestionsPage: React.FC = () => {
           {isLoading && (
             <ul className="space-y-6">
               {Array.from({ length: 10 }).map((_, index) => (
-                <SkeletonQuestionCard key={index} />
+                <SkeletonQuestionCard href key={index} />
               ))}
             </ul>
           )}

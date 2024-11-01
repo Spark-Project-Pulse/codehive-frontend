@@ -5,10 +5,15 @@ import { Avatar } from '@/components/ui/avatar'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
+interface SkeletonQuestionCardProps {
+  href?: boolean 
+}
 
-export default function SkeletonQuestionCard() {
+export default function SkeletonQuestionCard({
+  href = false
+}: SkeletonQuestionCardProps) {
   return (
-    <Card className="w-full transform">
+    <Card className={`w-full transform ${href && "transform cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg"}`}>
       <CardHeader className="flex flex-col gap-2">
         <CardTitle>
           <Skeleton className="h-6 w-1/4" />
