@@ -21,7 +21,10 @@ interface AnswerCardProps {
   comments: Record<UUID, Comment[]>
   upvoted: boolean
   downvoted: boolean
-  onCommentSubmit: (values: { response: string, answer: string }) => Promise<void>
+  onCommentSubmit: (values: {
+    response: string
+    answer: string
+  }) => Promise<void>
   isLoadingComments: boolean
 }
 
@@ -228,11 +231,16 @@ export default function AnswerCard({
           </CardContent>
 
           {/* Add Comment Section */}
-          <CardFooter>
-            <div className="w-full pl-6">
-              <CommentForm onSubmit={onCommentSubmit} answerId={answer.answer_id} />
-            </div>
-          </CardFooter>
+          {!isLoadingComments && (
+            <CardFooter>
+              <div className="w-full pl-6">
+                <CommentForm
+                  onSubmit={onCommentSubmit}
+                  answerId={answer.answer_id}
+                />
+              </div>
+            </CardFooter>
+          )}
         </div>
       </div>
     </Card>
