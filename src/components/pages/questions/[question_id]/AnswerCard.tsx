@@ -21,7 +21,7 @@ interface AnswerCardProps {
   comments: Record<UUID, Comment[]>
   upvoted: boolean
   downvoted: boolean
-  onCommentSubmit: (values: { response: string, answer: string }) => void
+  onCommentSubmit: (values: { response: string, answer: string }) => Promise<void>
   isLoadingComments: boolean
 }
 

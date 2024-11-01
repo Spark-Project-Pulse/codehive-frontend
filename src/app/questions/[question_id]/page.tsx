@@ -131,7 +131,7 @@ export default function QuestionPage({
   }
 
   // Function to handle submitting a comment
-  async function handleCommentSubmit(values: { response: string, answer: string }) {
+  async function handleCommentSubmit(values: { response: string, answer: string }): Promise<void> {
     const requestData = {
       ...values,
       // answer: openCommentFormId,

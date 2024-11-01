@@ -27,10 +27,9 @@ export default function CommentForm({
   onSubmit,
   answerId
 }: {
-  onSubmit: (values: z.infer<typeof formSchema>) => void
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>
   answerId: string
 }) {
-  // Define the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,9 +38,17 @@ export default function CommentForm({
     },
   })
 
+  const { reset } = form
+
+  // Create a wrapper function to handle the submission
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    await onSubmit(values)
+    reset()
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="response"
@@ -55,9 +62,9 @@ export default function CommentForm({
           )}
         />
         <ButtonWithLoading
-          onClick={form.handleSubmit(onSubmit)}
-          buttonText="Submit"
+          onClick={form.handleSubmit(handleSubmit)}
           buttonType="submit"
+          buttonText="Submit"
         />
       </form>
     </Form>
