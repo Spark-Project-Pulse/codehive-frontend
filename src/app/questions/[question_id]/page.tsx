@@ -1,6 +1,5 @@
 'use client'
 
-import { LoadingSpinner } from '@/components/ui/loading'
 import { type Question } from '@/types/Questions'
 import { useEffect, useState } from 'react'
 import AnswerCard from '@/components/pages/questions/[question_id]/AnswerCard'
@@ -134,52 +133,48 @@ export default function QuestionPage({
     }
   }
 
-  // Function to handle add comment button
-  function handleAddComment(answerId: UUID): Promise<void> {
-    return new Promise((resolve) => {
-      if (openCommentFormId === answerId) {
-        // Close the form if it's already open for an answer
-        setOpenCommentFormId(null)
-      } else {
-        // Open the form for the clicked answer (also closes any opened commentform)
-        setOpenCommentFormId(answerId)
-      }
-      resolve()
-    })
-  }
+  // // Function to handle add comment button
+  // function handleAddComment(answerId: UUID): Promise<void> {
+  //   return new Promise((resolve) => {
+  //     if (openCommentFormId === answerId) {
+  //       // Close the form if it's already open for an answer
+  //       setOpenCommentFormId(null)
+  //     } else {
+  //       // Open the form for the clicked answer (also closes any opened commentform)
+  //       setOpenCommentFormId(answerId)
+  //     }
+  //     resolve()
+  //   })
+  // }
 
   // Function to handle submitting a comment
-  async function handleCommentSubmit(values: { response: string }) {
-    if (openCommentFormId == null) {
-      console.log('Error: CommentFormId empty?')
-    } else {
-      const requestData = {
-        ...values,
-        answer: openCommentFormId,
-      }
-      try {
-        const response = await createComment(requestData)
-        const { errorMessage, data } = response
+  async function handleCommentSubmit(values: { response: string, answer: string }) {
+    const requestData = {
+      ...values,
+      // answer: openCommentFormId,
+    }
+    try {
+      const response = await createComment(requestData)
+      const { errorMessage, data } = response
 
-        if (!errorMessage && data) {
-          // Update the comments state to include new comment
-          setComments((prevComments) => ({
-            ...prevComments,
-            [data.answer]: [...(prevComments[data.answer] || []), data],
-          }))
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: errorMessage,
-          })
-        }
-
-        // Close comment form upon submit
-        setOpenCommentFormId(null)
-      } catch (error) {
-        console.error('Unexpected error:', error)
+      if (!errorMessage && data) {
+        // Update the comments state to include new comment
+        setComments((prevComments) => ({
+          ...prevComments,
+          [data.answer]: [...(prevComments[data.answer] || []), data],
+        }))
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
       }
+
+      // Close comment form upon submit
+      setOpenCommentFormId(null)
+    } catch (error) {
+      console.error('Unexpected error:', error)
     }
   }
 
@@ -227,8 +222,8 @@ export default function QuestionPage({
                       upvoted={answer.curr_user_upvoted ?? false}
                       downvoted={answer.curr_user_downvoted ?? false}
                       onCommentSubmit={handleCommentSubmit}
-                      onAddComment={handleAddComment}
-                      openCommentFormId={openCommentFormId}
+                      // onAddComment={handleAddComment}
+                      // openCommentFormId={openCommentFormId}
                       isLoadingComments={isLoadingComments[answer.answer_id]}
                     />
                   ))}

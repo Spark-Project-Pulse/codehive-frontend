@@ -22,9 +22,9 @@ interface AnswerCardProps {
   comments: Record<UUID, Comment[]>
   upvoted: boolean
   downvoted: boolean
-  onCommentSubmit: (values: { response: string }) => void
-  onAddComment: (answerId: UUID) => void
-  openCommentFormId: string | null
+  onCommentSubmit: (values: { response: string, answer: string }) => void
+  // onAddComment: (answerId: UUID) => void
+  // openCommentFormId: string | null
   isLoadingComments: boolean
 }
 
@@ -34,8 +34,8 @@ export default function AnswerCard({
   upvoted,
   downvoted,
   onCommentSubmit,
-  onAddComment,
-  openCommentFormId,
+  // onAddComment,
+  // openCommentFormId,
   isLoadingComments,
 }: AnswerCardProps) {
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
@@ -234,15 +234,9 @@ export default function AnswerCard({
 
           {/* Add Comment Section */}
           <CardFooter>
-            <ButtonWithLoading
-              buttonType="button"
-              buttonText="Add a comment"
-              onClick={() => Promise.resolve(onAddComment(answer.answer_id))}
-            />
-            {/* Display comment form if applicable */}
-            {openCommentFormId === answer.answer_id && (
-              <CommentForm onSubmit={onCommentSubmit} />
-            )}
+            <div className="w-full pl-6">
+              <CommentForm onSubmit={onCommentSubmit} answerId={answer.answer_id} />
+            </div>
           </CardFooter>
         </div>
       </div>

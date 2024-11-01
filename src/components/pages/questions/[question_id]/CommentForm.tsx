@@ -19,19 +19,23 @@ const formSchema = z.object({
   response: z.string().min(1, {
     message: 'Response field cannot be empty.',
   }),
+  answer: z.string()
 })
 
 // Function that will render the commment form and passes the results to the asked-question page on submit
 export default function CommentForm({
   onSubmit,
+  answerId
 }: {
   onSubmit: (values: z.infer<typeof formSchema>) => void
+  answerId: string
 }) {
   // Define the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       response: '',
+      answer: answerId
     },
   })
 
