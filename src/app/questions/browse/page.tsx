@@ -29,8 +29,6 @@ const QuestionsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
-  const router = useRouter()
-
   // Fetch Questions with Pagination, Filtering, and Search
   useEffect(() => {
     const fetchQuestions = async () => {

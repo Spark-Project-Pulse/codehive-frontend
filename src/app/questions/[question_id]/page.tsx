@@ -183,7 +183,16 @@ export default function QuestionPage({
             {/* Show all current answers below question, if answers exists */}
             {answers.length > 0 && (
               <div className="mt-8">
-                <h2 className="text-lg font-bold">Current Answers:</h2>
+                <h2 className="text-lg font-bold">
+                  {answers.length > 0 ? (
+                    <>
+                      {answers.length}{' '}
+                      {answers.length === 1 ? 'Answer' : 'Answers'}
+                    </>
+                  ) : (
+                    <>No answers yet 😭</>
+                  )}
+                </h2>
                 <div className="list-disc pl-5">
                   {answers.map((answer) => (
                     <AnswerCard
