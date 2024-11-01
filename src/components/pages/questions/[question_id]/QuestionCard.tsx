@@ -36,7 +36,7 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
     void fetchTags()
   }, [])
 
-  const content = (
+  const QuestionCardContent = (
     <Card
       className={`w-full ${href && 'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'}`}
     >
@@ -87,9 +87,9 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
 
   return href ? (
     <Link href={href} passHref>
-      {content}
+      {QuestionCardContent}
     </Link>
   ) : (
-    content
+    QuestionCardContent
   )
 }
