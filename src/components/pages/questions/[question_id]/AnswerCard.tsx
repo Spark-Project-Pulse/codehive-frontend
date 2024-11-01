@@ -3,7 +3,6 @@
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
-import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import CommentForm from '@/components/pages/questions/[question_id]/CommentForm'
 import CommentCard from '@/components/pages/questions/[question_id]/CommentCard'
 import { type UUID } from 'crypto'
@@ -23,8 +22,6 @@ interface AnswerCardProps {
   upvoted: boolean
   downvoted: boolean
   onCommentSubmit: (values: { response: string, answer: string }) => void
-  // onAddComment: (answerId: UUID) => void
-  // openCommentFormId: string | null
   isLoadingComments: boolean
 }
 
@@ -34,8 +31,6 @@ export default function AnswerCard({
   upvoted,
   downvoted,
   onCommentSubmit,
-  // onAddComment,
-  // openCommentFormId,
   isLoadingComments,
 }: AnswerCardProps) {
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)

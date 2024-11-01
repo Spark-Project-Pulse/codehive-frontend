@@ -24,9 +24,6 @@ export default function QuestionPage({
   const { toast } = useToast()
   const [question, setQuestion] = useState<Question | null>(null)
   const [answers, setAnswers] = useState<Answer[]>([])
-  const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
-    null
-  )
   const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
 
   const [isLoadingQuestion, setIsLoadingQuestion] = useState<boolean>(true)
@@ -133,20 +130,6 @@ export default function QuestionPage({
     }
   }
 
-  // // Function to handle add comment button
-  // function handleAddComment(answerId: UUID): Promise<void> {
-  //   return new Promise((resolve) => {
-  //     if (openCommentFormId === answerId) {
-  //       // Close the form if it's already open for an answer
-  //       setOpenCommentFormId(null)
-  //     } else {
-  //       // Open the form for the clicked answer (also closes any opened commentform)
-  //       setOpenCommentFormId(answerId)
-  //     }
-  //     resolve()
-  //   })
-  // }
-
   // Function to handle submitting a comment
   async function handleCommentSubmit(values: { response: string, answer: string }) {
     const requestData = {
@@ -171,17 +154,10 @@ export default function QuestionPage({
         })
       }
 
-      // Close comment form upon submit
-      setOpenCommentFormId(null)
     } catch (error) {
       console.error('Unexpected error:', error)
     }
   }
-
-  // // Conditional rendering for loading state
-  // if (isLoading) {
-  //   return <LoadingSpinner />
-  // }
 
   return (
     <section className="min-h-screen bg-gray-100 py-24">
@@ -222,8 +198,6 @@ export default function QuestionPage({
                       upvoted={answer.curr_user_upvoted ?? false}
                       downvoted={answer.curr_user_downvoted ?? false}
                       onCommentSubmit={handleCommentSubmit}
-                      // onAddComment={handleAddComment}
-                      // openCommentFormId={openCommentFormId}
                       isLoadingComments={isLoadingComments[answer.answer_id]}
                     />
                   ))}
