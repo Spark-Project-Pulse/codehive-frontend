@@ -104,7 +104,7 @@ export default function QuestionPage({
   }, [params.question_id])
 
   // Function to handle answer form submission and perform API call
-  async function handleAnswerSubmit(values: { response: string }) {
+  async function handleAnswerSubmit(values: { response: string }): Promise<void> {
     // Append question_id to the values object
     const requestData = {
       ...values,

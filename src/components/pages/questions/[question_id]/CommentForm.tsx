@@ -55,7 +55,7 @@ export default function CommentForm({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea placeholder="your comment here" {...field} />
+                <Textarea placeholder="Your comment here" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
