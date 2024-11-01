@@ -229,7 +229,7 @@ export default function QuestionPage({
                       onCommentSubmit={handleCommentSubmit}
                       onAddComment={handleAddComment}
                       openCommentFormId={openCommentFormId}
-                      // isLoadingComments={loadingComments[answer.answer_id]}
+                      isLoadingComments={isLoadingComments[answer.answer_id]}
                     />
                   ))}
                 </div>

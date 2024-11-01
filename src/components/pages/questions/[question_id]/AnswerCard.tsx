@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
@@ -19,6 +15,7 @@ import { changeReputationByAmount } from '@/api/users'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
+import SkeletonCommentCard from '@/components/pages/questions/[question_id]/SkeletonCommentCard'
 
 interface AnswerCardProps {
   answer: Answer
@@ -28,6 +25,7 @@ interface AnswerCardProps {
   onCommentSubmit: (values: { response: string }) => void
   onAddComment: (answerId: UUID) => void
   openCommentFormId: string | null
+  isLoadingComments: boolean
 }
 
 export default function AnswerCard({
@@ -38,6 +36,7 @@ export default function AnswerCard({
   onCommentSubmit,
   onAddComment,
   openCommentFormId,
+  isLoadingComments,
 }: AnswerCardProps) {
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
@@ -204,24 +203,36 @@ export default function AnswerCard({
               </div>
             </div>
           </CardContent>
+
+          {/* Comments Section */}
           <CardContent>
-            {/* Comments Section */}
-            {comments[answer.answer_id]?.length > 0 && (
-              <div className="mt-8">
-                <h2 className="text-lg font-bold">
-                  {comments[answer.answer_id].length}{' '}
-                  {comments[answer.answer_id].length === 1
-                    ? 'Comment'
-                    : 'Comments'}
-                </h2>
-                <div className="list-disc pl-5">
-                  {comments[answer.answer_id].map((comment) => (
-                    <CommentCard key={comment.comment_id} comment={comment} />
-                  ))}
-                </div>
-              </div>
+            {isLoadingComments ? (
+              <SkeletonCommentCard />
+            ) : (
+              <>
+                {comments[answer.answer_id]?.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="text-lg font-bold">
+                      {comments[answer.answer_id].length}{' '}
+                      {comments[answer.answer_id].length === 1
+                        ? 'Comment'
+                        : 'Comments'}
+                    </h2>
+                    <div className="list-disc pl-5">
+                      {comments[answer.answer_id].map((comment) => (
+                        <CommentCard
+                          key={comment.comment_id}
+                          comment={comment}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
+
+          {/* Add Comment Section */}
           <CardFooter>
             <ButtonWithLoading
               buttonType="button"
