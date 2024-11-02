@@ -3,7 +3,7 @@
 import { getAllCommunities } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
 import CommunityCard from '@/components/pages/communities/browse/CommunityCard'
-import CommunityCardSkeleton from '@/components/pages/communities/browse/CommunityCardSkeleton'
+import SkeletonCommunityCard from '@/components/pages/communities/browse/SkeletonCommunityCard'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
@@ -139,7 +139,7 @@ export default function BrowseCommunities() {
           {isLoading && (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 30 }, (_, index) => (
-                <CommunityCardSkeleton key={index} />
+                <SkeletonCommunityCard key={index} />
               ))}
             </div>
           )}
