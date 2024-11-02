@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: 'Find Questions',
-            url: '/questions/view-all-questions',
+            url: '/questions/browse',
           },
         ],
       },

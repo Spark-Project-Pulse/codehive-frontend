@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { LoadingSpinner } from '@/components/ui/loading'
-import { useRouter } from 'next/navigation'
 import { getAllTags } from '@/api/tags'
 import { type TagOption } from '@/types/Tags'
 import { type Question } from '@/types/Questions'
@@ -11,6 +9,8 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
+import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
+import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -27,8 +27,6 @@ const QuestionsPage: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
-
-  const router = useRouter()
 
   // Fetch Questions with Pagination, Filtering, and Search
   useEffect(() => {
@@ -80,10 +78,6 @@ const QuestionsPage: React.FC = () => {
     void fetchTags()
   }, [])
 
-  const handleQuestionClick = (questionId: string) => {
-    router.push(`/questions/${questionId}`)
-  }
-
   const clearFilters = () => {
     setSelectedTags([])
     setSearchQuery('')
@@ -121,10 +115,11 @@ const QuestionsPage: React.FC = () => {
 
         <main className="md:w-3/4">
           {isLoading && (
-            <div className="my-10 flex flex-col items-center justify-center">
-              <LoadingSpinner />
-              <p className="mt-4 text-muted">Loading questions...</p>
-            </div>
+            <ul className="space-y-6">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SkeletonQuestionCard href key={index} />
+              ))}
+            </ul>
           )}
 
           {hasError && (
@@ -149,47 +144,13 @@ const QuestionsPage: React.FC = () => {
 
               <ul className="space-y-6">
                 {questions.length > 0 ? (
-                  questions.map((question) => (
-                    <li
-                      key={question.question_id.toString()}
-                      className="cursor-pointer rounded-lg border border-border bg-card p-6 shadow-md transition hover:bg-secondary"
-                      onClick={() =>
-                        handleQuestionClick(question.question_id.toString())
-                      }
-                    >
-                      <div className="flex items-start justify-between">
-                        <h2 className="mb-2 text-balance text-xl font-semibold text-secondary-foreground">
-                          {question.title}
-                        </h2>
-                        <div className="text-right">
-                          <p className="text-base font-medium text-foreground">
-                            {question.asker_info?.username ?? 'Anonymous'}
-                          </p>
-                          <p className="text-sm font-medium text-foreground">
-                            {new Date(
-                              question.created_at ?? ''
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      <p className="mt-4 text-base text-foreground">
-                        {question.description}
-                      </p>
-                      {/* Display Tags */}
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {question.tags?.map((tagId) => {
-                          const tag = tags.find((t) => t.value === tagId)
-                          return tag ? (
-                            <span
-                              key={tag.value}
-                              className="rounded-full bg-indigo-100 px-2 py-1 text-sm font-medium text-indigo-700"
-                            >
-                              {tag.label}
-                            </span>
-                          ) : null // Handle cases where tag is not found
-                        })}
-                      </div>
-                    </li>
+                  questions.map((question, index) => (
+                    <div key={index}>
+                      <QuestionCard
+                        question={question}
+                        href={`/questions/${question.question_id.toString()}`}
+                      />
+                    </div>
                   ))
                 ) : (
                   <p className="text-center text-lg text-gray-700">
