@@ -34,10 +34,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
+  const [communitiesLoading, setCommunitiesLoading] = React.useState<boolean>(true)
 
   // Fetch communities only on component mount
   React.useEffect(() => {
     const fetchCommunities = async () => {
+      setCommunitiesLoading(true)
       const { data, errorMessage } = await getCurrentUserCommunities()
       if (data) {
         // Map the data to the desired format
@@ -61,6 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       } else {
         console.error(errorMessage)
       }
+      setCommunitiesLoading(false)
     }
     fetchCommunities()
   }, [])
@@ -166,7 +169,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <NavCommunities communities={communities} />
+        <NavCommunities communities={communities} loading={communitiesLoading} />
       </SidebarContent>
       <SidebarFooter>
         {loading ? (
