@@ -1,7 +1,7 @@
 'use server'
 
 import { type SuccessResponse, type ApiResponse } from '@/types/Api'
-import { type CommunityMembers, type Community } from '@/types/Communities'
+import { type CommunityMembers, type Community, CommunityOption } from '@/types/Communities'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
@@ -165,6 +165,39 @@ export const getAllCommunities = async (
     return { errorMessage: 'Error fetching communities' }
   }
 }
+
+/**
+ * Fetches communities from the backend.
+ *
+ * Returns:
+ *   Promise<CommunityOption[]>: An array of community options on success, or an empty array on failure.
+ */
+export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllOptions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = (await response.json()) as Community[];
+
+    const options: CommunityOption[] = data.map((community) => ({
+      value: community.community_id,
+      label: community.title,
+    }));
+
+    return options;
+  } catch (error) {
+    console.error('Error fetching communities:', error);
+    return [];
+  }
+};
 
 /**
  * Fetches a community by its ID from the backend.

@@ -18,6 +18,11 @@ export interface CommunityMembers {
     community_info: Community
 }
 
+export type CommunityOption = {
+  value: string
+  label: string
+}
+
 export type SidebarCommunity = {
   name: string;
   url: string;

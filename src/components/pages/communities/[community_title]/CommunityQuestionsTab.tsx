@@ -12,23 +12,31 @@ import { PaginationComponent } from '@/components/universal/search/PaginationCom
 import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 import { UUID } from 'crypto'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 interface CommunityQuestionsTabProps {
   communityId: UUID
 }
 
-const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({ communityId }) => {
+const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
+  communityId,
+}) => {
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionsLoading, setQuestionsLoading] = useState<boolean>(true)
   const [hasError, setHasError] = useState<boolean>(false)
+
   const [tags, setTags] = useState<TagOption[]>([])
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
+
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize] = useState<number>(20)
   const [totalPages, setTotalPages] = useState<number>(1)
   const [totalQuestions, setTotalQuestions] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
+  const router = useRouter()
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -85,8 +93,22 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({ community
     setCurrentPage(1)
   }
 
+  // Naviage to ask questions page, include community id as a query parameter
+  const handleAskQuestionClick = () => {
+    router.push(`/questions/ask-question?communityId=${communityId}`)
+  }
+
   return (
     <div className="max-w-7xl p-6">
+      <div className="mb-4 flex justify-end">
+        <Button
+          onClick={handleAskQuestionClick}
+          className="rounded px-4 py-2"
+        >
+          Ask Question
+        </Button>
+      </div>
+
       <SearchAndTagComponent
         tags={tags}
         selectedTags={selectedTags}
@@ -106,7 +128,10 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({ community
 
       {hasError && (
         <div className="my-10 text-center text-destructive">
-          <p>Something went wrong while fetching the questions. Please try again later.</p>
+          <p>
+            Something went wrong while fetching the questions. Please try again
+            later.
+          </p>
         </div>
       )}
 
@@ -117,7 +142,9 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({ community
               selectedTags={selectedTags}
               searchQuery={searchQuery}
               onRemoveTag={(tagValue) =>
-                setSelectedTags(selectedTags.filter(tag => tag.value !== tagValue))
+                setSelectedTags(
+                  selectedTags.filter((tag) => tag.value !== tagValue)
+                )
               }
               onClearSearchQuery={() => setSearchQuery('')}
             />

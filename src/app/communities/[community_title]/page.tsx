@@ -10,10 +10,10 @@ import { getAllTags } from '@/api/tags'
 import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
 import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/use-toast'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
 
 export default function CommunityPage({

@@ -1,22 +1,30 @@
 'use client'
 
 import { useToast } from '@/components/ui/use-toast'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createQuestion } from '@/api/questions'
 import QuestionForm from '@/components/pages/questions/ask-question/QuestionForm'
+import { useEffect, useState } from 'react'
+import { getCommunityById } from '@/api/communities'
+import { Community } from '@/types/Communities'
+import { UUID } from 'crypto'
 
 export default function AskQuestion() {
   const { toast } = useToast()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const communityId = searchParams.get('communityId') as UUID | null // Get communityId from URL
 
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
     title: string
     description: string
     related_project?: string
+    related_community?: string
     tags?: string[] // Accept tags from form values
   }) {
     try {
+      console.log("On form submit, values is ", values)
       const response = await createQuestion(values)
       const { errorMessage, data } = response
 
@@ -46,7 +54,7 @@ export default function AskQuestion() {
       <h1 className="text-center text-h2 font-bold font-subHeading text-secondary-foreground">
         Ask a Question
       </h1>
-      <QuestionForm onSubmit={handleFormSubmit} />
+      <QuestionForm onSubmit={handleFormSubmit} communityId={communityId} />
     </div>
   )
 }

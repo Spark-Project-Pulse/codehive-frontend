@@ -32,6 +32,8 @@ import {
 } from '@/components/ui/select'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
+import CommunityCombobox from './CommunityCombobox'
+import { UUID } from 'crypto'
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -42,6 +44,7 @@ const formSchema = z.object({
     message: 'Question description cannot be empty.',
   }),
   related_project: z.string().optional(), // project UUID
+  related_community: z.string().optional(), // Community UUID
   code_context: z.string().optional(),
   code_context_full_pathname: z.string().optional(),
   code_context_line_number: z.number().nullable(),
@@ -53,6 +56,7 @@ type FormValues = z.infer<typeof formSchema>
 // The QuestionForm component
 export default function QuestionForm({
   onSubmit,
+  communityId,
   hasContext = false,
   project,
   codeContext,
@@ -61,6 +65,7 @@ export default function QuestionForm({
 }: {
   onSubmit: (values: FormValues) => Promise<void>
   hasContext?: boolean
+  communityId?: UUID | null
   project?: Project
   codeContext?: string
   codeContextFullPathname?: string
@@ -77,8 +82,11 @@ export default function QuestionForm({
       code_context_full_pathname:
         project && hasContext ? codeContextFullPathname : '',
       code_context_line_number:
-        project && hasContext && codeContextLineNumber ? codeContextLineNumber : null,
+        project && hasContext && codeContextLineNumber
+          ? codeContextLineNumber
+          : null,
       tags: [],
+      related_community: communityId || '',
     },
   })
 
@@ -90,10 +98,10 @@ export default function QuestionForm({
   // State to manage selected tags
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
 
-  // State to store tag options
+  // State to store project options
   const [projectOptions, setProjectOptions] = useState<ProjectOption[]>([])
 
-  // Fetch tags from the backend when the component mounts
+  // Fetch tags and communities from the backend when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -123,6 +131,11 @@ export default function QuestionForm({
       selectedTags.map((tag) => tag.value)
     )
   }, [selectedTags, form])
+
+  // Synchronize selected community with react-hook-form's "related_community" field
+  const handleCommunityChange = (value: string) => {
+    form.setValue('related_community', value) // Update related_community in form state
+  }
 
   return (
     <Form {...form}>
@@ -176,6 +189,24 @@ export default function QuestionForm({
                   selected={selectedTags}
                   onSelectedChange={setSelectedTags}
                   placeholder="Select relevant tags (optional)"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Communities Field */}
+        <FormField
+          control={form.control}
+          name="related_community"
+          render={() => (
+            <FormItem>
+              <FormLabel htmlFor="related_community">Ask a Community</FormLabel>
+              <FormControl>
+                <CommunityCombobox
+                  defaultValue={communityId || ''}
+                  onChange={handleCommunityChange}
                 />
               </FormControl>
               <FormMessage />
