@@ -2,7 +2,6 @@ export interface User {
   user: string
   username: string
   reputation: number
-  pfp_url?: string
   profile_image_url?: string
 }
 

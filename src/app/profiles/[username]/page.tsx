@@ -8,6 +8,10 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
@@ -23,6 +27,7 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
+  const [imageUpdateTrigger, setImageUpdateTrigger] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -34,7 +39,6 @@ export default function ProfilePage({
     const fetchUser = async () => {
       try {
         const response = await getUserByUsername(params.username)
-
         if (response.errorMessage) {
           console.error('Error fetching user:', response.errorMessage)
           return
@@ -42,7 +46,6 @@ export default function ProfilePage({
 
         // Set the user state with the fetched data
         setUser(response.data ?? null)
-        console.log("response.data:", response.data)
 
       } catch (error) {
         console.error('Error fetching user:', error)
@@ -134,13 +137,19 @@ export default function ProfilePage({
   async function handlePhotoUpload(photo: React.ChangeEvent<HTMLInputElement>) {
     const file = photo.target.files?.[0];
     if (file && user) {
+      setIsLoading(true)
       try {
         const formData = new FormData();
         formData.append('profile_image', file);
         const response = await uploadProfileImage(user.user, formData);
 
+        // Create unique timestamp to update profile image
+        setImageUpdateTrigger((prev) => prev + 1);
+        setShowUploadFiles(false);
       } catch (error) {
         console.error('File upload failed:', error);
+      } finally {
+        setIsLoading(false)
       }
     } else {
       console.error('File upload error')
@@ -158,18 +167,43 @@ export default function ProfilePage({
         <div className="md:w-1/3">
           <Card>
             <CardHeader className="flex flex-col items-center">
-              <Avatar className="h-32 w-32">
-                <AvatarImage
-                  src={user?.profile_image_url ?? '/anon-user-pfp.jpg'}
-                  alt="User profile picture"
-                />
-              </Avatar>
-              <button onClick={() => handleShowEditProfileClick()} > Edit Photo </button>
-              {showUploadFiles && (
-                <div>
-                  <input type="file" onChange={handlePhotoUpload} />
-                </div>
-              )}
+              <div className="relative h-32 w-32">
+                <Avatar className="h-32 w-32">
+                  <AvatarImage
+                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${imageUpdateTrigger}`}
+                    alt="User profile picture"
+                  />
+                </Avatar>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="absolute bottom-2 right-2 h-6 w-6 p-0 bg-transparent border-none cursor-pointer edit-icon" aria-label="Edit Profile">
+                      <img src="/edit_pencil.svg" alt="Edit Profile" className="h-full w-full" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="grid gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Profile Picture</h4>
+                        <p className="text-sm text-muted-foreground">
+                          A picture helps people recognize you and lets you know when you're signed in to your account
+                        </p>
+                      </div>
+                      <div className="grid gap-2">
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Button variant="outline" onClick={() => handleShowEditProfileClick()} id="width" className="col-span-2 h-10"> Change Image
+                            <img src="/edit_pencil.svg" alt="Edit Profile" className="h-full w-full" />
+                          </Button>
+                        </div>
+                        {showUploadFiles && (
+                          <div className="grid grid-cols-3 items-center gap-4">
+                            <Input type="file" id="height" className="col-span-2 h-10" onChange={handlePhotoUpload} />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
