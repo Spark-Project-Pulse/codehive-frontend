@@ -101,80 +101,83 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
   return (
     <div className="max-w-7xl p-6">
       <div className="mb-4 flex justify-end">
-        <Button
-          onClick={handleAskQuestionClick}
-          className="rounded px-4 py-2"
-        >
+        <Button onClick={handleAskQuestionClick} className="rounded px-4 py-2">
           Ask Question
         </Button>
       </div>
 
-      <SearchAndTagComponent
-        tags={tags}
-        selectedTags={selectedTags}
-        onSearchChange={setSearchQuery}
-        onTagChange={setSelectedTags}
-        onClearFilters={clearFilters}
-        searchQuery={searchQuery}
-      />
-
-      {questionsLoading && (
-        <ul className="space-y-6">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <SkeletonQuestionCard href key={index} />
-          ))}
-        </ul>
-      )}
-
-      {hasError && (
-        <div className="my-10 text-center text-destructive">
-          <p>
-            Something went wrong while fetching the questions. Please try again
-            later.
-          </p>
+      <div className="flex flex-wrap gap-4 md:flex-nowrap">
+        <div className="w-full flex-shrink-0 md:w-1/4">
+          <SearchAndTagComponent
+            tags={tags}
+            selectedTags={selectedTags}
+            onSearchChange={setSearchQuery}
+            onTagChange={setSelectedTags}
+            onClearFilters={clearFilters}
+            searchQuery={searchQuery}
+          />
         </div>
-      )}
 
-      {!questionsLoading && !hasError && (
-        <>
-          {(selectedTags.length > 0 || searchQuery.trim()) && (
-            <ActiveFilters
-              selectedTags={selectedTags}
-              searchQuery={searchQuery}
-              onRemoveTag={(tagValue) =>
-                setSelectedTags(
-                  selectedTags.filter((tag) => tag.value !== tagValue)
-                )
-              }
-              onClearSearchQuery={() => setSearchQuery('')}
-            />
+        <div className="w-full md:w-3/4">
+          {questionsLoading && (
+            <ul className="space-y-6">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SkeletonQuestionCard href key={index} />
+              ))}
+            </ul>
           )}
 
-          <ul className="space-y-6">
-            {questions.length > 0 ? (
-              questions.map((question) => (
-                <QuestionCard
-                  key={question.question_id}
-                  question={question}
-                  href={`/questions/${question.question_id}`}
-                />
-              ))
-            ) : (
-              <p className="text-center text-lg text-gray-700">
-                No questions match your search criteria.
+          {hasError && (
+            <div className="my-10 text-center text-destructive">
+              <p>
+                Something went wrong while fetching the questions. Please try
+                again later.
               </p>
-            )}
-          </ul>
-
-          {totalPages > 1 && (
-            <PaginationComponent
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            </div>
           )}
-        </>
-      )}
+
+          {!questionsLoading && !hasError && (
+            <>
+              {(selectedTags.length > 0 || searchQuery.trim()) && (
+                <ActiveFilters
+                  selectedTags={selectedTags}
+                  searchQuery={searchQuery}
+                  onRemoveTag={(tagValue) =>
+                    setSelectedTags(
+                      selectedTags.filter((tag) => tag.value !== tagValue)
+                    )
+                  }
+                  onClearSearchQuery={() => setSearchQuery('')}
+                />
+              )}
+
+              <ul className="space-y-6">
+                {questions.length > 0 ? (
+                  questions.map((question) => (
+                    <QuestionCard
+                      key={question.question_id}
+                      question={question}
+                      href={`/questions/${question.question_id}`}
+                    />
+                  ))
+                ) : (
+                  <p className="text-center text-lg text-gray-700">
+                    No questions match your search criteria.
+                  </p>
+                )}
+              </ul>
+
+              {totalPages > 1 && (
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
