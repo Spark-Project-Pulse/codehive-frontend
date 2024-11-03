@@ -144,13 +144,13 @@ const QuestionsPage: React.FC = () => {
 
               <ul className="space-y-6">
                 {questions.length > 0 ? (
-                  questions.map((question, index) => (
-                    <div key={index}>
+                  questions.map((question) => (
+                    <li key={question.question_id}>
                       <QuestionCard
                         question={question}
-                        href={`/questions/${question.question_id.toString()}`}
+                        href={`/questions/${question.question_id}`}
                       />
-                    </div>
+                    </li>
                   ))
                 ) : (
                   <p className="text-center text-lg text-gray-700">
