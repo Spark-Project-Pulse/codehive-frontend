@@ -39,7 +39,8 @@ const QuestionsPage: React.FC = () => {
           currentPage,
           pageSize,
           selectedTagValues,
-          debouncedSearchQuery
+          debouncedSearchQuery,
+          null
         )
 
         if (response.errorMessage) {

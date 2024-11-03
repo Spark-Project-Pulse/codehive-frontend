@@ -8,10 +8,12 @@ import {
 } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
 import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
+import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { toast } from '@/components/ui/use-toast'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
 
 export default function CommunityPage({
@@ -142,7 +144,18 @@ export default function CommunityPage({
         handleLeaveCommunity={handleLeaveCommunity}
       />
 
-      {/* Rest of content */}
+      <Tabs defaultValue="questions" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="questions">Questions</TabsTrigger>
+          <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+        </TabsList>
+        <TabsContent value="questions">
+          {community && (
+            <CommunityQuestionsTab communityId={community.community_id} />
+          )}
+        </TabsContent>
+        <TabsContent value="leaderboard"></TabsContent>
+      </Tabs>
     </div>
   )
 }
