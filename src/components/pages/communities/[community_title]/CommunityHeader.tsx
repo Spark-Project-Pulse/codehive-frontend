@@ -18,7 +18,6 @@ import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { Users } from 'lucide-react'
-import { useState } from 'react'
 
 export default function CommunityHeader({
   community,
@@ -86,7 +85,7 @@ export default function CommunityHeader({
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your
-                community related data, including your reputation.
+                community related data, including your reputation and contributions.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

@@ -36,6 +36,11 @@ export function NavCommunities({
       <SidebarMenu>
         {loading ? (
           <Skeleton className="mb-2 h-6 w-3/4" />
+        ) : communities.length === 0 ? (
+          // Display message if no communities
+          <div className="text-sm pl-3">
+            You are not in any communities
+          </div>
         ) : (
           communities.map((item) => (
             <SidebarMenuItem key={item.name}>
