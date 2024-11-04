@@ -155,9 +155,8 @@ export default function AnswerCard({
           <Button
             onClick={() => handleUpvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
           >
             👍
           </Button>
@@ -165,9 +164,8 @@ export default function AnswerCard({
           <Button
             onClick={() => handleDownvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
           >
             👎
           </Button>
@@ -182,7 +180,7 @@ export default function AnswerCard({
             <div className="mt-4 flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={answer.expert_info.pfp_url} />
+                  <AvatarImage src={answer.expert_info.profile_image_url} />
                   <AvatarFallback>
                     {answer.expert_info?.username?.[0] ?? (
                       <UserIcon className="h-4 w-4" />
