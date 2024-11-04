@@ -1,6 +1,7 @@
 import { type UUID } from 'crypto'
 import { LucideIcon } from 'lucide-react'
 import { ReactNode } from 'react'
+import { User } from './Users'
 
 export interface Community {
   community_id: UUID
@@ -12,10 +13,13 @@ export interface Community {
   tags?: string[]
 }
 
-export interface CommunityMembers {
-    community_id: UUID
-    user_id: UUID
-    community_info: Community
+export interface CommunityMember {
+  community_id: UUID
+  user_id: UUID
+  community_info: Community
+  user_info: User
+  community_reputation: number
+  contributions: number
 }
 
 export type CommunityOption = {
@@ -24,7 +28,7 @@ export type CommunityOption = {
 }
 
 export type SidebarCommunity = {
-  name: string;
-  url: string;
-  icon: () => ReactNode;
+  name: string
+  url: string
+  icon: () => ReactNode
 }

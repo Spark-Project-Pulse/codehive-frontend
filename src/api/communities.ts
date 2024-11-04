@@ -1,7 +1,11 @@
 'use server'
 
 import { type SuccessResponse, type ApiResponse } from '@/types/Api'
-import { type CommunityMembers, type Community, CommunityOption } from '@/types/Communities'
+import {
+  type Community,
+  type CommunityOption,
+  type CommunityMember,
+} from '@/types/Communities'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
@@ -43,7 +47,7 @@ export const addUserToCommunity = async (
       )
     }
 
-    const responseData = await response.json() as SuccessResponse
+    const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error adding user to community: ', error)
@@ -89,7 +93,7 @@ export const removeUserFromCommunity = async (
       )
     }
 
-    const responseData = await response.json() as SuccessResponse
+    const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error removing user from community: ', error)
@@ -174,30 +178,68 @@ export const getAllCommunities = async (
  */
 export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllOptions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllOptions`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Network response was not ok')
     }
 
-    const data = (await response.json()) as Community[];
+    const data = (await response.json()) as Community[]
 
     const options: CommunityOption[] = data.map((community) => ({
       value: community.community_id,
       label: community.title,
-    }));
+    }))
 
-    return options;
+    return options
   } catch (error) {
-    console.error('Error fetching communities:', error);
-    return [];
+    console.error('Error fetching communities:', error)
+    return []
   }
-};
+}
+
+/**
+ * Fetches members by community ID from the backend.
+ *
+ * Args:
+ *   community_id (string): The ID of the community whose members to retrieve.
+ *
+ * Returns:
+ *   Promise<ApiResponse<CommunityMember[]>>: The list of members on success, or an error message on failure.
+ */
+export const getAllCommunityMembers = async (
+  community_id: string
+): Promise<ApiResponse<CommunityMember[]>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllMembers/${community_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const membersData = (await response.json()) as CommunityMember[]
+    return { errorMessage: null, data: membersData }
+  } catch (error) {
+    console.error('Error fetching members: ', error)
+    return { errorMessage: 'Error fetching members' }
+  }
+}
 
 /**
  * Fetches a community by its ID from the backend.
@@ -274,15 +316,16 @@ export const getCommunityByTitle = async (
  * Fetches all the communities associated with the current user by their ID from the backend.
  *
  * Returns:
- *   Promise<ApiResponse<CommunityMembers[]>>: The communities data on success, or an error message on failure.
+ *   Promise<ApiResponse<CommunityMember[]>>: The communities data on success, or an error message on failure.
  */
-export const getCurrentUserCommunities = async (
-): Promise<ApiResponse<CommunityMembers[]>> => {
+export const getCurrentUserCommunities = async (): Promise<
+  ApiResponse<CommunityMember[]>
+> => {
   try {
     const user = await getSupaUser()
 
     if (!user) {
-      throw new Error("User is not authenticated")
+      throw new Error('User is not authenticated')
     }
 
     const response = await fetch(
@@ -299,7 +342,7 @@ export const getCurrentUserCommunities = async (
       throw new Error('Network response was not ok')
     }
 
-    const communityData = (await response.json()) as CommunityMembers[]
+    const communityData = (await response.json()) as CommunityMember[]
     return { errorMessage: null, data: communityData }
   } catch (error) {
     console.error('Error fetching communities: ', error)
