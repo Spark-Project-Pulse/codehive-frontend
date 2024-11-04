@@ -18,7 +18,6 @@ export const createQuestion = async (values: {
   description: string
 }): Promise<ApiResponse<{ question_id: string }>> => {
   try {
-
     const user = await getSupaUser()
 
     const vals = { asker: user?.id, ...values }
@@ -119,19 +118,38 @@ export const getQuestionById = async (
 }
 
 /**
- * Fetches all questions from the backend API.
+ * Fetches questions with pagination, optional tag filtering, and search functionality.
  *
  * Args:
- *   No arguments over here
+ *   pageNumber (number): The current page number.
+ *   pageSize (number): The number of questions per page.
+ *   selectedTags (string[]): An array of selected tag IDs.
+ *   searchQuery (string): The search query string.
  *
  * Returns:
- *   Promise<ApiResponse<Question[]>>: The questions data on success, or an error message on failure.
+ *   Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>: The questions data on success, or an error message on failure.
  */
-export const getAllQuestions = async (): Promise<ApiResponse<Question[]>> => {
+export const getAllQuestions = async (
+  pageNumber: number,
+  pageSize: number,
+  selectedTags: string[],
+  searchQuery: string
+): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
+    // Build the query parameters
+    const params = new URLSearchParams()
+    params.append('page', pageNumber.toString())
+    params.append('page_size', pageSize.toString())
+    if (searchQuery.trim()) {
+      params.append('search', searchQuery.trim())
+    }
+    selectedTags.forEach((tagId) => {
+      params.append('tags', tagId)
+    })
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`,
-    {
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/?${params.toString()}`,
+      {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -140,14 +158,28 @@ export const getAllQuestions = async (): Promise<ApiResponse<Question[]>> => {
     )
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+      const errorText = await response.text()
+      throw new Error(
+        `HTTP error! Status: ${response.status}, Message: ${errorText}`
+      )
     }
 
-    const questionData = (await response.json()) as Question[]
-    return { errorMessage: null, data: questionData }
+    const responseData = (await response.json()) as {
+      questions: Question[]
+      totalQuestions: number
+      totalPages: number
+      currentPage: number
+    }
+
+    return {
+      errorMessage: null,
+      data: {
+        questions: responseData.questions,
+        totalQuestions: responseData.totalQuestions,
+      },
+    }
   } catch (error) {
     console.error('Error fetching questions: ', error)
     return { errorMessage: 'Error fetching questions' }
   }
-};
+}

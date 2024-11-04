@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { TagOption } from "@/types/Tags";
+import { type TagOption } from "@/types/Tags";
 
 interface MultiSelectorProps {
   options: TagOption[];

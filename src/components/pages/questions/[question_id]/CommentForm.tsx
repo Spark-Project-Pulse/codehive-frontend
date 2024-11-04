@@ -19,41 +19,52 @@ const formSchema = z.object({
   response: z.string().min(1, {
     message: 'Response field cannot be empty.',
   }),
+  answer: z.string(),
 })
 
 // Function that will render the commment form and passes the results to the asked-question page on submit
 export default function CommentForm({
   onSubmit,
+  answerId,
 }: {
-  onSubmit: (values: z.infer<typeof formSchema>) => void
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>
+  answerId: string
 }) {
-  // Define the form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       response: '',
+      answer: answerId,
     },
   })
 
+  const { reset } = form
+
+  // Create a wrapper function to handle the submission
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    await onSubmit(values)
+    reset()
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="response"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea placeholder="your comment here" {...field} />
+                <Textarea placeholder="Your comment here" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <ButtonWithLoading
-          onClick={form.handleSubmit(onSubmit)}
-          buttonText="Submit"
+          onClick={form.handleSubmit(handleSubmit)}
           buttonType="submit"
+          buttonText="Submit"
         />
       </form>
     </Form>

@@ -25,7 +25,7 @@ const formSchema = z.object({
 export default function AnswerForm({
   onSubmit,
 }: {
-  onSubmit: (values: z.infer<typeof formSchema>) => void
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>
 }) {
   // Define the form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,23 +35,31 @@ export default function AnswerForm({
     },
   })
 
+  const { reset } = form
+
+  // Create a wrapper function to handle the submission
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    await onSubmit(values)
+    reset()
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="response"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea placeholder="your answer here" {...field} />
+                <Textarea placeholder="Your answer here" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <ButtonWithLoading
-          onClick={form.handleSubmit(onSubmit)}
+          onClick={form.handleSubmit(handleSubmit)}
           buttonText="Submit"
           buttonType="submit"
         />
