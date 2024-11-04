@@ -1,11 +1,24 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { Users } from 'lucide-react'
+import { useState } from 'react'
 
 export default function CommunityHeader({
   community,
@@ -62,11 +75,28 @@ export default function CommunityHeader({
       )}
 
       {userIsMember === true && (
-        <ButtonWithLoading
-          onClick={handleLeaveCommunity}
-          buttonText="Leave Community"
-          buttonType="button"
-        />
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <Button type="button">
+              Leave community
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                community related data, including your reputation.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLeaveCommunity}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   )
