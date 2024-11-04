@@ -1,7 +1,6 @@
 import { type UUID } from 'crypto'
-import { LucideIcon } from 'lucide-react'
-import { ReactNode } from 'react'
-import { User } from './Users'
+import { type ReactNode } from 'react'
+import { type User } from './Users'
 
 export interface Community {
   community_id: UUID

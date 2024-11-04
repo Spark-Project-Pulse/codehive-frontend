@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { SidebarCommunity } from '@/types/Communities'
+import { type SidebarCommunity } from '@/types/Communities'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export function NavCommunities({

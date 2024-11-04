@@ -17,7 +17,7 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { cn } from '@/lib/utils'
-import { CommunityOption } from '@/types/Communities'
+import { type CommunityOption } from '@/types/Communities'
 import { getAllCommunityOptions } from '@/api/communities'
 
 interface CommunityComboboxProps {

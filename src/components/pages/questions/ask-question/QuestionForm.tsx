@@ -33,7 +33,7 @@ import {
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import CommunityCombobox from './CommunityCombobox'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -86,7 +86,7 @@ export default function QuestionForm({
           ? codeContextLineNumber
           : null,
       tags: [],
-      related_community: communityId || '',
+      related_community: communityId ?? '',
     },
   })
 
@@ -205,7 +205,7 @@ export default function QuestionForm({
               <FormLabel htmlFor="related_community">Ask a Community</FormLabel>
               <FormControl>
                 <CommunityCombobox
-                  defaultValue={communityId || ''}
+                  defaultValue={communityId ?? ''}
                   onChange={handleCommunityChange}
                 />
               </FormControl>

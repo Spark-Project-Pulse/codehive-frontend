@@ -3,7 +3,7 @@
 import { type ApiResponse } from '@/types/Api'
 import { type Question } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 /**
  * Creates a new question by sending a POST request to the backend.

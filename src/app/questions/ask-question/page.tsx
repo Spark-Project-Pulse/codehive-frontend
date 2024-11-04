@@ -4,7 +4,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createQuestion } from '@/api/questions'
 import QuestionForm from '@/components/pages/questions/ask-question/QuestionForm'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 
 export default function AskQuestion() {
   const { toast } = useToast()

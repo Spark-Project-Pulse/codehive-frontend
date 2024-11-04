@@ -11,7 +11,7 @@ import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 

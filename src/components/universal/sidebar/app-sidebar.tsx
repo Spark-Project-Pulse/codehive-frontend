@@ -6,7 +6,6 @@ import {
   MessageCircleQuestion,
   FolderKanban,
   PersonStanding,
-  PersonStandingIcon,
 } from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
@@ -27,7 +26,7 @@ import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { getCurrentUserCommunities } from '@/api/communities'
-import { type SidebarCommunity, type Community } from '@/types/Communities'
+import { type SidebarCommunity } from '@/types/Communities'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

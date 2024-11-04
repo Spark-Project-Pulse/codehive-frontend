@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CommunityMember } from '@/types/Communities'
+import { type CommunityMember } from '@/types/Communities'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { UUID } from 'crypto'
-import { Award, Medal, Star, Trophy } from 'lucide-react'
+import { type UUID } from 'crypto'
+import { Award, Medal, Trophy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { getAllCommunityMembers } from '@/api/communities'
 

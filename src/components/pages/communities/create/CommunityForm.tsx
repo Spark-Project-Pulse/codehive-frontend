@@ -78,7 +78,7 @@ export default function CommunityForm({
 
   // Handle file upload for avatar
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null
+    const file = event.target.files?.[0] ?? null
     form.setValue('avatar', file)
   }
 
@@ -143,7 +143,7 @@ export default function CommunityForm({
         <FormField
           control={form.control}
           name="avatar"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel htmlFor="avatar">Community Avatar (optional)</FormLabel>
               <FormControl>
