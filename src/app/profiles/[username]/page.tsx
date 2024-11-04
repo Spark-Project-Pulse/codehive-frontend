@@ -10,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
@@ -140,7 +139,7 @@ export default function ProfilePage({
       try {
         const formData = new FormData();
         formData.append('profile_image', file);
-        const response = await uploadProfileImage(user.user, formData);
+        uploadProfileImage(user.user, formData);
 
         setShowUploadFiles(false);
       } catch (error) {
@@ -182,7 +181,7 @@ export default function ProfilePage({
                       <div className="space-y-2">
                         <h4 className="font-medium leading-none">Profile Picture</h4>
                         <p className="text-sm text-muted-foreground">
-                          A picture helps people recognize you and lets you know when you're signed in to your account
+                          A picture helps people recognize you and lets you know when you&aposre signed in to your account
                         </p>
                       </div>
                       <div className="grid gap-2">
