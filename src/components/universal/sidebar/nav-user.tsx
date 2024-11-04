@@ -21,6 +21,7 @@ import {
 import { type User } from '@/types/Users'
 import Link from 'next/link'
 import SignOutButton from '@/components/universal/SignOutButton'
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar()
@@ -96,7 +97,12 @@ export function NavUser({ user }: { user: User | null }) {
                 {/* TODO: replace SignOutButton with DropdownMenuItem */}
                 {/* <DropdownMenuItem> */}
                 {/* <LogOut /> */}
-                <SignOutButton />
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <DropdownMenuItem>
+                    <ModeToggle /> Change Mode
+                  </DropdownMenuItem>
+                  <SignOutButton />
+                </DropdownMenuLabel>
                 {/* </DropdownMenuItem> */}
               </>
             ) : (
