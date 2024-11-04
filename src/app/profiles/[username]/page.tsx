@@ -27,7 +27,6 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-  const [imageUpdateTrigger, setImageUpdateTrigger] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -143,8 +142,6 @@ export default function ProfilePage({
         formData.append('profile_image', file);
         const response = await uploadProfileImage(user.user, formData);
 
-        // Create unique timestamp to update profile image
-        setImageUpdateTrigger((prev) => prev + 1);
         setShowUploadFiles(false);
       } catch (error) {
         console.error('File upload failed:', error);
@@ -170,7 +167,7 @@ export default function ProfilePage({
               <div className="relative h-32 w-32">
                 <Avatar className="h-32 w-32">
                   <AvatarImage
-                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${imageUpdateTrigger}`}
+                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
                     alt="User profile picture"
                   />
                 </Avatar>
