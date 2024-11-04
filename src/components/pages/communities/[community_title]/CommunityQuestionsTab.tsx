@@ -151,14 +151,16 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
                 />
               )}
 
-              <ul className="space-y-6">
+              <ul>
                 {questions.length > 0 ? (
                   questions.map((question) => (
-                    <QuestionCard
-                      key={question.question_id}
-                      question={question}
-                      href={`/questions/${question.question_id}`}
-                    />
+                    <li key={question.question_id} className="mb-6">
+                      <QuestionCard
+                        key={question.question_id}
+                        question={question}
+                        href={`/questions/${question.question_id}`}
+                      />
+                    </li>
                   ))
                 ) : (
                   <p className="text-center text-lg text-gray-700">
