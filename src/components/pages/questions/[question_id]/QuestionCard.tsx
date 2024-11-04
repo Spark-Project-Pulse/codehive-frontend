@@ -64,7 +64,7 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
       <CardFooter className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={question.asker_info?.pfp_url} />
+            <AvatarImage src={question.asker_info?.profile_image_url} />
             <AvatarFallback>
               {question.asker_info?.username?.[0] ?? (
                 <UserIcon className="h-4 w-4" />
