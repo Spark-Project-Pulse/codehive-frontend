@@ -1,46 +1,68 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getAllTags } from '@/api/tags'
-import { type TagOption } from '@/types/Tags'
-import { type Question } from '@/types/Questions'
 import { getAllQuestions } from '@/api/questions'
+import { getAllTags } from '@/api/tags'
 import { useDebounce } from '@/hooks/useDebounce'
+import { type Question } from '@/types/Questions'
+import { type TagOption } from '@/types/Tags'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
+import { type UUID } from 'crypto'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
-const QuestionsPage: React.FC = () => {
+interface CommunityQuestionsTabProps {
+  communityId: UUID
+}
+
+const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
+  communityId,
+}) => {
   const [questions, setQuestions] = useState<Question[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [questionsLoading, setQuestionsLoading] = useState<boolean>(true)
   const [hasError, setHasError] = useState<boolean>(false)
+
   const [tags, setTags] = useState<TagOption[]>([])
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [pageSize] = useState<number>(20) // You can make this adjustable if needed
+  const [pageSize] = useState<number>(20)
   const [totalPages, setTotalPages] = useState<number>(1)
   const [totalQuestions, setTotalQuestions] = useState<number>(0)
-
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
-  // Fetch Questions with Pagination, Filtering, and Search
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const fetchedTags = await getAllTags()
+        setTags(fetchedTags)
+      } catch (error) {
+        console.error('Error fetching tags:', error)
+      }
+    }
+
+    void fetchTags()
+  }, [])
+
+  // Fetch questions specific to this community
   useEffect(() => {
     const fetchQuestions = async () => {
+      setQuestionsLoading(true)
       try {
-        setIsLoading(true)
         const selectedTagValues = selectedTags.map((tag) => tag.value)
-
         const response = await getAllQuestions(
           currentPage,
           pageSize,
           selectedTagValues,
           debouncedSearchQuery,
-          null
+          communityId // Filter by community ID
         )
 
         if (response.errorMessage) {
@@ -58,64 +80,46 @@ const QuestionsPage: React.FC = () => {
         console.error('Error fetching questions:', error)
         setHasError(true)
       } finally {
-        setIsLoading(false)
+        setQuestionsLoading(false)
       }
     }
 
     void fetchQuestions()
-  }, [currentPage, pageSize, selectedTags, debouncedSearchQuery])
-
-  // Fetch Tags
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const fetchedTags = await getAllTags()
-        setTags(fetchedTags)
-      } catch (error) {
-        console.error('Error fetching tags:', error)
-      }
-    }
-
-    void fetchTags()
-  }, [])
+  }, [communityId, currentPage, pageSize, selectedTags, debouncedSearchQuery])
 
   const clearFilters = () => {
     setSelectedTags([])
     setSearchQuery('')
-    setCurrentPage(1) // Reset to first page when filters are cleared
-  }
-
-  // Reset to first page when filters or search query change
-  useEffect(() => {
     setCurrentPage(1)
-  }, [selectedTags, debouncedSearchQuery])
-
-  const handleSearchChange = (query: string) => setSearchQuery(query)
-
-  const handleRemoveTag = (tagValue: string) => {
-    setSelectedTags(selectedTags.filter((tag) => tag.value !== tagValue))
   }
 
-  const handleClearSearchQuery = () => setSearchQuery('')
+  // Naviage to ask questions page, include community id as a query parameter
+  const handleAskQuestionClick = () => {
+    router.push(`/questions/ask-question?communityId=${communityId}`)
+  }
 
   return (
     <div className="max-w-7xl p-6">
-      <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
-        Questions
-      </h1>
+      <div className="mb-4 flex justify-end">
+        <Button onClick={handleAskQuestionClick} className="rounded px-4 py-2">
+          Ask Question
+        </Button>
+      </div>
 
-      <div className="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0">
-        <SearchAndTagComponent
-          tags={tags}
-          selectedTags={selectedTags}
-          onSearchChange={handleSearchChange}
-          onTagChange={setSelectedTags}
-          onClearFilters={clearFilters}
-          searchQuery={searchQuery}
-        />
+      <div className="flex flex-wrap gap-4 md:flex-nowrap">
+        <div className="w-full flex-shrink-0 md:w-1/4">
+          <SearchAndTagComponent
+            tags={tags}
+            selectedTags={selectedTags}
+            onSearchChange={setSearchQuery}
+            onTagChange={setSelectedTags}
+            onClearFilters={clearFilters}
+            searchQuery={searchQuery}
+          />
+        </div>
 
-        <main className="md:w-3/4">
-          {isLoading && (
+        <div className="w-full md:w-3/4">
+          {questionsLoading && (
             <ul className="space-y-6">
               {Array.from({ length: 10 }).map((_, index) => (
                 <SkeletonQuestionCard href key={index} />
@@ -132,26 +136,31 @@ const QuestionsPage: React.FC = () => {
             </div>
           )}
 
-          {!isLoading && !hasError && (
+          {!questionsLoading && !hasError && (
             <>
               {(selectedTags.length > 0 || searchQuery.trim()) && (
                 <ActiveFilters
                   selectedTags={selectedTags}
                   searchQuery={searchQuery}
-                  onRemoveTag={handleRemoveTag}
-                  onClearSearchQuery={handleClearSearchQuery}
+                  onRemoveTag={(tagValue) =>
+                    setSelectedTags(
+                      selectedTags.filter((tag) => tag.value !== tagValue)
+                    )
+                  }
+                  onClearSearchQuery={() => setSearchQuery('')}
                 />
               )}
 
-              <ul className="space-y-6">
+              <ul>
                 {questions.length > 0 ? (
-                  questions.map((question, index) => (
-                    <div key={index}>
+                  questions.map((question) => (
+                    <li key={question.question_id} className="mb-6">
                       <QuestionCard
+                        key={question.question_id}
                         question={question}
-                        href={`/questions/${question.question_id.toString()}`}
+                        href={`/questions/${question.question_id}`}
                       />
-                    </div>
+                    </li>
                   ))
                 ) : (
                   <p className="text-center text-lg text-gray-700">
@@ -160,20 +169,19 @@ const QuestionsPage: React.FC = () => {
                 )}
               </ul>
 
-              {/* Use Pagination Component */}
               {totalPages > 1 && (
                 <PaginationComponent
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  onPageChange={setCurrentPage} // Pass setCurrentPage directly
+                  onPageChange={setCurrentPage}
                 />
               )}
             </>
           )}
-        </main>
+        </div>
       </div>
     </div>
   )
 }
 
-export default QuestionsPage
+export default CommunityQuestionsTab

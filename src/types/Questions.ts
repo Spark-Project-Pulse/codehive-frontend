@@ -12,4 +12,5 @@ export interface Question {
   tags?: string[],
   related_project?: UUID
   related_project_info?: Project
+  related_community_id?: UUID
 }
