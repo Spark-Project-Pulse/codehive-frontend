@@ -5,8 +5,17 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createQuestion } from '@/api/questions'
 import QuestionForm from '@/components/pages/questions/ask-question/QuestionForm'
 import { type UUID } from 'crypto'
+import * as React from 'react'
 
-export default function AskQuestion() {
+export default function AskQuestionWrapper() {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <AskQuestion />
+    </React.Suspense>
+  )
+}
+
+function AskQuestion() {
   const { toast } = useToast()
   const router = useRouter()
   const searchParams = useSearchParams()
