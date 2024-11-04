@@ -123,7 +123,7 @@ export default function ProfilePage({
   }
 
   // Handle show edit profile on click
-  async function handleShowEditProfileClick() {
+  function handleShowEditProfileClick() {
     // If the show upload files button is there, then hide it. Else show it
     if (showUploadFiles) {
       setShowUploadFiles(false)
