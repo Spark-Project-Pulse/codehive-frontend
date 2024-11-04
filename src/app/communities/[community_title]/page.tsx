@@ -7,8 +7,11 @@ import {
   userIsPartOfCommunity,
 } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
+import CommunityContributorsTab from '@/components/pages/communities/[community_title]/CommunityContributorsTab'
 import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
+import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/use-toast'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
@@ -142,7 +145,22 @@ export default function CommunityPage({
         handleLeaveCommunity={handleLeaveCommunity}
       />
 
-      {/* Rest of content */}
+      <Tabs defaultValue="questions" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="questions">Questions</TabsTrigger>
+          <TabsTrigger value="top-contributors">Top Contributors</TabsTrigger>
+        </TabsList>
+        <TabsContent value="questions">
+          {community && (
+            <CommunityQuestionsTab communityId={community.community_id} />
+          )}
+        </TabsContent>
+        <TabsContent value="top-contributors">
+        {community && (
+            <CommunityContributorsTab communityId={community.community_id} />
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

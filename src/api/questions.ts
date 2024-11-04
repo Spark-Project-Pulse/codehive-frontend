@@ -3,6 +3,7 @@
 import { type ApiResponse } from '@/types/Api'
 import { type Question } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
+import { type UUID } from 'crypto'
 
 /**
  * Creates a new question by sending a POST request to the backend.
@@ -133,7 +134,8 @@ export const getAllQuestions = async (
   pageNumber: number,
   pageSize: number,
   selectedTags: string[],
-  searchQuery: string
+  searchQuery: string,
+  related_community_id: UUID | null
 ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
     // Build the query parameters
@@ -146,6 +148,9 @@ export const getAllQuestions = async (
     selectedTags.forEach((tagId) => {
       params.append('tags', tagId)
     })
+    if (related_community_id) {
+      params.append('related_community_id', related_community_id.toString())
+    }
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/?${params.toString()}`,

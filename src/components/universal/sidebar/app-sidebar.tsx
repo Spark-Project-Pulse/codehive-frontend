@@ -1,7 +1,12 @@
 'use client'
 
 import * as React from 'react'
-import { Frame, MessageCircleQuestion, FolderKanban, PersonStanding } from 'lucide-react'
+import {
+  Frame,
+  MessageCircleQuestion,
+  FolderKanban,
+  PersonStanding,
+} from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
@@ -20,10 +25,48 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
+import { getCurrentUserCommunities } from '@/api/communities'
+import { type SidebarCommunity } from '@/types/Communities'
+import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
+  const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
+  const [communitiesLoading, setCommunitiesLoading] = React.useState<boolean>(true)
+
+  // Fetch communities only on component mount
+  React.useEffect(() => {
+    const fetchCommunities = async () => {
+      setCommunitiesLoading(true)
+      const { data, errorMessage } = await getCurrentUserCommunities()
+      if (data) {
+        // Map the data to the desired format
+        const formattedCommunities = data.map((community) => ({
+          name: community.community_info?.title,
+          url: `/communities/${community.community_info.title}`,
+          icon: () => (
+            <Avatar className="h-6 w-6">
+              <AvatarImage
+                src={
+                  community.community_info.avatar_url ??
+                  '/default-community-avatar.png'
+                }
+                alt={community.community_info.title || 'Community avatar'}
+              />
+            </Avatar>
+          ),
+        })) as SidebarCommunity[]
+
+        setCommunities(formattedCommunities)
+      } else {
+        console.error(errorMessage)
+      }
+      setCommunitiesLoading(false)
+    }
+    
+    void fetchCommunities()
+  }, [])
 
   const data = {
     navMain: [
@@ -64,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: 'Create Community',
-            url: '#',
+            url: '/communities/create',
           },
           {
             title: 'Browse Communities',
@@ -80,24 +123,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Frame,
       },
     ],
-    communities: [
-      {
-        name: '[community xyz]',
-        url: '#',
-        icon: Frame,
-      },
-    ],
   }
-  
+
   // MacOS
-  useKeyboardShortcut(["cmd", "/"], () => {
+  useKeyboardShortcut(['cmd', '/'], () => {
     toggleSidebar()
-  });
+  })
 
   // Windows/Linux
-  useKeyboardShortcut(["ctrl", "/"], () => {
-    toggleSidebar();
-  });
+  useKeyboardShortcut(['ctrl', '/'], () => {
+    toggleSidebar()
+  })
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -126,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <NavCommunities communities={data.communities} />
+        <NavCommunities communities={communities} loading={communitiesLoading} />
       </SidebarContent>
       <SidebarFooter>
         {loading ? (
