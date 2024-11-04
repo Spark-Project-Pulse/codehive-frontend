@@ -107,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: 'Create Community',
-            url: '#',
+            url: '/communities/create',
           },
           {
             title: 'Browse Communities',
@@ -119,13 +119,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     projects: [
       {
         name: '[projext xyz]',
-        url: '#',
-        icon: Frame,
-      },
-    ],
-    communities: [
-      {
-        name: '[community xyz]',
         url: '#',
         icon: Frame,
       },

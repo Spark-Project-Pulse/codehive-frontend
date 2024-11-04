@@ -10,6 +10,71 @@ import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
 /**
+ * Creates a new community by sending a POST request to the backend.
+ *
+ * Args:
+ *   values: An object containing `title`, `description`, optional `tags` array, and optional `avatar` file.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ community_id: string, title: string }>>: The created community's ID and title on success, or an error message on failure.
+ */
+export const createCommunity = async (values: {
+  title: string
+  description: string
+  tags?: string[]
+  // TODO: avatar?: File | null
+}): Promise<ApiResponse<{ community_id: string; title: string }>> => {
+  try {
+    const user = await getSupaUser()
+    if (!user) {
+      return { errorMessage: 'User not authenticated' }
+    }
+    // TODO: Include user as presumptive "owner" of the community
+
+    // Prepare form data for community creation (form data needed for file upload)
+    const formData = new FormData()
+    // TODO: formData.append('creator', user.id)
+    formData.append('title', values.title)
+    formData.append('description', values.description)
+
+    if (values.tags) {
+      values.tags.forEach((tag) => formData.append('tags', tag))
+    }
+    // TODO:
+    // if (values.avatar) {
+    //   formData.append('avatar', values.avatar)
+    // }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/create/`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const responseData = (await response.json()) as {
+      community_id: string
+      title: string
+    }
+    return {
+      errorMessage: null,
+      data: {
+        community_id: responseData.community_id,
+        title: responseData.title,
+      },
+    }
+  } catch (error) {
+    console.error('Error creating community: ', error)
+    return { errorMessage: 'Error creating community' }
+  }
+}
+
+/**
  * Adds a user to a community.
  *
  * Args:

@@ -4,9 +4,6 @@ import { useToast } from '@/components/ui/use-toast'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createQuestion } from '@/api/questions'
 import QuestionForm from '@/components/pages/questions/ask-question/QuestionForm'
-import { useEffect, useState } from 'react'
-import { getCommunityById } from '@/api/communities'
-import { Community } from '@/types/Communities'
 import { UUID } from 'crypto'
 
 export default function AskQuestion() {
@@ -24,7 +21,6 @@ export default function AskQuestion() {
     tags?: string[] // Accept tags from form values
   }) {
     try {
-      console.log("On form submit, values is ", values)
       const response = await createQuestion(values)
       const { errorMessage, data } = response
 
