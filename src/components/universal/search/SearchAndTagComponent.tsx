@@ -23,7 +23,7 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
   searchQuery,
 }) => {
   return (
-    <aside className="md:w-1/4">
+    <aside className="flex flex-col min-w-[250px] max-w-xs md:basis-1/4">
       <div className="rounded-lg border bg-card p-4">
         <h2 className="mb-4 text-xl font-semibold">Search and Filter</h2>
         <div className="mb-4">
