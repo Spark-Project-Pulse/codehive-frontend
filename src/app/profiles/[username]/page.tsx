@@ -139,7 +139,7 @@ export default function ProfilePage({
       try {
         const formData = new FormData();
         formData.append('profile_image', file);
-        uploadProfileImage(user.user, formData);
+        const response = await uploadProfileImage(user.user, formData);
 
         setShowUploadFiles(false);
       } catch (error) {
