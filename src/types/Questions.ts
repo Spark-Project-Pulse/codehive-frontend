@@ -14,3 +14,13 @@ export interface Question {
   related_project_info?: Project
   related_community_id?: UUID
 }
+
+export interface SearchResponse {
+  results: Question[]
+  totalQuestions: number
+}
+
+export interface GetAllResponse {
+  questions: Question[]
+  totalQuestions: number
+}

@@ -1,7 +1,7 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { type Question } from '@/types/Questions'
+import { SearchResponse, GetAllResponse, Question } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
@@ -133,17 +133,6 @@ export const getQuestionById = async (
  *   Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>: The questions data on success, or an error message on failure.
  */
 
-// Define the structure of the search response
-interface SearchResponse {
-  results: Question[]
-}
-
-// Define the structure of the getAll response
-interface GetAllResponse {
-  questions: Question[]
-  totalQuestions: number
-}
-
 export const getAllQuestions = async (
   pageNumber: number,
   pageSize: number,
@@ -174,6 +163,10 @@ export const getAllQuestions = async (
       params.append('related_community_id', related_community_id.toString())
     }
 
+    // Always append pagination parameters
+    params.append('page', pageNumber.toString())
+    params.append('page_size', pageSize.toString())
+
     const response = await fetch(`${url}?${params.toString()}`, {
       method: 'GET',
       headers: {
@@ -190,12 +183,12 @@ export const getAllQuestions = async (
 
     if (searchQuery.trim()) {
       // Response from search endpoint
-      const searchResponseData = responseData as SearchResponse
+      const searchResponseData = responseData as SearchResponse & { totalQuestions: number }
       return {
         errorMessage: null,
         data: {
           questions: searchResponseData.results,
-          totalQuestions: searchResponseData.results.length, // Adjust if backend provides total count
+          totalQuestions: searchResponseData.totalQuestions, // Now accurately provided by the backend
         },
       }
     } else {
