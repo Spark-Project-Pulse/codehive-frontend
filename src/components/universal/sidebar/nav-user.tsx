@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/sidebar'
 import { type User } from '@/types/Users'
 import Link from 'next/link'
-import { startTransition, useTransition } from 'react'
+import { useTransition } from 'react'
 import { signOutAction } from '@/api/auth'
 import { useUser } from '@/app/contexts/UserContext'
 import { useRouter } from 'next/navigation'
