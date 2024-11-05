@@ -1,14 +1,10 @@
 import * as React from 'react';
 
-interface ValueObject {
-  [themeName: string]: string;
-}
+type ValueObject = Record<string, string>;
 
 type DataAttribute = `data-${string}`;
 
-interface ScriptProps extends React.DetailedHTMLProps<React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement> {
-  [dataAttribute: DataAttribute]: any;
-}
+interface ScriptProps extends React.DetailedHTMLProps<React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>, Record<DataAttribute, string | number> { }
 
 interface UseThemeProps {
   themes: string[];
