@@ -45,11 +45,42 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
     }
   }
 
+  // Function to handle community navigation
+  const handleCommunityClick = () => {
+    if (!href && question.related_community_info) {
+      router.push(`/communities/${question.related_community_info.title}`)
+    }
+  }
+
   const QuestionCardContent = (
     <Card
       className={`w-full ${href && 'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'}`}
     >
       <CardHeader>
+        {!href && question.related_community_info ? (
+          <div className="flex items-center space-x-3 rounded-t-lg pb-2">
+            <Avatar
+              className="h-10 w-10 cursor-pointer"
+              onClick={handleCommunityClick}
+            >
+              <AvatarImage
+                src={question.related_community_info.avatar_url}
+                alt="Community avatar"
+              />
+              <AvatarFallback>
+                {question.related_community_info.title[0]}
+              </AvatarFallback>
+            </Avatar>
+            <span
+              className="cursor-pointer text-sm font-normal transition-transform hover:font-bold"
+              onClick={handleCommunityClick}
+            >
+              {question.related_community_info.title}
+            </span>
+          </div>
+        ) : (
+          ''
+        )}
         <CardTitle className="text-2xl font-bold">{question.title}</CardTitle>
         <CardDescription className="mt-2 text-base">
           {question.description}
