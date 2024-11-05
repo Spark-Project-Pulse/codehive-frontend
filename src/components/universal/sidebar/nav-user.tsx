@@ -1,6 +1,6 @@
 'use client'
 
-import { BadgeCheck, Bell, ChevronsUpDown, LogIn } from 'lucide-react'
+import { BadgeCheck, Bell, ChevronsUpDown, LogIn, LogOut } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -20,10 +20,39 @@ import {
 } from '@/components/ui/sidebar'
 import { type User } from '@/types/Users'
 import Link from 'next/link'
-import SignOutButton from '@/components/universal/SignOutButton'
+import { startTransition, useTransition } from 'react'
+import { signOutAction } from '@/api/auth'
+import { useUser } from '@/app/contexts/UserContext'
+import { useRouter } from 'next/navigation'
+import { toast } from '@/components/ui/use-toast'
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const { refetchUser } = useUser()
+
+  const handleSignOut = () => {
+    startTransition(async () => {
+      const response = await signOutAction()
+      const { errorMessage } = response
+
+      if (!errorMessage) {
+        await refetchUser()
+        toast({
+          title: 'Success!',
+          description: 'Signed out successfully',
+        })
+        router.push('/')
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
+    })
+  }
 
   return (
     <SidebarMenu>
@@ -35,7 +64,10 @@ export function NavUser({ user }: { user: User | null }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`} alt={user?.username} />
+                <AvatarImage
+                  src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                  alt={user?.username}
+                />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -55,7 +87,10 @@ export function NavUser({ user }: { user: User | null }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`} alt={user?.username} />
+                  <AvatarImage
+                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                    alt={user?.username}
+                  />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -73,18 +108,18 @@ export function NavUser({ user }: { user: User | null }) {
             {user ? (
               <>
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link
-                      className="flex cursor-pointer items-center gap-2"
+                      className="flex w-full cursor-pointer items-center gap-2"
                       href={`/profiles/${user.username}`}
                     >
                       <BadgeCheck />
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link
-                      className="flex cursor-pointer items-center gap-2"
+                      className="flex w-full cursor-pointer items-center gap-2"
                       href={'#'}
                     >
                       <Bell />
@@ -93,16 +128,19 @@ export function NavUser({ user }: { user: User | null }) {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                {/* TODO: replace SignOutButton with DropdownMenuItem */}
-                {/* <DropdownMenuItem> */}
-                {/* <LogOut /> */}
-                <SignOutButton />
-                {/* </DropdownMenuItem> */}
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  disabled={isPending}
+                  className="flex w-full cursor-pointer items-center gap-2"
+                >
+                  <LogOut />
+                  {isPending ? 'Signing out...' : 'Sign Out'}
+                </DropdownMenuItem>
               </>
             ) : (
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link
-                  className="flex cursor-pointer items-center gap-2"
+                  className="flex w-full cursor-pointer items-center gap-2"
                   href={'/login'}
                 >
                   <LogIn />
