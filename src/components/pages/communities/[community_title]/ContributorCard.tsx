@@ -16,7 +16,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index })
         <div className="flex items-center justify-between">
           <Avatar className="h-16 w-16">
             <AvatarImage
-              src={contributor.user_info.pfp_url}
+              src={contributor.user_info.profile_image_url}
               alt="Profile photo"
             />
             <AvatarFallback>
