@@ -15,6 +15,7 @@ import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { type TagOption } from '@/types/Tags'
 import { getAllTags } from '@/api/tags'
+import { useRouter } from 'next/navigation'
 
 interface QuestionCardProps {
   question: Question
@@ -23,6 +24,7 @@ interface QuestionCardProps {
 
 export default function QuestionCard({ question, href }: QuestionCardProps) {
   const [tags, setTags] = useState<TagOption[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -35,6 +37,13 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
     }
     void fetchTags()
   }, [])
+
+  // Function to handle profile navigation
+  const handleProfileClick = () => {
+    if (!href && question.asker_info) {
+      router.push(`/profiles/${question.asker_info.username}`)
+    }
+  }
 
   const QuestionCardContent = (
     <Card
@@ -62,7 +71,10 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
         )}
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div
+          className={`flex items-center space-x-4 ${question.asker_info && !href ? 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100' : ''}`}
+          onClick={handleProfileClick}
+        >
           <Avatar className="h-8 w-8">
             <AvatarImage src={question.asker_info?.profile_image_url} />
             <AvatarFallback>

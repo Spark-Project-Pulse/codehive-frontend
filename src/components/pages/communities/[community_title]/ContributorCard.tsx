@@ -3,15 +3,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { type CommunityMember } from '@/types/Communities'
 import { Award, Medal, Trophy } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface ContributorCardProps {
   contributor: CommunityMember
   index: number
 }
 
-const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index }) => {
+const ContributorCard: React.FC<ContributorCardProps> = ({
+  contributor,
+  index,
+}) => {
+  const router = useRouter()
+
+  // Function to navigate to the contributor's profile
+  const handleCardClick = () => {
+    router.push(`/profiles/${contributor.user_info.username}`)
+  }
+
   return (
-    <Card className="overflow-hidden">
+    <Card
+      onClick={handleCardClick}
+      className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+    >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <Avatar className="h-16 w-16">
@@ -31,9 +45,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index })
             </div>
           )}
         </div>
-        <CardTitle className="mt-2">
-          {contributor.user_info.username}
-        </CardTitle>
+        <CardTitle className="mt-2">{contributor.user_info.username}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-2">
