@@ -15,12 +15,7 @@ export interface Question {
   related_community_id?: UUID
 }
 
-export interface SearchResponse {
+export interface ListQuestionsRepsonse {
   results: Question[]
-  totalQuestions: number
-}
-
-export interface GetAllResponse {
-  questions: Question[]
   totalQuestions: number
 }

@@ -1,7 +1,7 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { SearchResponse, GetAllResponse, Question } from '@/types/Questions'
+import { type Question, type ListQuestionsRepsonse } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
@@ -179,29 +179,15 @@ export const getAllQuestions = async (
       throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`)
     }
 
-    const responseData: unknown = await response.json()
-
-    if (searchQuery.trim()) {
-      // Response from search endpoint
-      const searchResponseData = responseData as SearchResponse & { totalQuestions: number }
-      return {
-        errorMessage: null,
-        data: {
-          questions: searchResponseData.results,
-          totalQuestions: searchResponseData.totalQuestions, // Now accurately provided by the backend
-        },
-      }
-    } else {
-      // Response from getAll endpoint
-      const getAllResponseData = responseData as GetAllResponse
-      return {
-        errorMessage: null,
-        data: {
-          questions: getAllResponseData.questions,
-          totalQuestions: getAllResponseData.totalQuestions,
-        },
-      }
+    const responseData = await response.json() as ListQuestionsRepsonse
+    return {
+      errorMessage: null,
+      data: {
+        questions: responseData.results,
+        totalQuestions: responseData.totalQuestions,
+      },
     }
+
   } catch (error) {
     console.error('Error fetching questions:', error)
     return { errorMessage: 'Error fetching questions' }
