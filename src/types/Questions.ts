@@ -16,6 +16,8 @@ export interface Question {
 }
 
 export interface ListQuestionsRepsonse {
-  results: Question[]
+  questions: Question[]
   totalQuestions: number
+  totalPages: number
+  currentPage: number
 }

@@ -180,10 +180,11 @@ export const getAllQuestions = async (
     }
 
     const responseData = await response.json() as ListQuestionsRepsonse
+
     return {
       errorMessage: null,
       data: {
-        questions: responseData.results,
+        questions: responseData.questions,
         totalQuestions: responseData.totalQuestions,
       },
     }
