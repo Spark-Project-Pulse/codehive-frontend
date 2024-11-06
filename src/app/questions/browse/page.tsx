@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { getAllTags } from '@/api/tags'
-import { Question } from '@/types/Questions'
-import { TagOption } from '@/types/Tags'
+import { type Question } from '@/types/Questions'
+import { type TagOption } from '@/types/Tags'
 import { getAllQuestions } from '@/api/questions'
 import { useDebounce } from '@/hooks/useDebounce'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
