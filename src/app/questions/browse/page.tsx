@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { getAllTags } from '@/api/tags'
-import { type TagOption } from '@/types/Tags'
 import { type Question } from '@/types/Questions'
+import { type TagOption } from '@/types/Tags'
 import { getAllQuestions } from '@/api/questions'
 import { useDebounce } from '@/hooks/useDebounce'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
@@ -48,7 +48,14 @@ const QuestionsPage: React.FC = () => {
         }
 
         if (response.data) {
-          setQuestions(response.data.questions)
+          // Ensure uniqueness based on 'question_id'
+          const uniqueQuestionsMap = new Map<string, Question>()
+          response.data.questions.forEach((question) => {
+            uniqueQuestionsMap.set(question.question_id.toString(), question)
+          })
+          const uniqueQuestions = Array.from(uniqueQuestionsMap.values())
+
+          setQuestions(uniqueQuestions)
           setTotalQuestions(response.data.totalQuestions)
           setTotalPages(Math.ceil(response.data.totalQuestions / pageSize))
         } else {
@@ -145,13 +152,13 @@ const QuestionsPage: React.FC = () => {
 
               <ul className="space-y-6">
                 {questions.length > 0 ? (
-                  questions.map((question, index) => (
-                    <div key={index}>
+                  questions.map((question) => (
+                    <li key={question.question_id.toString()}>
                       <QuestionCard
                         question={question}
-                        href={`/questions/${question.question_id.toString()}`}
+                        href={`/questions/${question.question_id}`}
                       />
-                    </div>
+                    </li>
                   ))
                 ) : (
                   <p className="text-center text-lg text-gray-700">

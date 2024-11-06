@@ -14,3 +14,10 @@ export interface Question {
   related_project_info?: Project
   related_community_id?: UUID
 }
+
+export interface ListQuestionsRepsonse {
+  questions: Question[]
+  totalQuestions: number
+  totalPages: number
+  currentPage: number
+}
