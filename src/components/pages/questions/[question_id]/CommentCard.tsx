@@ -32,7 +32,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
             onClick={handleProfileClick}
           >
             <Avatar className="h-8 w-8">
-              <AvatarImage src={comment.expert_info.profile_image_url} />
+              <AvatarImage src={comment.expert_info?.profile_image_url} />
               <AvatarFallback>
                 {comment.expert_info?.username?.[0] ?? (
                   <UserIcon className="h-4 w-4" />
@@ -41,7 +41,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
             </Avatar>
             <div>
               <p className="text-sm font-medium">
-                {comment.expert_info.username ?? 'Anonymous User'}
+                {comment.expert_info?.username ?? 'Anonymous User'}
               </p>
             </div>
           </div>
