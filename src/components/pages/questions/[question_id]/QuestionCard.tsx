@@ -57,12 +57,12 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
       className={`w-full ${href && 'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'}`}
     >
       <CardHeader>
-        {!href && question.related_community_info ? (
-          <div className="flex items-center space-x-3 rounded-t-lg pb-2">
-            <Avatar
-              className="h-10 w-10 cursor-pointer"
-              onClick={handleCommunityClick}
-            >
+        {question.related_community_info ? (
+          <div
+            className={`flex items-center space-x-3 rounded-t-lg pb-2 ${!href && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
+            onClick={handleCommunityClick}
+          >
+            <Avatar className="h-10 w-10">
               <AvatarImage
                 src={question.related_community_info.avatar_url}
                 alt="Community avatar"
@@ -71,10 +71,7 @@ export default function QuestionCard({ question, href }: QuestionCardProps) {
                 {question.related_community_info.title[0]}
               </AvatarFallback>
             </Avatar>
-            <span
-              className="cursor-pointer text-sm font-normal transition-transform hover:font-bold"
-              onClick={handleCommunityClick}
-            >
+            <span className="text-sm font-normal">
               {question.related_community_info.title}
             </span>
           </div>
