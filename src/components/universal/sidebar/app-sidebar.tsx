@@ -17,6 +17,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar'
@@ -28,12 +30,14 @@ import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { getCurrentUserCommunities } from '@/api/communities'
 import { type SidebarCommunity } from '@/types/Communities'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
+import { ThemeToggle } from './ThemeToggle'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
-  const [communitiesLoading, setCommunitiesLoading] = React.useState<boolean>(true)
+  const [communitiesLoading, setCommunitiesLoading] =
+    React.useState<boolean>(true)
 
   // Fetch communities only on component mount
   React.useEffect(() => {
@@ -64,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       }
       setCommunitiesLoading(false)
     }
-    
+
     void fetchCommunities()
   }, [])
 
@@ -162,9 +166,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <NavCommunities communities={communities} loading={communitiesLoading} />
+        <NavCommunities
+          communities={communities}
+          loading={communitiesLoading}
+        />
       </SidebarContent>
       <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
         {loading ? (
           open ? (
             <div className="flex items-center space-x-4">
