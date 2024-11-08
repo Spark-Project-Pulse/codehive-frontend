@@ -17,6 +17,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar'
@@ -28,6 +30,7 @@ import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { getCurrentUserCommunities } from '@/api/communities'
 import { type SidebarCommunity } from '@/types/Communities'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
+import { ThemeToggle } from './ThemeToggle'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
@@ -165,6 +168,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavCommunities communities={communities} loading={communitiesLoading} />
       </SidebarContent>
       <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
         {loading ? (
           open ? (
             <div className="flex items-center space-x-4">

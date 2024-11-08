@@ -1,9 +1,11 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { type Question } from '@/types/Questions'
+import { type Question, type ListQuestionsRepsonse } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
+
+
 
 /**
  * Creates a new question by sending a POST request to the backend.
@@ -130,6 +132,7 @@ export const getQuestionById = async (
  * Returns:
  *   Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>: The questions data on success, or an error message on failure.
  */
+
 export const getAllQuestions = async (
   pageNumber: number,
   pageSize: number,
@@ -138,13 +141,21 @@ export const getAllQuestions = async (
   related_community_id: UUID | null
 ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
-    // Build the query parameters
+    let url = ''
     const params = new URLSearchParams()
-    params.append('page', pageNumber.toString())
-    params.append('page_size', pageSize.toString())
+
     if (searchQuery.trim()) {
-      params.append('search', searchQuery.trim())
+      // Use the search endpoint
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/search/`
+      params.append('q', searchQuery.trim())
+    } else {
+      // Use the general getAll endpoint
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`
+      params.append('page', pageNumber.toString())
+      params.append('page_size', pageSize.toString())
     }
+
+    // Append tags in both cases
     selectedTags.forEach((tagId) => {
       params.append('tags', tagId)
     })
@@ -152,29 +163,23 @@ export const getAllQuestions = async (
       params.append('related_community_id', related_community_id.toString())
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/?${params.toString()}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    // Always append pagination parameters
+    params.append('page', pageNumber.toString())
+    params.append('page_size', pageSize.toString())
+
+    const response = await fetch(`${url}?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(
-        `HTTP error! Status: ${response.status}, Message: ${errorText}`
-      )
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`)
     }
 
-    const responseData = (await response.json()) as {
-      questions: Question[]
-      totalQuestions: number
-      totalPages: number
-      currentPage: number
-    }
+    const responseData = await response.json() as ListQuestionsRepsonse
 
     return {
       errorMessage: null,
@@ -183,8 +188,9 @@ export const getAllQuestions = async (
         totalQuestions: responseData.totalQuestions,
       },
     }
+
   } catch (error) {
-    console.error('Error fetching questions: ', error)
+    console.error('Error fetching questions:', error)
     return { errorMessage: 'Error fetching questions' }
   }
 }

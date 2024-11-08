@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import SkeletonCommentCard from '@/components/pages/questions/[question_id]/SkeletonCommentCard'
+import { useRouter } from 'next/navigation'
 
 interface AnswerCardProps {
   answer: Answer
@@ -39,6 +40,7 @@ export default function AnswerCard({
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
   const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
+  const router = useRouter()
 
   // Function to change user's reputation
   const handleChangeReputation = async (amount: string) => {
@@ -147,6 +149,13 @@ export default function AnswerCard({
     }
   }
 
+  // Function to handle profile navigation
+  const handleProfileClick = () => {
+    if (answer.expert_info) {
+      router.push(`/profiles/${answer.expert_info.username}`)
+    }
+  }
+
   return (
     <Card className="mb-6 mt-6">
       <div className="flex">
@@ -155,8 +164,9 @@ export default function AnswerCard({
           <Button
             onClick={() => handleUpvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-              }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+              hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+            }`}
           >
             👍
           </Button>
@@ -164,8 +174,9 @@ export default function AnswerCard({
           <Button
             onClick={() => handleDownvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-              }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+              hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+            }`}
           >
             👎
           </Button>
@@ -178,7 +189,10 @@ export default function AnswerCard({
 
             {/* Expert info */}
             <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+              <div
+                className={`flex items-center space-x-4 ${answer.expert_info && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
+                onClick={handleProfileClick}
+              >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={answer.expert_info.profile_image_url} />
                   <AvatarFallback>

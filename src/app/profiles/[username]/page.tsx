@@ -181,7 +181,7 @@ export default function ProfilePage({
                       <div className="space-y-2">
                         <h4 className="font-medium leading-none">Profile Picture</h4>
                         <p className="text-sm text-muted-foreground">
-                          A picture helps people recognize you and lets you know when you&aposre signed in to your account
+                          A picture helps people recognize you and lets you know when you signed in to your account
                         </p>
                       </div>
                       <div className="grid gap-2">
