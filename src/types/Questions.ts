@@ -1,6 +1,7 @@
 import { type UUID } from 'crypto'
 import { type User } from '@/types/Users'
 import { type Project } from '@/types/Projects'
+import { type Community } from './Communities'
 
 export interface Question {
   question_id: UUID
@@ -13,6 +14,7 @@ export interface Question {
   related_project?: UUID
   related_project_info?: Project
   related_community_id?: UUID
+  related_community_info?: Community
 }
 
 export interface ListQuestionsRepsonse {
