@@ -1,8 +1,13 @@
-type ValueObject = Record<string, string>;
+type ValueObject = Record<string, string>
 
-type DataAttribute = `data-${string}`;
+type DataAttribute = `data-${string}`
 
-interface ScriptProps extends React.DetailedHTMLProps<React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>, Record<DataAttribute, string | number> { }
+interface ScriptProps
+  extends React.DetailedHTMLProps<
+      React.ScriptHTMLAttributes<HTMLScriptElement>,
+      HTMLScriptElement
+    >,
+    Record<DataAttribute, string | number> {}
 
 // interface UseThemeProps {
 //   themes: string[];
@@ -13,18 +18,18 @@ interface ScriptProps extends React.DetailedHTMLProps<React.ScriptHTMLAttributes
 //   systemTheme?: 'dark' | 'light';
 // }
 
-type Attribute = DataAttribute | 'class';
+type Attribute = DataAttribute | 'class'
 
 export interface ThemeProviderProps extends React.PropsWithChildren {
-  themes?: string[];
-  forcedTheme?: string;
-  enableSystem?: boolean;
-  disableTransitionOnChange?: boolean;
-  enableColorScheme?: boolean;
-  storageKey?: string;
-  defaultTheme?: string;
-  attribute?: Attribute | Attribute[];
-  value?: ValueObject;
-  nonce?: string;
-  scriptProps?: ScriptProps;
+  themes?: string[]
+  forcedTheme?: string
+  enableSystem?: boolean
+  disableTransitionOnChange?: boolean
+  enableColorScheme?: boolean
+  storageKey?: string
+  defaultTheme?: string
+  attribute?: Attribute | Attribute[]
+  value?: ValueObject
+  nonce?: string
+  scriptProps?: ScriptProps
 }

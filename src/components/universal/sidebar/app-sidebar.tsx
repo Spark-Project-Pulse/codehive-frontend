@@ -36,7 +36,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
-  const [communitiesLoading, setCommunitiesLoading] = React.useState<boolean>(true)
+  const [communitiesLoading, setCommunitiesLoading] =
+    React.useState<boolean>(true)
 
   // Fetch communities only on component mount
   React.useEffect(() => {
@@ -67,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       }
       setCommunitiesLoading(false)
     }
-    
+
     void fetchCommunities()
   }, [])
 
@@ -165,7 +166,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <NavCommunities communities={communities} loading={communitiesLoading} />
+        <NavCommunities
+          communities={communities}
+          loading={communitiesLoading}
+        />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
