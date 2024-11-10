@@ -16,12 +16,14 @@ import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/app/contexts/UserContext'
 
 export default function ProfilePage({
   params,
 }: {
   params: { username: string }
 }) {
+  const {user: currentUser} = useUser();
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -29,7 +31,7 @@ export default function ProfilePage({
 
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-
+  const isCurrentUser = user?.user === currentUser?.user;
   useEffect(() => {
     // TODO: Will need to check if the profile is the current user's, and only do this if it is someone else's profile
     // We could also keep track of this to give additional actions (such as update/delete projects or questions) to current user
@@ -221,7 +223,7 @@ export default function ProfilePage({
                   <CardTitle>Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {projects.length === 0 ? (
+                  {projects.length === 0 && isCurrentUser ? (
                     <div className="flex justify-center items-center py-8">
                       <Button onClick={() => router.push('/projects/add-project')}>
                         Add your first project
