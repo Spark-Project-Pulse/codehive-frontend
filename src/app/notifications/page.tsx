@@ -8,8 +8,10 @@ import { DataTable } from "@/components/ui/data-table"
 import { columns } from "@/components/pages/notifications/columns"
 
 export default function ProfilePage() {
-  const { user, loading } = useUser()
+  const { user } = useUser()
   const [notifications, setNotifications] = useState<Notification[]>([])
+  const [isLoadingNotifications, setIsLoadingNotifications] = useState<boolean>(true)
+
 
   console.log(notifications);
   
@@ -17,6 +19,9 @@ export default function ProfilePage() {
   // Fetch notifications only after the user is set
   useEffect(() => {
     const fetchNotifications = async () => {
+
+      setIsLoadingNotifications(true)
+
       // Check if user id is defined before proceeding
       if (!user?.user) {
         console.warn('User ID is undefined.')
@@ -33,6 +38,7 @@ export default function ProfilePage() {
 
         // Set the projects state with the fetched data
         setNotifications(response.data ?? [])
+        setIsLoadingNotifications(false)
       } catch (error) {
         console.error('Error fetching projects:', error)
       }
@@ -48,7 +54,7 @@ export default function ProfilePage() {
         Notifications
       </h1>
 
-      <DataTable columns={columns} data={notifications} />
+      <DataTable columns={columns} data={notifications} loading={isLoadingNotifications} />
     </div>
   )
 }
