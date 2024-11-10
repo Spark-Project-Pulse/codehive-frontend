@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useUser } from "../contexts/UserContext"
 import { getNotificationsByUserId } from "@/api/notifications"
 import { type Notification } from "@/types/Notifications"
+import { DataTable } from "@/components/ui/data-table"
+import { columns } from "@/components/pages/notifications/columns"
 
 export default function ProfilePage() {
   const { user, loading } = useUser()
@@ -41,6 +43,12 @@ export default function ProfilePage() {
   }, [user])
 
   return (
-    <></>
+    <div className="max-w-7xl p-6">
+      <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
+        Notifications
+      </h1>
+
+      <DataTable columns={columns} data={notifications} />
+    </div>
   )
 }
