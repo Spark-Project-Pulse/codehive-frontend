@@ -221,29 +221,38 @@ export default function ProfilePage({
                   <CardTitle>Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-4">
-                    {projects.map((project, index) => (
-                      <li
-                        key={index}
-                        className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
-                        onClick={() => handleProjectClick(project.project_id)}
-                      >
-                        <h3 className="text-lg font-semibold">
-                          {project.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {project.description}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
+                  {projects.length === 0 ? (
+                    <div className="flex justify-center items-center py-8">
+                      <Button onClick={() => router.push('/projects/add-project')}>
+                        Add your first project
+                      </Button>
+                    </div>
+                  ) : (
+                    <ul className="space-y-4">
+                      {projects.map((project, index) => (
+                        <li
+                          key={index}
+                          className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                          onClick={() => handleProjectClick(project.project_id)}
+                        >
+                          <h3 className="text-lg font-semibold">
+                            {project.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {project.description}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
+
             <TabsContent value="questions">
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Questions</CardTitle>
+                  <CardTitle> Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-4">
