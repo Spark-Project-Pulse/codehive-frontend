@@ -252,7 +252,7 @@ export default function ProfilePage({
             <TabsContent value="questions">
               <Card>
                 <CardHeader>
-                  <CardTitle> Questions</CardTitle>
+                  <CardTitle>Recent Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-4">
