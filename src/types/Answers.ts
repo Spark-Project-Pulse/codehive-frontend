@@ -11,4 +11,5 @@ export interface Answer {
   asker_id?: UUID
   curr_user_upvoted?: boolean
   curr_user_downvoted?: boolean
+  toxic?: boolean
 }
