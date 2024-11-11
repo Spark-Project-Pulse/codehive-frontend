@@ -15,6 +15,7 @@ export interface Question {
   related_project_info?: Project
   related_community_id?: UUID
   related_community_info?: Community
+  toxic?: boolean
 }
 
 export interface ListQuestionsRepsonse {
