@@ -15,7 +15,7 @@ export const columns: ColumnDef<Notification>[] = [
     accessorKey: "message",
     header: "Message",
     cell: ({ row }) => {
-      const { message, link } = generateNotificationContent(row.original)
+      const { message } = generateNotificationContent(row.original)
       return message
     },
   },
