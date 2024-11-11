@@ -1,7 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table"
 import { type Notification } from "@/types/Notifications"
 import { format } from 'date-fns'
-import { Badge } from "@/components/ui/badge"
+import { generateNotificationContent } from "@/utils/notifications"
 
 
 // Define columns for the Notification data table
@@ -14,16 +14,10 @@ export const columns: ColumnDef<Notification>[] = [
   {
     accessorKey: "message",
     header: "Message",
-    cell: ({ row }) => (
-      <div>
-        {row.original.message}
-        {row.original.question_info && (
-          <span>
-            {" "}to <Badge>{row.original.question_info.title}</Badge>
-          </span>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const { message, link } = generateNotificationContent(row.original)
+      return message
+    },
   },
   {
     accessorKey: "created_at",

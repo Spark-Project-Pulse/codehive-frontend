@@ -12,10 +12,6 @@ export default function ProfilePage() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [isLoadingNotifications, setIsLoadingNotifications] = useState<boolean>(true)
 
-
-  console.log(notifications);
-  
-
   // Fetch notifications only after the user is set
   useEffect(() => {
     const fetchNotifications = async () => {
