@@ -110,7 +110,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     <div className="h-full">
       <Editor
         loading={<Skeleton className="h-full w-full" />}
-        height="100%"
+        height="60vh"
         language={language}
         value={fileContent}
         options={{

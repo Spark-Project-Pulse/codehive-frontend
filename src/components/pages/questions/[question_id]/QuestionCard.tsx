@@ -123,7 +123,7 @@ export default function QuestionCard({
                 </div>
 
               </h3>
-              <Button className="p-2"
+              {/* <Button className="p-2"
                 variant="ghost"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
@@ -157,8 +157,24 @@ export default function QuestionCard({
                   renderLineHighlight: 'all',
                   scrollBeyondLastLine: false,
                   cursorStyle: 'block',
+                }} */}
+            {/* />)} */}
+            <Editor
+                loading={<Skeleton className="h-full w-full" />}
+                height="20px"
+                language="javascript" // TODO: Change to actual language
+                value={question.code_context}
+                options={{
+                  lineNumbers: num => (num + question.code_context_line_number).toString(),
+                  automaticLayout: true,
+                  selectOnLineNumbers: true,
+                  readOnly: true,
+                  minimap: { enabled: false },
+                  renderLineHighlight: 'all',
+                  scrollBeyondLastLine: false,
+                  cursorStyle: 'block',
                 }}
-              />)}
+            />
             </div>
           )}
       </CardHeader>
