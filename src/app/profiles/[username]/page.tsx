@@ -23,19 +23,18 @@ export default function ProfilePage({
 }: {
   params: { username: string }
 }) {
-  const {user: currentUser} = useUser();
+  const { user: currentUser } = useUser();
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true)
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
   const router = useRouter()
   const isCurrentUser = user?.user === currentUser?.user;
-  useEffect(() => {
-    // TODO: Will need to check if the profile is the current user's, and only do this if it is someone else's profile
-    // We could also keep track of this to give additional actions (such as update/delete projects or questions) to current user
 
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await getUserByUsername(params.username)
@@ -49,83 +48,78 @@ export default function ProfilePage({
 
       } catch (error) {
         console.error('Error fetching user:', error)
-      } finally {
-        setIsLoading(false)
       }
     }
     void fetchUser()
   }, [params.username])
 
-  // Fetch questions and projects only after the user is set
   useEffect(() => {
-    //TODO: seperate loading for projects/questions
 
     const fetchProjects = async () => {
-      // Check if user id is defined before proceeding
+        // Check if user id is defined before proceeding
       if (!user?.user) {
         console.error('User ID is undefined.')
         return
       }
+      setIsProjectsLoading(true)
 
       try {
-        const response = await getProjectsByUserId(user.user) // Fetch projects for the user
-
+        const response = await getProjectsByUserId(user.user)
         if (response.errorMessage) {
           console.error('Error fetching projects:', response.errorMessage)
           return
         }
-
-        // Set the projects state with the fetched data
+       // Set the projects state with the fetched data
         setProjects(response.data ?? [])
       } catch (error) {
         console.error('Error fetching projects:', error)
+      } finally {
+        setIsProjectsLoading(false)
       }
     }
 
     const fetchQuestions = async () => {
-      // Check if user id is defined before proceeding
       if (!user?.user) {
         console.error('User ID is undefined.')
         return
       }
+      setIsQuestionsLoading(true)
 
       try {
         const response = await getQuestionsByUserId(user.user) // Fetch questions for the user
-
         if (response.errorMessage) {
           console.error('Error fetching questions:', response.errorMessage)
           return
         }
-
-        // Set the questions state with the fetched data
+      // Set the questions state with the fetched data
         setQuestions(response.data ?? [])
       } catch (error) {
         console.error('Error fetching questions:', error)
+      } finally {
+        setIsQuestionsLoading(false)
       }
     }
 
-
-
-    // Only fetch questions/projects/profileImage if user is set
+        // Only fetch questions/projects/profileImage if user is set
     if (user) {
       void fetchProjects()
       void fetchQuestions()
     }
   }, [user])
 
-  // Handle navigation on click for projects
+    // Handle navigation on click for projects
   const handleProjectClick = (projectId: string) => {
     router.push(`/projects/${projectId}`)
   }
 
-  // Handle navigation on click for questions
+    // Handle navigation on click for questions
   const handleQuestionClick = (questionId: string) => {
     router.push(`/questions/${questionId}`)
   }
 
-  // Handle show edit profile on click
+    // Handle show edit profile on click
   function handleShowEditProfileClick() {
-    // If the show upload files button is there, then hide it. Else show it
+        // If the show upload files button is there, then hide it. Else show it
     if (showUploadFiles) {
       setShowUploadFiles(false)
     } else {
@@ -133,29 +127,23 @@ export default function ProfilePage({
     }
   }
 
-  // Handle uploading a photo
   async function handlePhotoUpload(photo: React.ChangeEvent<HTMLInputElement>) {
     const file = photo.target.files?.[0];
     if (file && user) {
-      setIsLoading(true)
       try {
         const formData = new FormData();
         formData.append('profile_image', file);
-        const response = await uploadProfileImage(user.user, formData);
-
+        await uploadProfileImage(user.user, formData);
         setShowUploadFiles(false);
       } catch (error) {
         console.error('File upload failed:', error);
-      } finally {
-        setIsLoading(false)
       }
     } else {
       console.error('File upload error')
     }
   }
-
-  // Conditional rendering for loading state
-  if (isLoading) {
+// Conditional rendering for loading state
+  if (isProjectsLoading && isQuestionsLoading) {
     return <LoadingSpinner />
   }
 
@@ -223,7 +211,9 @@ export default function ProfilePage({
                   <CardTitle>Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {projects.length === 0 && isCurrentUser ? (
+                  {isProjectsLoading ? (
+                    <LoadingSpinner />
+                  ) : projects.length === 0 && isCurrentUser ? (
                     <div className="flex justify-center items-center py-8">
                       <Button onClick={() => router.push('/projects/add-project')}>
                         Add your first project
@@ -250,28 +240,31 @@ export default function ProfilePage({
                 </CardContent>
               </Card>
             </TabsContent>
-
             <TabsContent value="questions">
               <Card>
                 <CardHeader>
                   <CardTitle>Recent Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-4">
-                    {questions.map((question, index) => (
-                      <li
-                        key={index}
-                        className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
-                        onClick={() =>
-                          handleQuestionClick(question.question_id)
-                        }
-                      >
-                        <h3 className="text-lg font-semibold">
-                          {question.title}
-                        </h3>
-                      </li>
-                    ))}
-                  </ul>
+                  {isQuestionsLoading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <ul className="space-y-4">
+                      {questions.map((question, index) => (
+                        <li
+                          key={index}
+                          className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                          onClick={() =>
+                            handleQuestionClick(question.question_id)
+                          }
+                        >
+                          <h3 className="text-lg font-semibold">
+                            {question.title}
+                          </h3>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
