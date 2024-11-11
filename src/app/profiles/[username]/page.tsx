@@ -29,6 +29,7 @@ export default function ProfilePage({
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
+  const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
   const router = useRouter()
@@ -36,6 +37,7 @@ export default function ProfilePage({
 
   useEffect(() => {
     const fetchUser = async () => {
+      setIsUserLoading(true);
       try {
         const response = await getUserByUsername(params.username)
         if (response.errorMessage) {
@@ -48,6 +50,8 @@ export default function ProfilePage({
 
       } catch (error) {
         console.error('Error fetching user:', error)
+      } finally {
+        setIsUserLoading(false);
       }
     }
     void fetchUser()
@@ -143,7 +147,8 @@ export default function ProfilePage({
     }
   }
 // Conditional rendering for loading state
-  if (isProjectsLoading && isQuestionsLoading) {
+// TODO: Replace user loading spinner with Shadcn skeleton
+  if (isUserLoading) {
     return <LoadingSpinner />
   }
 
