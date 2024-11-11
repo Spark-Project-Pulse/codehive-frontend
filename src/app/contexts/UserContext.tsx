@@ -6,6 +6,7 @@ import { type User } from '@/types/Users'
 import { getUserById } from '@/api/users'
 import { toast } from '@/components/ui/use-toast'
 import { type SupabaseClient } from '@supabase/supabase-js'
+import { getUserCookie, setUserCookie, userCookieExists } from '@/lib/cookies'
 
 interface UserContextType {
   user: User | null
@@ -56,19 +57,22 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         return
       }
 
-      const response = await getUserById(authUser.id)
-      if (response.errorMessage) {
-        // render error to the user
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'There was an error logging you in.',
-        })
-        throw new Error(response.errorMessage)
-      }
+      // Check if user_info cookie exists
+      if (await userCookieExists()) {
+        const cookieData = await getUserCookie()
+        setUser(cookieData)
+      } else {
+        // If no cookie, fetch user data and set cookie
+        const response = await getUserById(authUser.id)
+        if (response.errorMessage) {
+          console.error('Error fetching user data')
+          throw new Error(response.errorMessage)
+        }
 
-      if (response.data) {
-        setUser(response.data)
+        if (response.data) {
+          setUser(response.data)
+          setUserCookie(response.data) // Set the user_info cookie with user data
+        }
       }
     } catch (error) {
       console.error('Error fetching user:', error)

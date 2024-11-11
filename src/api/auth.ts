@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { type ApiResponse } from '@/types/Api'
 import { type Provider } from '@supabase/supabase-js'
+import { clearCommunitiesCookie, clearUserCookie } from '@/lib/cookies'
 
 /**
  * Handles user login via OAuth provider.
@@ -52,6 +53,10 @@ export const signOutAction = async (): Promise<ApiResponse<null>> => {
     const { error } = await supabaseAuthClient.auth.signOut()
 
     if (error) throw error
+
+    // Clear cookies
+    clearUserCookie();
+    clearCommunitiesCookie()
 
     return { errorMessage: null, data: null }
   } catch (error) {
