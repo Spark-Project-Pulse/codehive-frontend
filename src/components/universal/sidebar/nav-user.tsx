@@ -120,7 +120,7 @@ export function NavUser({ user }: { user: User | null }) {
                   <DropdownMenuItem asChild>
                     <Link
                       className="flex w-full cursor-pointer items-center gap-2"
-                      href={'#'}
+                      href={'/notifications'}
                     >
                       <Bell />
                       Notifications
