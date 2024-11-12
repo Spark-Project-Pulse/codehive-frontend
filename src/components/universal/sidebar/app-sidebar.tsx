@@ -6,6 +6,7 @@ import {
   MessageCircleQuestion,
   FolderKanban,
   PersonStanding,
+  ShieldAlert,
 } from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
@@ -35,6 +36,7 @@ import {
   getCommunitiesCookie,
   setCommunitiesCookie,
 } from '@/lib/cookies'
+import { AdminPanelLink } from './nav-admin'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
@@ -46,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Fetch communities/use cookies
   React.useEffect(() => {
     const fetchCommunities = async () => {
-      if (loading) return;
+      if (loading) return
 
       if (!loading && user === null) {
         setCommunitiesLoading(false)
@@ -187,6 +189,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <AdminPanelLink />
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <ThemeToggle />
           </SidebarMenuItem>
