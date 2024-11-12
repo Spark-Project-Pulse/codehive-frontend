@@ -117,9 +117,16 @@ export default function QuestionPage({
       const response = await createAnswer(requestData)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data) {
+      if (!errorMessage && data && !data?.toxic) {
         // Update the answers state to include the new answer
         setAnswers((prevAnswers) => [...prevAnswers, data])
+      } else if (data?.toxic) {
+        // Show toxic content toast if there is toxic content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Toxic content detected in your answer.',
+        })
       } else {
         toast({
           variant: 'destructive',
@@ -141,12 +148,19 @@ export default function QuestionPage({
       const response = await createComment(values)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data) {
+      if (!errorMessage && data && !data?.toxic) {
         // Update the comments state to include new comment
         setComments((prevComments) => ({
           ...prevComments,
           [data.answer]: [...(prevComments[data.answer] || []), data],
         }))
+      } else if (data?.toxic) {
+        // Show toxic content toast if there is toxic content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Toxic content detected in your comment.',
+        })
       } else {
         toast({
           variant: 'destructive',

@@ -7,4 +7,5 @@ export interface Comment {
   response: string
   expert_info: User | null
   created_at: Date
+  toxic?: boolean
 }

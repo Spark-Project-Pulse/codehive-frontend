@@ -14,12 +14,12 @@ import { type UUID } from 'crypto'
  *   values: An object containing `title` and `description` for the question.
  *
  * Returns:
- *   Promise<ApiResponse<{ question_id: string }>>: The created question's ID on success, or an error message on failure.
+ *   Promise<ApiResponse<{ question_id: string, toxic: boolean }>>: The created question's ID on success, or an error message on failure.
  */
 export const createQuestion = async (values: {
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string }>> => {
+}): Promise<ApiResponse<{ question_id: string, toxic?: boolean }>> => {
   try {
     const user = await getSupaUser()
 
@@ -42,7 +42,7 @@ export const createQuestion = async (values: {
     const responseData = (await response.json()) as Question
     return {
       errorMessage: null,
-      data: { question_id: responseData.question_id },
+      data: { question_id: responseData.question_id, toxic: responseData.toxic },
     }
   } catch (error) {
     console.error('Error creating question: ', error)
