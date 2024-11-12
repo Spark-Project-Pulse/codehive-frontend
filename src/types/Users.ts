@@ -10,6 +10,11 @@ export interface SidebarUser {
   profile_image_url?: string
 }
 
+export interface UserRole {
+  role: string
+  role_type: string
+}
+
 export interface AuthUser {
   id: string
   user_metadata: {

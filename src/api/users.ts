@@ -1,7 +1,8 @@
 'use server'
 
 import { type ErrorResponse, type ApiResponse } from '@/types/Api'
-import { type User } from '@/types/Users'
+import { UserRole, type User } from '@/types/Users'
+import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
 /**
@@ -67,7 +68,7 @@ export const changeReputationByAmount = async (
     )
 
     if (!response.ok) {
-      const errorData = (await response.json()) as ErrorResponse;
+      const errorData = (await response.json()) as ErrorResponse
       throw new Error(errorData.message ?? 'Network response was not ok')
     }
 
@@ -158,6 +159,43 @@ export const getUserByUsername = async (
   }
 }
 
+/*
+ * Retrieves the current user's role by their id from the backend.
+ *
+ * Returns:
+ *   Promise<ApiResponse<UserRole>>: The user's role on success, or an error message on failure.
+ */
+export const getCurrentUserRole = async (): Promise<ApiResponse<UserRole>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User is not authenticated')
+    }
+
+    const reponse = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/getUserRoleById/${user.id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!reponse.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    // Extract the JSON data from the response
+    const responseData = (await reponse.json()) as UserRole
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error getting user role: ', error)
+    return { errorMessage: 'Error getting user role' }
+  }
+}
+
 /**
  * Checks if a user exists by their ID.
  *
@@ -207,7 +245,7 @@ export const userExists = async (
  */
 export const uploadProfileImage = async (
   user_id: string,
-  formData: FormData,
+  formData: FormData
 ): Promise<ApiResponse<{ user_id: string }>> => {
   try {
     const response = await fetch(
