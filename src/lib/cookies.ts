@@ -11,7 +11,7 @@ import { cookies } from 'next/headers'
 export const setUserCookie = (userData: User) => {
   cookies().set('user_info', JSON.stringify(userData), {
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 10, // 10 minutes
   })
 }
 
@@ -38,7 +38,7 @@ export const clearUserCookie = () => {
 export const setUserRoleCookie = (userRoleData: UserRole) => {
   cookies().set('user_role_info', JSON.stringify(userRoleData), {
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 10, // 10 minutes
   })
 }
 
@@ -65,7 +65,7 @@ export const clearUserRoleCookie = () => {
 export const setCommunitiesCookie = (communityData: SidebarCommunity[]) => {
   cookies().set('communities_info', JSON.stringify(communityData), {
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 10, // 10 minutes
   })
 }
 
