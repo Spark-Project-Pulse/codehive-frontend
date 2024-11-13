@@ -10,15 +10,15 @@ import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
 /**
- * Creates a new community by sending a POST request to the backend.
+ * Creates a new community request by sending a POST request to the backend.
  *
  * Args:
  *   values: An object containing `title`, `description`, optional `tags` array, and optional `avatar` file.
  *
  * Returns:
- *   Promise<ApiResponse<{ community_id: string, title: string }>>: The created community's ID and title on success, or an error message on failure.
+ *   Promise<ApiResponse<{ community_id: string, title: string }>>: The requested community's ID and title on success, or an error message on failure.
  */
-export const createCommunity = async (values: {
+export const createCommunityRequest = async (values: {
   title: string
   description: string
   tags?: string[]
@@ -29,11 +29,9 @@ export const createCommunity = async (values: {
     if (!user) {
       return { errorMessage: 'User not authenticated' }
     }
-    // TODO: Include user as presumptive "owner" of the community
-
     // Prepare form data for community creation (form data needed for file upload)
     const formData = new FormData()
-    // TODO: formData.append('creator', user.id)
+    formData.append('owner', user.id)
     formData.append('title', values.title)
     formData.append('description', values.description)
 
@@ -46,7 +44,7 @@ export const createCommunity = async (values: {
     // }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/create/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/createRequest/`,
       {
         method: 'POST',
         body: formData,
@@ -69,8 +67,94 @@ export const createCommunity = async (values: {
       },
     }
   } catch (error) {
-    console.error('Error creating community: ', error)
-    return { errorMessage: 'Error creating community' }
+    console.error('Error creating community request: ', error)
+    return { errorMessage: 'Error creating community request' }
+  }
+}
+
+/**
+ * Approves a community request.
+ *
+ * Args:
+ *   communityId (UUID): The ID of the community request to approve.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ message: string }>>: A success message on approval or an error message on failure.
+ */
+export const approveCommunityRequest = async (
+  communityId: UUID
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const user = await getSupaUser()
+    if (!user) {
+      return { errorMessage: 'User not authenticated' }
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/approveCommunityRequest/${communityId}/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(
+        `HTTP error! Status: ${response.status}, Message: ${errorText}`
+      )
+    }
+
+    const responseData = await response.json() as { message: string }
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error approving community request:', error)
+    return { errorMessage: 'Error approving community request' }
+  }
+}
+
+/**
+ * Rejects a community request.
+ *
+ * Args:
+ *   communityId (UUID): The ID of the community request to reject.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ message: string }>>: A success message on rejection or an error message on failure.
+ */
+export const rejectCommunityRequest = async (
+  communityId: UUID
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const user = await getSupaUser()
+    if (!user) {
+      return { errorMessage: 'User not authenticated' }
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/rejectCommunityRequest/${communityId}/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(
+        `HTTP error! Status: ${response.status}, Message: ${errorText}`
+      )
+    }
+
+    const responseData = await response.json() as { message: string }
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error rejecting community request:', error)
+    return { errorMessage: 'Error rejecting community request' }
   }
 }
 
@@ -412,6 +496,38 @@ export const getCurrentUserCommunities = async (): Promise<
   } catch (error) {
     console.error('Error fetching communities: ', error)
     return { errorMessage: 'Error fetching communities' }
+  }
+}
+
+/**
+ * Fetches all community requests from the backend.
+ *
+ * Returns:
+ *   Promise<ApiResponse<Community[]>>: An array of communities on success, or an empty array on failure.
+ */
+export const getAllCommunityRequests = async (): Promise<
+  ApiResponse<Community[]>
+> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllCommunityRequests`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const communityData = (await response.json()) as Community[]
+    return { errorMessage: null, data: communityData }
+  } catch (error) {
+    console.error('Error fetching community requests: ', error)
+    return { errorMessage: 'Error fetching community requests' }
   }
 }
 

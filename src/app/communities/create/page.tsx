@@ -1,6 +1,6 @@
 'use client'
 
-import { createCommunity } from '@/api/communities'
+import { createCommunityRequest } from '@/api/communities'
 import CommunityForm from '@/components/pages/communities/create/CommunityForm'
 import {
   Card,
@@ -24,28 +24,32 @@ export default function CreateCommunityPage() {
     // TODO: avatar: File
   }) {
     try {
-        const response = await createCommunity(values)
-        const { errorMessage, data } = response
-  
-        if (!errorMessage && data?.title) {
-          // Navigate to the new community page using community title
-          router.push(`/communities/${data.title}`)
-        } else {
-          // Show error toast if an error occurs
-          toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'There was an error submitting your community.',
-          })
-        }
-      } catch (error) {
-        console.error('Unexpected error:', error)
+      const response = await createCommunityRequest(values)
+      const { errorMessage, data } = response
+
+      if (!errorMessage && data?.title) {
+        // Navigate to the home page
+        router.push('/')
+        toast({
+          title: 'Community Request Submitted!',
+          description: 'We will review your request and get back to you soon.',
+        })
+      } else {
+        // Show error toast if an error occurs
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'There was an unexpected error submitting your community.',
+          description: 'There was an error submitting your community.',
         })
       }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'There was an unexpected error submitting your community.',
+      })
+    }
   }
   return (
     <Card className="mx-auto w-full max-w-2xl">

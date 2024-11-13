@@ -6,7 +6,10 @@ export interface Community {
   title: string
   description: string
   member_count: number
+  approved: boolean
   created_at: Date
+  owner_id?: UUID
+  owner_info?: User
   avatar_url?: string
   tags?: string[]
 }
