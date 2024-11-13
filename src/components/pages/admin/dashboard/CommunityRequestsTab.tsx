@@ -19,7 +19,7 @@ import {
 } from '@/api/communities'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
-import { UUID } from 'crypto'
+import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
 
 export default function CommunityRequestsTab() {

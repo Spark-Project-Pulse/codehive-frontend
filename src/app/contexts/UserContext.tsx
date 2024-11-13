@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { UserRole, type User } from '@/types/Users'
+import { type UserRole, type User } from '@/types/Users'
 import { getCurrentUserRole, getUserById } from '@/api/users'
 import { toast } from '@/components/ui/use-toast'
 import { type SupabaseClient } from '@supabase/supabase-js'
@@ -31,11 +31,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [supabase, setSupabase] = useState<SupabaseClient<
-    any,
-    'public',
-    any
-  > | null>(null) // TODO: replace any with actual types (if possible?)
+  const [supabase, setSupabase] = useState<SupabaseClient<any, 'public', any> | null>(null) // TODO: replace any with actual types (if possible?)
 
   // Fetch the Supabase client
   useEffect(() => {

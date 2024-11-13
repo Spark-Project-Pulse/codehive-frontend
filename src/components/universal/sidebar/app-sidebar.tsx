@@ -6,7 +6,6 @@ import {
   MessageCircleQuestion,
   FolderKanban,
   PersonStanding,
-  ShieldAlert,
 } from 'lucide-react'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'

@@ -4,13 +4,11 @@ import AccessDenied from '@/app/access-denied'
 import { useUser } from '@/app/contexts/UserContext'
 import CommunityRequestsTab from '@/components/pages/admin/dashboard/CommunityRequestsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
-import { TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CheckCircle,
   LayoutDashboardIcon,
   Settings,
-  Table,
   Users,
 } from 'lucide-react'
 import { useState } from 'react'

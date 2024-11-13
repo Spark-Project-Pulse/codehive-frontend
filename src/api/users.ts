@@ -1,7 +1,7 @@
 'use server'
 
 import { type ErrorResponse, type ApiResponse } from '@/types/Api'
-import { UserRole, type User } from '@/types/Users'
+import { type UserRole, type User } from '@/types/Users'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
