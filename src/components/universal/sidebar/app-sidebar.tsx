@@ -29,13 +29,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { getCurrentUserCommunities } from '@/api/communities'
 import { type SidebarCommunity } from '@/types/Communities'
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeToggle } from '@/components/universal/sidebar/ThemeToggle'
 import {
   communitiesCookieExists,
   getCommunitiesCookie,
   setCommunitiesCookie,
 } from '@/lib/cookies'
-import { AdminPanelLink } from './nav-admin'
+import { AdminPanelLink } from '@/components/universal/sidebar/nav-admin'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
