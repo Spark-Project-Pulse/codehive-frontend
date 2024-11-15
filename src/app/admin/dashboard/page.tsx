@@ -1,21 +1,42 @@
 'use client'
 
+import { getCurrentUserRole } from '@/api/users'
 import AccessDenied from '@/app/access-denied'
 import { useUser } from '@/app/contexts/UserContext'
 import CommunityRequestsTab from '@/components/pages/admin/dashboard/CommunityRequestsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  CheckCircle,
-  LayoutDashboardIcon,
-  Settings,
-  Users,
-} from 'lucide-react'
-import { useState } from 'react'
+import { UserRole } from '@/types/Users'
+import { CheckCircle, LayoutDashboardIcon, Settings, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export default function AdminDashboard() {
-  const { user, role, loading } = useUser()
+  const { user } = useUser()
+  const [role, setRole] = useState<UserRole | null>(null)
+  const [loading, setIsLoading] = useState<boolean>(true)
   const [activeTab, setActiveTab] = useState('dashboard')
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      setIsLoading(true)
+
+      try {
+        const { errorMessage, data } = await getCurrentUserRole()
+
+        if (!errorMessage && data) {
+          setRole(data)
+        } else {
+          console.error('Error:', errorMessage)
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void fetchUserRole()
+  }, [])
 
   // Show loading state while user data is being fetched
   if (loading) {
