@@ -2,7 +2,8 @@
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server'; // Import the createClient function
-import { createUser, userExists } from '@/api/users';
+import { createUser, getUserById, userExists } from '@/api/users';
+import { setUserCookie } from '@/lib/cookies';
 // import { type AuthUser } from '@/types/Users';
 
 export async function GET(request: Request) {
@@ -57,6 +58,22 @@ export async function GET(request: Request) {
       } else {
         console.error('Error: User not found after authentication');
         return NextResponse.redirect(`${origin}/error`);
+      }
+      
+      // Get full user object from the DB
+      const response = await getUserById(authUser.id)
+
+      if (response.errorMessage) {
+        // render error to the user
+        console.error(
+          'Error getting user: ',
+          response.errorMessage
+        )
+        return NextResponse.redirect(`${origin}/error`);
+      }
+
+      if (response.data) {
+        setUserCookie(response.data)
       }
 
       // After handling user creation/check, redirect to the desired page

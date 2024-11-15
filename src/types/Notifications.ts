@@ -3,6 +3,7 @@ import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
+import { type Community } from '@/types/Communities'
 
 export interface Notification {
   notification_id: UUID
@@ -15,10 +16,13 @@ export interface Notification {
   question_info: Question | null
   answer_info: Answer | null
   comment_info: Comment | null
+  community_info: Community | null
+  community_title: string | null
   actor_info : User | null
   question: UUID | null
   answer: UUID | null
   comment: UUID | null
+  community: UUID | null
   actor: UUID | null
 }
 
@@ -28,3 +32,5 @@ type NotificationType =
   | "question_upvoted"
   | "answer_accepted"
   | "mention"
+  | "community_accepted"
+  | "community_rejected"
