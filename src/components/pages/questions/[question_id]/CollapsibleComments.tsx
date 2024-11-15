@@ -5,7 +5,6 @@ import CommentForm from '@/components/pages/questions/[question_id]//CommentForm
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface CollapsibleCommentsProps {
