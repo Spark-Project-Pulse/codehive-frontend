@@ -16,6 +16,7 @@ import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import SkeletonCommentCard from '@/components/pages/questions/[question_id]/SkeletonCommentCard'
 import { useRouter } from 'next/navigation'
+import CollapsibleComments from './CollapsibleComments'
 
 interface AnswerCardProps {
   answer: Answer
@@ -215,44 +216,13 @@ export default function AnswerCard({
           </CardContent>
 
           {/* Comments Section */}
-          <CardContent>
-            {isLoadingComments ? (
-              <SkeletonCommentCard />
-            ) : (
-              <>
-                {comments[answer.answer_id]?.length > 0 && (
-                  <div className="mt-8">
-                    <h2 className="text-lg font-bold">
-                      {comments[answer.answer_id].length}{' '}
-                      {comments[answer.answer_id].length === 1
-                        ? 'Comment'
-                        : 'Comments'}
-                    </h2>
-                    <div className="list-disc pl-5">
-                      {comments[answer.answer_id].map((comment) => (
-                        <CommentCard
-                          key={comment.comment_id}
-                          comment={comment}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </CardContent>
-
-          {/* Add Comment Section */}
-          {!isLoadingComments && (
-            <CardFooter>
-              <div className="w-full pl-6">
-                <CommentForm
-                  onSubmit={onCommentSubmit}
-                  answerId={answer.answer_id}
-                />
-              </div>
-            </CardFooter>
-          )}
+          <CollapsibleComments
+            comments={comments[answer.answer_id] ?? []}
+            answer={answer}
+            isLoadingComments={isLoadingComments}
+            onCommentSubmit={onCommentSubmit}
+           />
+          
         </div>
       </div>
     </Card>
