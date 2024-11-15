@@ -174,7 +174,7 @@ export default function QuestionPage({
   }
 
   return (
-    <section className="min-h-screen bg-gray-100 py-24">
+    <section className="min-h-screen py-24">
       <div className="mx-auto max-w-4xl px-4">
         {isLoadingQuestion ? (
           <SkeletonQuestionCard />
