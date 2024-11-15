@@ -8,7 +8,7 @@ export default function Home() {
         <div className="text-secondary-foreground">
           Welcome to
         </div>
-        <div className="text-primary-foreground">
+        <div className="text-accent">
           CodeHive
         </div>
       </div>
