@@ -91,12 +91,16 @@ export const approveCommunityRequest = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/approveCommunityRequest/${communityId}/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/approveCommunityRequest/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          community_id: communityId,
+          user_id: user.id,
+        }),
       }
     )
 
@@ -134,12 +138,16 @@ export const rejectCommunityRequest = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/rejectCommunityRequest/${communityId}/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/rejectCommunityRequest/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          community_id: communityId,
+          user_id: user.id,
+        }),
       }
     )
 
