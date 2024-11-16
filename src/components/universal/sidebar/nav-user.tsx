@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { type User } from '@/types/Users'
+import { type SidebarUser } from '@/types/Users'
 import Link from 'next/link'
 import { useTransition } from 'react'
 import { signOutAction } from '@/api/auth'
@@ -26,7 +26,7 @@ import { useUser } from '@/app/contexts/UserContext'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/use-toast'
 
-export function NavUser({ user }: { user: User | null }) {
+export function NavUser({ user }: { user: SidebarUser | null }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()

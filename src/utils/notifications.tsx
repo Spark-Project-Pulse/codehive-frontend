@@ -26,7 +26,8 @@ export function generateNotificationContent(
             <Badge>{notification.question_info?.title ?? 'n/a'}</Badge>
           </a>{' '}
           received an answer
-          {notification.actor_info && ` by ${notification.actor_info.username}`}.
+          {notification.actor_info && ` by ${notification.actor_info.username}`}
+          .
         </>
       )
       break
@@ -51,6 +52,25 @@ export function generateNotificationContent(
     case 'mention':
       message = `You were mentioned in a comment.`
       link = notification.comment ? `/comments/${notification.comment}` : link
+      break
+
+    case 'community_accepted':
+      link = notification.community_info?.title
+        ? `/communities/${notification.community_info?.title}`
+        : link
+      message = (
+        <>
+          Your community request for{' '}
+          <a href={link}>
+            <Badge>{notification.community_info?.title ?? 'n/a'}</Badge>
+          </a>{' '}
+          was accepted!
+        </>
+      )
+      break
+
+    case 'community_rejected':
+      message = `Your community request for "${notification.community_title ?? 'a community'}" was rejected.`
       break
 
     default:

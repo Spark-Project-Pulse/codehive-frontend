@@ -7,6 +7,7 @@ import {
   userIsPartOfCommunity,
 } from '@/api/communities'
 import { getAllTags } from '@/api/tags'
+import NotFound from '@/app/not-found'
 import CommunityContributorsTab from '@/components/pages/communities/[community_title]/CommunityContributorsTab'
 import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
 import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
@@ -136,31 +137,41 @@ export default function CommunityPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <CommunityHeader
-        community={community}
-        tags={tags}
-        userIsMember={userIsMember}
-        handleJoinCommunity={handleJoinCommunity}
-        handleLeaveCommunity={handleLeaveCommunity}
-      />
+    <>
+      {community !== null ? (
+        <div className="container mx-auto px-4 py-8">
+          <CommunityHeader
+            community={community}
+            tags={tags}
+            userIsMember={userIsMember}
+            handleJoinCommunity={handleJoinCommunity}
+            handleLeaveCommunity={handleLeaveCommunity}
+          />
 
-      <Tabs defaultValue="questions" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="questions">Questions</TabsTrigger>
-          <TabsTrigger value="top-contributors">Top Contributors</TabsTrigger>
-        </TabsList>
-        <TabsContent value="questions">
-          {community && (
-            <CommunityQuestionsTab communityId={community.community_id} />
-          )}
-        </TabsContent>
-        <TabsContent value="top-contributors">
-        {community && (
-            <CommunityContributorsTab communityId={community.community_id} />
-          )}
-        </TabsContent>
-      </Tabs>
-    </div>
+          <Tabs defaultValue="questions" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="questions">Questions</TabsTrigger>
+              <TabsTrigger value="top-contributors">
+                Top Contributors
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="questions">
+              {community && (
+                <CommunityQuestionsTab communityId={community.community_id} />
+              )}
+            </TabsContent>
+            <TabsContent value="top-contributors">
+              {community && (
+                <CommunityContributorsTab
+                  communityId={community.community_id}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      ) : (
+        <NotFound />
+      )}
+    </>
   )
 }
