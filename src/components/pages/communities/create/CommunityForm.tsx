@@ -29,7 +29,7 @@ const formSchema = z.object({
     message: 'Community description cannot be empty.',
   }),
   tags: z.array(z.string()).optional(), // Array of tag UUIDs
-  avatar: z.any().optional(), // Optional file upload
+  avatar: z.instanceof(File).nullable(), // Optional file upload
 })
 
 type FormValues = z.infer<typeof formSchema>

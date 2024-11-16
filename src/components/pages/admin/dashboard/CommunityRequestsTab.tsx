@@ -154,7 +154,7 @@ export default function CommunityRequestsTab() {
                     {request.owner_info?.username}
                   </TableCell>
                   <TableCell>
-                    <Image
+                    <img
                       src={
                         request.avatar_url ?? '/default-community-avatar.png'
                       }

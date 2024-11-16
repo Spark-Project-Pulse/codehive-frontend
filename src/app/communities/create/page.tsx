@@ -21,10 +21,23 @@ export default function CreateCommunityPage() {
     title: string
     description: string
     tags?: string[]
-    // TODO: avatar: File
+    avatar?: File | null
   }) {
     try {
-      const response = await createCommunityRequest(values)
+
+      const formData = new FormData()
+      formData.append('title', values.title)
+      formData.append('description', values.description)
+
+      if (values.tags) {
+        values.tags.forEach((tag) => formData.append('tags', tag))
+      }
+
+      if (values.avatar) {
+        formData.append('avatar', values.avatar)
+      }
+
+      const response = await createCommunityRequest(formData)
       const { errorMessage, data } = response
 
       if (!errorMessage && data?.title) {
@@ -51,6 +64,7 @@ export default function CreateCommunityPage() {
       })
     }
   }
+
   return (
     <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>

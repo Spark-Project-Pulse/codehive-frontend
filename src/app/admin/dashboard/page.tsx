@@ -6,7 +6,7 @@ import { useUser } from '@/app/contexts/UserContext'
 import CommunityRequestsTab from '@/components/pages/admin/dashboard/CommunityRequestsTab'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { UserRole } from '@/types/Users'
+import { type UserRole } from '@/types/Users'
 import { CheckCircle, LayoutDashboardIcon, Settings, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
