@@ -83,7 +83,7 @@ export function NavUser({ user, notificationInfo }: NavUserProps) {
                     {user?.username}
                   </span>
                   {notificationInfo.count > 0 && (
-                    <div className="h-2 w-2 rounded-full bg-accent" />
+                    <div className="h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
                 <span className="truncate text-xs">{'fakemail@gmail.com'}</span>
