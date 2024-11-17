@@ -1,23 +1,29 @@
 'use server'
 
-import { type ErrorResponse, type SuccessResponse, type ApiResponse } from '@/types/Api'
-import { type Notification } from '@/types/Notifications'
+import {
+  type ErrorResponse,
+  type SuccessResponse,
+  type ApiResponse,
+} from '@/types/Api'
+import { type NotificatonsInfo, type Notification } from '@/types/Notifications'
+import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Fetches all the notifications associated with a user by their ID from the backend.
  *
- * Args:
- *   user_id (string): The ID of the user.
- *
- * Returns:
- *   Promise<ApiResponse<Question[]>>: The notifications data on success, or an error message on failure.
+ * @param user_id (string) - The ID of the user.
+ * @returns The notifications data on success, or an error message on failure.
  */
-export const getNotificationsByUserId = async (
-  user_id: string
-): Promise<ApiResponse<Notification[]>> => {
+export const getNotificationsByUserId = async (): Promise<ApiResponse<Notification[]>> => {
   try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User is not authenticated')
+    }
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/getByUserId/${user_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/getByUserId/${user.id}`,
       {
         method: 'GET',
         headers: {
@@ -30,8 +36,46 @@ export const getNotificationsByUserId = async (
       throw new Error('Network response was not ok')
     }
 
-    const questionData = (await response.json()) as Notification[]
-    return { errorMessage: null, data: questionData }
+    const notificationData = (await response.json()) as Notification[]
+    return { errorMessage: null, data: notificationData }
+  } catch (error) {
+    console.error('Error fetching notifications: ', error)
+    return { errorMessage: 'Error fetching notifications' }
+  }
+}
+
+/**
+ * Fetches the number of unread notifications for a user.
+ *
+ * @param user_id - The ID of the user
+ * @returns Promise with success message or error details
+ */
+export const getUnreadNotificationsCountByUserId = async (): Promise<
+  ApiResponse<NotificatonsInfo>
+> => {
+  try {
+    const user = await getSupaUser()
+    
+    if (!user) {
+      throw new Error('User is not authenticated')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/getUnreadCountByUserId/${user.id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const notificationData = (await response.json()) as NotificatonsInfo
+    return { errorMessage: null, data: notificationData }
   } catch (error) {
     console.error('Error fetching notifications: ', error)
     return { errorMessage: 'Error fetching notifications' }
