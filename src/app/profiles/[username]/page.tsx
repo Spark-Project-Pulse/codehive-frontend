@@ -17,6 +17,7 @@ import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function ProfilePage({
   params,
@@ -32,6 +33,7 @@ export default function ProfilePage({
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
+  const { toast } = useToast()
   const router = useRouter()
   const isCurrentUser = user?.user === currentUser?.user;
 
@@ -60,7 +62,7 @@ export default function ProfilePage({
   useEffect(() => {
 
     const fetchProjects = async () => {
-        // Check if user id is defined before proceeding
+      // Check if user id is defined before proceeding
       if (!user?.user) {
         console.error('User ID is undefined.')
         return
@@ -73,7 +75,7 @@ export default function ProfilePage({
           console.error('Error fetching projects:', response.errorMessage)
           return
         }
-       // Set the projects state with the fetched data
+        // Set the projects state with the fetched data
         setProjects(response.data ?? [])
       } catch (error) {
         console.error('Error fetching projects:', error)
@@ -95,7 +97,7 @@ export default function ProfilePage({
           console.error('Error fetching questions:', response.errorMessage)
           return
         }
-      // Set the questions state with the fetched data
+        // Set the questions state with the fetched data
         setQuestions(response.data ?? [])
       } catch (error) {
         console.error('Error fetching questions:', error)
@@ -104,26 +106,26 @@ export default function ProfilePage({
       }
     }
 
-        // Only fetch questions/projects/profileImage if user is set
+    // Only fetch questions/projects/profileImage if user is set
     if (user) {
       void fetchProjects()
       void fetchQuestions()
     }
   }, [user])
 
-    // Handle navigation on click for projects
+  // Handle navigation on click for projects
   const handleProjectClick = (projectId: string) => {
     router.push(`/projects/${projectId}`)
   }
 
-    // Handle navigation on click for questions
+  // Handle navigation on click for questions
   const handleQuestionClick = (questionId: string) => {
     router.push(`/questions/${questionId}`)
   }
 
-    // Handle show edit profile on click
+  // Handle show edit profile on click
   function handleShowEditProfileClick() {
-        // If the show upload files button is there, then hide it. Else show it
+    // If the show upload files button is there, then hide it. Else show it
     if (showUploadFiles) {
       setShowUploadFiles(false)
     } else {
@@ -137,8 +139,17 @@ export default function ProfilePage({
       try {
         const formData = new FormData();
         formData.append('profile_image', file);
-        await uploadProfileImage(user.user, formData);
+        const response = await uploadProfileImage(user.user, formData);
+        const { data } = response;
         setShowUploadFiles(false);
+        if (data?.profile_image_nsfw) {
+          // Show innapropriate content toast if there is innapropriate content
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Innapropriate content detected in your image.',
+          })
+        }
       } catch (error) {
         console.error('File upload failed:', error);
       }
@@ -146,8 +157,8 @@ export default function ProfilePage({
       console.error('File upload error')
     }
   }
-// Conditional rendering for loading state
-// TODO: Replace user loading spinner with Shadcn skeleton
+  // Conditional rendering for loading state
+  // TODO: Replace user loading spinner with Shadcn skeleton
   if (isUserLoading) {
     return <LoadingSpinner />
   }

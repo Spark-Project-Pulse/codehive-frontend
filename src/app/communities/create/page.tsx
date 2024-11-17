@@ -40,12 +40,26 @@ export default function CreateCommunityPage() {
       const response = await createCommunityRequest(formData)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data?.title) {
+      if (!errorMessage && data?.title && !data?.toxic && !data?.avatar_image_nsfw) {
         // Navigate to the home page
         router.push('/')
         toast({
           title: 'Community Request Submitted!',
           description: 'We will review your request and get back to you soon.',
+        })
+      } else if (data?.toxic) {
+        // Show toxic content toast if there is toxic content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Toxic content detected in your title.',
+        })
+      } else if (data?.avatar_image_nsfw) {
+        // Show innapropiate content toast if there is innapropiate content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Innapropiate content detected in your avatar.',
         })
       } else {
         // Show error toast if an error occurs

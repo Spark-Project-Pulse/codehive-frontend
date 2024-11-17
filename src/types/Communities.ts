@@ -12,6 +12,7 @@ export interface Community {
   owner_info?: User
   avatar_url?: string
   tags?: string[]
+  avatar_image_nsfw?: boolean
 }
 
 export interface CommunityMember {

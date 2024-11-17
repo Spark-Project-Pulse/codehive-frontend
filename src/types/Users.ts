@@ -3,6 +3,7 @@ export interface User {
   username: string
   reputation: number
   profile_image_url?: string
+  profile_image_nsfw?: boolean
 }
 
 export interface SidebarUser {
