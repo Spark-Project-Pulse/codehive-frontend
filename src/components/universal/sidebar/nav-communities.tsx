@@ -20,9 +20,11 @@ import {
 } from '@/components/ui/sidebar'
 import { type SidebarCommunity } from '@/types/Communities'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Avatar } from '@radix-ui/react-avatar'
+import { AvatarImage } from '@/components/ui/avatar'
 
 export function NavCommunities({
-  communities: communities,
+  communities = [], // Default to an empty array if communities is undefined
   loading: loading,
 }: {
   communities: SidebarCommunity[]
@@ -38,16 +40,19 @@ export function NavCommunities({
           <Skeleton className="mb-2 h-6 w-3/4" />
         ) : communities.length === 0 ? (
           // Display message if no communities
-          <div className="text-sm pl-3">
-            You are not in any communities
-          </div>
+          <div className="pl-3 text-sm">You are not in any communities</div>
         ) : (
-          communities.map((item) => (
-            <SidebarMenuItem key={item.name}>
+          communities.map((item, index) => (
+            <SidebarMenuItem key={index}>
               <SidebarMenuButton asChild>
                 <a href={item.url}>
-                  <item.icon />
-                  <span>{item.name}</span>
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage
+                      src={item.avatar_url ?? '/default-community-avatar.png'}
+                      alt={item.title || 'Community avatar'}
+                    />
+                  </Avatar>
+                  <span>{item.title}</span>
                 </a>
               </SidebarMenuButton>
               <DropdownMenu>

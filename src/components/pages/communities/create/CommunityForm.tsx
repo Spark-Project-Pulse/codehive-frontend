@@ -29,7 +29,10 @@ const formSchema = z.object({
     message: 'Community description cannot be empty.',
   }),
   tags: z.array(z.string()).optional(), // Array of tag UUIDs
-  avatar: z.any().optional(), // Optional file upload
+  avatar:
+    typeof File !== 'undefined'
+      ? z.instanceof(File).nullable()
+      : z.any().nullable(), // Fallback for server environment (otheriwse the GitHub build fails)
 })
 
 type FormValues = z.infer<typeof formSchema>

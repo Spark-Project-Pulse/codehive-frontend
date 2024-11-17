@@ -30,13 +30,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/Spark-Project-Pulse/backend">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+<!--     <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
   </a>
 
 <h3 align="center">Pulse</h3>
 
   <p align="center">
-    [Description goes here]
+    Buzz Buzz
     <br />
     <a href="https://github.com/Spark-Project-Pulse/backend"><strong>Explore the docs »</strong></a>
     <br />
@@ -69,8 +69,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -82,9 +80,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![image](https://github.com/user-attachments/assets/bd869a9d-e1ce-4f72-9deb-1564026b56f1)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+
+CodeHive aims to be a tool to help aspiring developers get fast, reliable, and contextual feedback on their questions. This is achieved by enabling seamless project integration and providing holistic context to related questions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -102,12 +101,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
    npm install npm@latest -g
@@ -250,14 +245,6 @@ export const createProject = async (values: {
 
 
 
-<!-- ROADMAP -->
-## Roadmap
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
 See the [open issues](https://github.com/Spark-Project-Pulse/backend/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -265,20 +252,6 @@ See the [open issues](https://github.com/Spark-Project-Pulse/backend/issues) for
 
 
 <!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Top contributors:
 
@@ -300,7 +273,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+CodeHive - codehivebuzz@gmail.com
 
 Project Link: [https://github.com/Spark-Project-Pulse/backend](https://github.com/Spark-Project-Pulse/backend)
 
@@ -311,9 +284,7 @@ Project Link: [https://github.com/Spark-Project-Pulse/backend](https://github.co
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* CodeHive Team
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
