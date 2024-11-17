@@ -42,3 +42,8 @@ export interface RepoContent {
   download_url: string | null
   // Same as above (see docs for details https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content)
 }
+
+export interface Suggestion {
+  line_number: string
+  suggestion: string
+}
