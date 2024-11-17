@@ -25,9 +25,7 @@ export function generateNotificationContent(
           <a href={link}>
             <Badge>{notification.question_info?.title ?? 'n/a'}</Badge>
           </a>{' '}
-          received an answer
-          {notification.actor_info && ` by ${notification.actor_info.username}`}
-          .
+          received an answer.
         </>
       )
       break
