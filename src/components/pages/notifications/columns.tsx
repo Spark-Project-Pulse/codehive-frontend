@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
@@ -16,11 +15,13 @@ import { MoreHorizontal } from 'lucide-react'
 
 interface ColumnsProps {
   handleMarkNotificationAsRead: (notification_id: string) => Promise<void>
+  handleDeleteNotification: (notification_id: string) => Promise<void>
 }
 
 // Define columns for the Notification data table
 export const getColumns = ({
   handleMarkNotificationAsRead,
+  handleDeleteNotification
 }: ColumnsProps): ColumnDef<Notification>[] => [
   {
     accessorKey: 'read',
@@ -82,9 +83,13 @@ export const getColumns = ({
             >
               Mark as Read
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                handleDeleteNotification(notification.notification_id)
+              }
+            >
+              Delete Notification
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

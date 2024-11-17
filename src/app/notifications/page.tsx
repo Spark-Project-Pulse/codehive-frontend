@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useUser } from '../contexts/UserContext'
 import {
+  deleteNotification,
   getNotificationsByUserId,
   markNotificationAsRead,
 } from '@/api/notifications'
@@ -66,8 +67,8 @@ export default function ProfilePage() {
 
       if (!errorMessage) {
         // optimistic update : change local state rather than full page reload
-        setNotifications(prevNotifications => 
-          prevNotifications.map(notification => 
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
             notification.notification_id === notification_id
               ? { ...notification, read: true }
               : notification
@@ -90,38 +91,88 @@ export default function ProfilePage() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'There was an unexpected error submitting your community.',
+        description: 'There was an unexpected error reading your notification.',
+      })
+    }
+  }
+
+  const handleDeleteNotification = async (notification_id: string) => {
+    try {
+      if (loading) return
+
+      if (!user?.user) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'You must be logged in to delete a notification',
+        })
+        return
+      }
+
+      const response = await deleteNotification(user?.user, notification_id)
+      const { errorMessage, data } = response
+
+      if (!errorMessage) {
+        // optimistic update : change local state rather than full page reload
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) => notification.notification_id !== notification_id
+          )
+        )
+        toast({
+          title: data?.message ?? 'Notification deleted!',
+          description: 'Clean inbox, clean mind! 🧘‍♂️'
+        })
+      } else {
+        // Show error toast if an error occurs
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'There was an unexpected error deleting your notification.',
       })
     }
   }
 
   const refreshNotifications = useCallback(async () => {
-      if (!user?.user) return
+    if (!user?.user) return
 
-      try {
-        setIsLoadingNotifications(true)
-        const response = await getNotificationsByUserId(user.user)
+    try {
+      setIsLoadingNotifications(true)
+      const response = await getNotificationsByUserId(user.user)
 
-        if (response.errorMessage) {
-          console.error('Error fetching notifications:', response.errorMessage)
-          return
-        }
-
-        setNotifications(response.data ?? [])
-      } catch (error) {
-        console.error('Error refreshing notifications:', error)
-      } finally {
-        setIsLoadingNotifications(false)
+      if (response.errorMessage) {
+        console.error('Error fetching notifications:', response.errorMessage)
+        return
       }
-    }, [user?.user])
 
+      setNotifications(response.data ?? [])
+    } catch (error) {
+      console.error('Error refreshing notifications:', error)
+    } finally {
+      setIsLoadingNotifications(false)
+    }
+  }, [user?.user])
 
   useEffect(() => {
-    const interval = setInterval(refreshNotifications, REFRESH_INTERVALS.CONSERVATIVE) // refresh notifications every 3 minutes
+    const interval = setInterval(
+      refreshNotifications,
+      REFRESH_INTERVALS.CONSERVATIVE
+    ) // refresh notifications every 3 minutes
     return () => clearInterval(interval)
   }, [refreshNotifications])
 
-  const columns = getColumns({ handleMarkNotificationAsRead })
+  const columns = getColumns({
+    handleMarkNotificationAsRead,
+    handleDeleteNotification,
+  })
 
   return (
     <div className="max-w-7xl p-6">
