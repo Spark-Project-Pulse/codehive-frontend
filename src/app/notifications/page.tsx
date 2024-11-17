@@ -13,6 +13,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { getColumns } from '@/components/pages/notifications/columns'
 import { toast } from '@/components/ui/use-toast'
 import { REFRESH_INTERVALS } from '@/lib/constants/time'
+import { clearNotificationsCookie } from '@/lib/cookies'
 
 export default function ProfilePage() {
   const { user, loading } = useUser()
@@ -79,6 +80,8 @@ export default function ProfilePage() {
           title: data?.message ?? 'Notification read!',
           description: 'You can mark this as unread if desired.',
         })
+
+        clearNotificationsCookie()
       } else {
         // Show error toast if an error occurs
         toast({
@@ -126,6 +129,8 @@ export default function ProfilePage() {
           title: data?.message ?? 'Notification marked as unread!',
           description: 'You can mark this as read if desired.',
         })
+
+        clearNotificationsCookie()
       } else {
         // Show error toast if an error occurs
         toast({
@@ -171,6 +176,8 @@ export default function ProfilePage() {
           title: data?.message ?? 'Notification deleted!',
           description: 'Clean inbox, clean mind! 🧘‍♂️'
         })
+
+        clearNotificationsCookie()
       } else {
         // Show error toast if an error occurs
         toast({

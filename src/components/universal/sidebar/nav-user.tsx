@@ -30,10 +30,10 @@ import { Badge } from '@/components/ui/badge'
 
 interface NavUserProps {
   user: SidebarUser | null
-  notificationInfo: NotificatonsInfo
+  notificationInfos: NotificatonsInfo
 }
 
-export function NavUser({ user, notificationInfo }: NavUserProps) {
+export function NavUser({ user, notificationInfos }: NavUserProps) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -82,7 +82,7 @@ export function NavUser({ user, notificationInfo }: NavUserProps) {
                   <span className="truncate font-semibold">
                     {user?.username}
                   </span>
-                  {notificationInfo.count > 0 && (
+                  {notificationInfos.count > 0 && (
                     <div className="h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
@@ -140,8 +140,8 @@ export function NavUser({ user, notificationInfo }: NavUserProps) {
                         <Bell />
                         Notifications
                       </div>
-                      {notificationInfo.count > 0 &&
-                        <Badge>{notificationInfo.count}</Badge>
+                      {notificationInfos.count > 0 &&
+                        <Badge>{notificationInfos.count}</Badge>
                       }
                     </Link>
                   </DropdownMenuItem>

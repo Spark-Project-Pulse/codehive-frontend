@@ -248,7 +248,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Skeleton className="mx-auto h-8 w-8 rounded-full" />
           )
         ) : (
-          <NavUser user={user} notificationInfo={notificationsInfo} />
+          <NavUser user={user} notificationInfos={notificationsInfo} />
         )}
       </SidebarFooter>
       <SidebarRail />
