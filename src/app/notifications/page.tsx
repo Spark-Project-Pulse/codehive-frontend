@@ -6,6 +6,7 @@ import {
   deleteNotification,
   getNotificationsByUserId,
   markNotificationAsRead,
+  markNotificationAsUnread,
 } from '@/api/notifications'
 import { type Notification } from '@/types/Notifications'
 import { DataTable } from '@/components/ui/data-table'
@@ -96,6 +97,53 @@ export default function ProfilePage() {
     }
   }
 
+  const handleMarkNotificationAsUnread = async (notification_id: string) => {
+    try {
+      if (loading) return
+
+      if (!user?.user) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'You must be logged in to mark notification as unread',
+        })
+        return
+      }
+
+      const response = await markNotificationAsUnread(user?.user, notification_id)
+      const { errorMessage, data } = response
+
+      if (!errorMessage) {
+        // optimistic update : change local state rather than full page reload
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification.notification_id === notification_id
+              ? { ...notification, read: false }
+              : notification
+          )
+        )
+        toast({
+          title: data?.message ?? 'Notification marked as unread!',
+          description: 'You can mark this as read if desired.',
+        })
+      } else {
+        // Show error toast if an error occurs
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'There was an unexpected error unreading your notification.',
+      })
+    }
+  }
+
   const handleDeleteNotification = async (notification_id: string) => {
     try {
       if (loading) return
@@ -171,7 +219,8 @@ export default function ProfilePage() {
 
   const columns = getColumns({
     handleMarkNotificationAsRead,
-    handleDeleteNotification,
+    handleMarkNotificationAsUnread,
+    handleDeleteNotification
   })
 
   return (

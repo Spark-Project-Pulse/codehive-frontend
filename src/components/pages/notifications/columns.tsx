@@ -15,13 +15,15 @@ import { MoreHorizontal } from 'lucide-react'
 
 interface ColumnsProps {
   handleMarkNotificationAsRead: (notification_id: string) => Promise<void>
+  handleMarkNotificationAsUnread: (notification_id: string) => Promise<void>
   handleDeleteNotification: (notification_id: string) => Promise<void>
 }
 
 // Define columns for the Notification data table
 export const getColumns = ({
   handleMarkNotificationAsRead,
-  handleDeleteNotification
+  handleMarkNotificationAsUnread,
+  handleDeleteNotification,
 }: ColumnsProps): ColumnDef<Notification>[] => [
   {
     accessorKey: 'read',
@@ -76,13 +78,23 @@ export const getColumns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                handleMarkNotificationAsRead(notification.notification_id)
-              }
-            >
-              Mark as Read
-            </DropdownMenuItem>
+            {notification.read ? (
+              <DropdownMenuItem
+                onClick={() =>
+                  handleMarkNotificationAsUnread(notification.notification_id)
+                }
+              >
+                Mark as Unread
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() =>
+                  handleMarkNotificationAsRead(notification.notification_id)
+                }
+              >
+                Mark as Read
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() =>
                 handleDeleteNotification(notification.notification_id)

@@ -70,8 +70,45 @@ export const markNotificationAsRead = async (
     const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error fetching notifications: ', error)
-    return { errorMessage: 'Error fetching notifications' }
+    console.error('Error reading notification: ', error)
+    return { errorMessage: 'Error reading notification' }
+  }
+}
+
+/**
+ * Marks specified notification as unread.
+ *
+ * @param user_id - The ID of the user
+ * @param notification_id - The ID of the notification to mark as read
+ * @returns Promise with success message or error details
+ */
+export const markNotificationAsUnread = async (
+  user_id: string,
+  notification_id: string
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/markAsUnread/${user_id}/${notification_id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      const responseData = (await response.json()) as ErrorResponse
+      return {
+        errorMessage: responseData.error ?? 'Network response was not ok',
+      }
+    }
+
+    const responseData = (await response.json()) as SuccessResponse
+    return { errorMessage: null, data: responseData }
+  } catch (error) {
+    console.error('Error unreading notification: ', error)
+    return { errorMessage: 'Error unreading notification' }
   }
 }
 
@@ -107,7 +144,7 @@ export const deleteNotification = async (
     const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error fetching notifications: ', error)
-    return { errorMessage: 'Error fetching notifications' }
+    console.error('Error deleting notifications: ', error)
+    return { errorMessage: 'Error deleting notifications' }
   }
 }
