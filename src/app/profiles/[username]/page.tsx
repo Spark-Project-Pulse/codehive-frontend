@@ -4,8 +4,9 @@ import { LoadingSpinner } from '@/components/ui/loading'
 import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Project } from '@/types/Projects'
+import { type Badge } from '@/types/Badges'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import { Badge as BadgeComponent } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from "@/components/ui/button"
@@ -15,6 +16,7 @@ import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
+import { getUserBadges } from '@/api/badges'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
 
@@ -27,11 +29,14 @@ export default function ProfilePage({
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  const [badges, setBadges] = useState<Badge[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
+  const [isBadgesLoading, setIsBadgesLoading] = useState(true)
+
   const router = useRouter()
   const isCurrentUser = user?.user === currentUser?.user;
 
@@ -44,10 +49,7 @@ export default function ProfilePage({
           console.error('Error fetching user:', response.errorMessage)
           return
         }
-
-        // Set the user state with the fetched data
         setUser(response.data ?? null)
-
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
@@ -58,22 +60,18 @@ export default function ProfilePage({
   }, [params.username])
 
   useEffect(() => {
-
     const fetchProjects = async () => {
-        // Check if user id is defined before proceeding
       if (!user?.user) {
         console.error('User ID is undefined.')
         return
       }
       setIsProjectsLoading(true)
-
       try {
         const response = await getProjectsByUserId(user.user)
         if (response.errorMessage) {
           console.error('Error fetching projects:', response.errorMessage)
           return
         }
-       // Set the projects state with the fetched data
         setProjects(response.data ?? [])
       } catch (error) {
         console.error('Error fetching projects:', error)
@@ -88,14 +86,12 @@ export default function ProfilePage({
         return
       }
       setIsQuestionsLoading(true)
-
       try {
-        const response = await getQuestionsByUserId(user.user) // Fetch questions for the user
+        const response = await getQuestionsByUserId(user.user)
         if (response.errorMessage) {
           console.error('Error fetching questions:', response.errorMessage)
           return
         }
-      // Set the questions state with the fetched data
         setQuestions(response.data ?? [])
       } catch (error) {
         console.error('Error fetching questions:', error)
@@ -104,31 +100,46 @@ export default function ProfilePage({
       }
     }
 
-        // Only fetch questions/projects/profileImage if user is set
+    const fetchBadges = async () => {
+      if (!user?.user) {
+        console.error('User ID is undefined.');
+        return;
+      }
+      setIsBadgesLoading(true);
+      try {
+        const response = await getUserBadges(user.user);
+        if (response.errorMessage) {
+          console.error('Error fetching badges:', response.errorMessage);
+          return;
+        }
+    
+        // Transform UserBadge[] into Badge[]
+        const badgesData = response.data?.map((userBadge) => userBadge.badge_info) ?? [];
+        setBadges(badgesData);
+      } catch (error) {
+        console.error('Error fetching badges:', error);
+      } finally {
+        setIsBadgesLoading(false);
+      }
+    }
+
     if (user) {
       void fetchProjects()
       void fetchQuestions()
+      void fetchBadges()
     }
   }, [user])
 
-    // Handle navigation on click for projects
   const handleProjectClick = (projectId: string) => {
     router.push(`/projects/${projectId}`)
   }
 
-    // Handle navigation on click for questions
   const handleQuestionClick = (questionId: string) => {
     router.push(`/questions/${questionId}`)
   }
 
-    // Handle show edit profile on click
   function handleShowEditProfileClick() {
-        // If the show upload files button is there, then hide it. Else show it
-    if (showUploadFiles) {
-      setShowUploadFiles(false)
-    } else {
-      setShowUploadFiles(true)
-    }
+    setShowUploadFiles((prev) => !prev)
   }
 
   async function handlePhotoUpload(photo: React.ChangeEvent<HTMLInputElement>) {
@@ -146,8 +157,7 @@ export default function ProfilePage({
       console.error('File upload error')
     }
   }
-// Conditional rendering for loading state
-// TODO: Replace user loading spinner with Shadcn skeleton
+
   if (isUserLoading) {
     return <LoadingSpinner />
   }
@@ -181,7 +191,7 @@ export default function ProfilePage({
                       </div>
                       <div className="grid gap-2">
                         <div className="grid grid-cols-3 items-center gap-4">
-                          <Button variant="outline" onClick={() => handleShowEditProfileClick()} id="width" className="col-span-2 h-10"> Change Image
+                          <Button variant="outline" onClick={handleShowEditProfileClick} id="width" className="col-span-2 h-10"> Change Image
                             <img src="/edit_pencil.svg" alt="Edit Profile" className="h-full w-full" />
                           </Button>
                         </div>
@@ -198,9 +208,23 @@ export default function ProfilePage({
               <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <Badge variant="secondary" className="px-3 py-1 text-lg">
+              <BadgeComponent variant="secondary" className="px-3 py-1 text-lg">
                 Reputation: {user?.reputation}
-              </Badge>
+              </BadgeComponent>
+              {!isBadgesLoading && badges.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {badges.map((badge) => (
+                    <div key={badge.badge_id} className="flex items-center gap-2">
+                      <img
+                        src={badge.image_url ?? '/default-badge.png'}
+                        alt={badge.name}
+                        className="h-6 w-6"
+                      />
+                      <span className="text-sm">{badge.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
