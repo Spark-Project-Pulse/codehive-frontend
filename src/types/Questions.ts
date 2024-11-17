@@ -18,6 +18,7 @@ export interface Question {
   code_context: string;
   code_context_full_pathname: string;
   code_context_line_number: number;
+  toxic?: boolean
 }
 
 export interface ListQuestionsRepsonse {

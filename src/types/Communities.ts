@@ -1,5 +1,4 @@
 import { type UUID } from 'crypto'
-import { type ReactNode } from 'react'
 import { type User } from './Users'
 
 export interface Community {
@@ -7,7 +6,10 @@ export interface Community {
   title: string
   description: string
   member_count: number
+  approved: boolean
   created_at: Date
+  owner_id?: UUID
+  owner_info?: User
   avatar_url?: string
   tags?: string[]
 }
@@ -27,7 +29,7 @@ export type CommunityOption = {
 }
 
 export type SidebarCommunity = {
-  name: string
+  title: string
   url: string
-  icon: () => ReactNode
+  avatar_url: string
 }

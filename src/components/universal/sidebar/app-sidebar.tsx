@@ -29,8 +29,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { getCurrentUserCommunities } from '@/api/communities'
 import { type SidebarCommunity } from '@/types/Communities'
-import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeToggle } from '@/components/universal/sidebar/ThemeToggle'
+import {
+  communitiesCookieExists,
+  getCommunitiesCookie,
+  setCommunitiesCookie,
+} from '@/lib/cookies'
+import { AdminPanelLink } from '@/components/universal/sidebar/nav-admin'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
@@ -39,38 +44,48 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
 
-  // Fetch communities only on component mount
+  // Fetch communities/use cookies
   React.useEffect(() => {
     const fetchCommunities = async () => {
-      setCommunitiesLoading(true)
-      const { data, errorMessage } = await getCurrentUserCommunities()
-      if (data) {
-        // Map the data to the desired format
-        const formattedCommunities = data.map((community) => ({
-          name: community.community_info?.title,
-          url: `/communities/${community.community_info.title}`,
-          icon: () => (
-            <Avatar className="h-6 w-6">
-              <AvatarImage
-                src={
-                  community.community_info.avatar_url ??
-                  '/default-community-avatar.png'
-                }
-                alt={community.community_info.title || 'Community avatar'}
-              />
-            </Avatar>
-          ),
-        })) as SidebarCommunity[]
+      if (loading) return
 
-        setCommunities(formattedCommunities)
-      } else {
-        console.error(errorMessage)
+      if (!loading && user === null) {
+        setCommunitiesLoading(false)
+        return
+      }
+
+      setCommunitiesLoading(true)
+      try {
+        // Check if communities info cookie exists
+        if (await communitiesCookieExists()) {
+          const cookieData = await getCommunitiesCookie()
+          setCommunities(cookieData)
+        } else {
+          // Fetch community data and set cookie if not already cached
+          const { data, errorMessage } = await getCurrentUserCommunities()
+          if (data) {
+            const formattedCommunities = data.map((community) => ({
+              title: community.community_info?.title,
+              url: `/communities/${community.community_info.title}`,
+              avatar_url:
+                community.community_info.avatar_url ??
+                '/default-community-avatar.png',
+            })) as SidebarCommunity[]
+
+            setCommunities(formattedCommunities)
+            setCommunitiesCookie(formattedCommunities) // Cache the communities
+          } else {
+            console.error(errorMessage)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching communities:', error)
       }
       setCommunitiesLoading(false)
     }
 
     void fetchCommunities()
-  }, [])
+  }, [loading, user])
 
   const data = {
     navMain: [
@@ -173,6 +188,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <AdminPanelLink />
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <ThemeToggle />
           </SidebarMenuItem>

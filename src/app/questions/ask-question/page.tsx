@@ -33,9 +33,16 @@ function AskQuestion() {
       const response = await createQuestion(values)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data?.question_id) {
+      if (!errorMessage && data?.question_id && !data?.toxic) {
         // Navigate to the new question page using question_id
         router.push(`/questions/${data.question_id}`)
+      } else if (data?.toxic) {
+        // Show toxic content toast if there is toxic content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Toxic content detected in your question.',
+        })
       } else {
         // Show error toast if an error occurs
         toast({
