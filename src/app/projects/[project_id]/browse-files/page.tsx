@@ -1,16 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { LoadingSpinner } from '@/components/ui/loading'
-import { CodeViewer } from '@/components/universal/code/CodeViewer'
-import { Skeleton } from '@/components/ui/skeleton'
 import FileBrowser from '@/components/universal/code/FileBrowser'
 
 import { type RepoContent, type Project } from '@/types/Projects'
 import { getProjectById } from '@/api/projects'
 import { fetchRepoContents } from '@/lib/github'
-import FileExplorer from '@/components/universal/code/FileExplorer'
 import type { FileSystemItem } from '@/types/FileSystem'
 
 export default function BrowseFiles({ params }: { params: { project_id: string } }) {
