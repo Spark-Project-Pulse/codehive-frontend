@@ -14,16 +14,13 @@ import { getSupaUser } from '@/utils/supabase/server'
  * @param user_id (string) - The ID of the user.
  * @returns The notifications data on success, or an error message on failure.
  */
-export const getNotificationsByUserId = async (): Promise<ApiResponse<Notification[]>> => {
+export const getNotificationsByUserId = async (
+  user_id: string
+): Promise<ApiResponse<Notification[]>> => {
   try {
-    const user = await getSupaUser()
-
-    if (!user) {
-      throw new Error('User is not authenticated')
-    }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/getByUserId/${user.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/getByUserId/${user_id}`,
       {
         method: 'GET',
         headers: {

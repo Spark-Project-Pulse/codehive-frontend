@@ -25,8 +25,14 @@ export default function ProfilePage() {
     const fetchNotifications = async () => {
       setIsLoadingNotifications(true)
 
+      // Check if user id is defined before proceeding
+      if (!user?.user) {
+        console.warn('User ID is undefined.')
+        return
+      }
+
       try {
-        const response = await getNotificationsByUserId() // Fetch projects for the user
+        const response = await getNotificationsByUserId(user.user) // Fetch projects for the user
 
         if (response.errorMessage) {
           console.error('Error fetching projects:', response.errorMessage)
@@ -184,10 +190,11 @@ export default function ProfilePage() {
   }
 
   const refreshNotifications = useCallback(async () => {
+    if (!user?.user) return
 
     try {
       setIsLoadingNotifications(true)
-      const response = await getNotificationsByUserId()
+      const response = await getNotificationsByUserId(user.user)
 
       if (response.errorMessage) {
         console.error('Error fetching notifications:', response.errorMessage)
