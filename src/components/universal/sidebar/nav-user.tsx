@@ -25,8 +25,15 @@ import { signOutAction } from '@/api/auth'
 import { useUser } from '@/app/contexts/UserContext'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/use-toast'
+import { type NotificatonsInfo } from '@/types/Notifications'
+import { Badge } from '@/components/ui/badge'
 
-export function NavUser({ user }: { user: SidebarUser | null }) {
+interface NavUserProps {
+  user: SidebarUser | null
+  notificationInfo: NotificatonsInfo
+}
+
+export function NavUser({ user, notificationInfo }: NavUserProps) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -71,7 +78,14 @@ export function NavUser({ user }: { user: SidebarUser | null }) {
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user?.username}</span>
+                <div className="flex items-center gap-2">
+                  <span className="truncate font-semibold">
+                    {user?.username}
+                  </span>
+                  {notificationInfo.count > 0 && (
+                    <div className="h-2 w-2 rounded-full bg-accent" />
+                  )}
+                </div>
                 <span className="truncate text-xs">{'fakemail@gmail.com'}</span>
                 {/* TODO: replace with actual email */}
               </div>
@@ -119,11 +133,16 @@ export function NavUser({ user }: { user: SidebarUser | null }) {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      className="flex w-full cursor-pointer items-center gap-2"
+                      className="flex w-full cursor-pointer items-center justify-between"
                       href={'/notifications'}
                     >
-                      <Bell />
-                      Notifications
+                      <div className='flex items-center gap-2'>
+                        <Bell />
+                        Notifications
+                      </div>
+                      {notificationInfo.count > 0 &&
+                        <Badge>{notificationInfo.count}</Badge>
+                      }
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
