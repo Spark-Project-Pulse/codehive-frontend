@@ -1,8 +1,7 @@
-
 import React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import FileExplorer from '@/components/universal/code/FileExplorer'
 import { CodeViewer } from '@/components/universal/code/CodeViewer'
+import { ChevronRight, ChevronDown, File as FileIcon, Folder as FolderIcon } from 'lucide-react'
 import type { FileSystemItem } from '@/types/FileSystem'
 import type { Project } from '@/types/Projects'
 
@@ -27,6 +26,58 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
   isLoadingFileContent,
   fileContent,
 }) => {
+  const renderItem = (item: FileSystemItem) => {
+    const isExpanded = item.isExpanded
+    const isSelected = item.path === currentFilePath
+    const isLoading = item.path === (isLoadingDirectory ? currentFilePath : null)
+
+    return (
+      <div key={item.path}>
+        <div
+          className={`flex items-center py-1 px-2 hover:bg-gray-100 cursor-pointer ${
+            isSelected ? 'bg-blue-100' : ''
+          }`}
+          onClick={() =>
+            item.type === 'folder' ? handleFolderClick(item.path) : handleFileClick(item.path)
+          }
+        >
+          <span className="mr-1">
+            {item.type === 'folder' ? (
+              isExpanded ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )
+            ) : null}
+          </span>
+          <span className="mr-2">
+            {item.type === 'folder' ? (
+              <FolderIcon className="w-4 h-4" />
+            ) : (
+              <FileIcon className="w-4 h-4" />
+            )}
+          </span>
+          <span className="text-sm">{item.name}</span>
+        </div>
+        {isLoading ? (
+          <div className="ml-4">
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-3/4 mb-2" />
+            <Skeleton className="h-4 w-2/4" />
+          </div>
+        ) : (
+          item.type === 'folder' &&
+          isExpanded &&
+          item.children && (
+            <div className="ml-4">
+              {item.children.map((child) => renderItem(child))}
+            </div>
+          )
+        )}
+      </div>
+    )
+  }
+
   return (
     <section className="min-h-screen py-2">
       <div className="w-full mx-auto px-4">
@@ -37,13 +88,11 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
             {isLoadingDirectory && !fileSystemTree.length ? (
               <Skeleton className="h-full w-full" />
             ) : (
-              <FileExplorer
-                fileSystem={fileSystemTree}
-                onFolderClick={handleFolderClick}
-                onFileClick={handleFileClick}
-                currentFilePath={currentFilePath}
-                loadingPath={isLoadingDirectory ? currentFilePath : null}
-              />
+              <div className="flex flex-col h-full bg-white border-r">
+                <div className="flex-1 overflow-auto p-2">
+                  {fileSystemTree.map((item) => renderItem(item))}
+                </div>
+              </div>
             )}
           </div>
           <div className="w-3/4 ml-4">

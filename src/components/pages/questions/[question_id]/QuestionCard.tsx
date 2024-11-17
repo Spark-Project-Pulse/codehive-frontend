@@ -19,8 +19,6 @@ import { getAllTags } from '@/api/tags'
 import { useRouter } from 'next/navigation'
 import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
-import FileBrowser from '@/components/universal/code/FileBrowser'
-import { Button } from '@/components/ui/button'
 
 interface QuestionCardProps {
   question: Question
@@ -35,7 +33,6 @@ export default function QuestionCard({
   href,
 }: QuestionCardProps) {
   const [tags, setTags] = useState<TagOption[]>([])
-  const [isExpanded, setIsExpanded] = useState(false) // Add isExpanded state
   const router = useRouter()
 
   useEffect(() => {
@@ -96,13 +93,14 @@ export default function QuestionCard({
         <CardDescription className="mt-2 text-base">
           {question.description}
         </CardDescription>
-
+      </CardHeader>
+      <CardContent>
         {/* Display the specific line of code if available */}
         {question.related_project_info?.project_id &&
           question.code_context_full_pathname &&
           typeof question.code_context_line_number === 'number' &&
           question.code_context && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg shadow">
+            <div className="p-4 bg-gray-50 rounded-lg shadow">
               <h2 className="mb-2 flex items-center">
                 Code Context:
               </h2>
@@ -121,45 +119,8 @@ export default function QuestionCard({
                   &nbsp;
                   <span>{question.related_project_info?.title}</span>
                 </div>
-
               </h3>
-              {/* <Button className="p-2"
-                variant="ghost"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                {isExpanded ? 'Hide Context' : 'View More Context'}
-              </Button>
-              {isExpanded && (
-                <div className="mt-4 flex">
-                  <FileBrowser
-                    project={question.related_project_info}
-                    isLoadingDirectory={false}
-                    fileSystemTree={[]}
-                    handleFolderClick={() => { }}
-                    handleFileClick={() => { }}
-                    currentFilePath={question.code_context_full_pathname}
-                    isLoadingFileContent={false}
-                    fileContent={question.code_context}
-                  />
-                </div>
-              )}
-              {!isExpanded && (<Editor
-                loading={<Skeleton className="h-full w-full" />}
-                height="20px"
-                language="javascript" // TODO: Change to actual language
-                value={question.code_context}
-                options={{
-                  lineNumbers: num => (num + question.code_context_line_number).toString(),
-                  automaticLayout: true,
-                  selectOnLineNumbers: true,
-                  readOnly: true,
-                  minimap: { enabled: false },
-                  renderLineHighlight: 'all',
-                  scrollBeyondLastLine: false,
-                  cursorStyle: 'block',
-                }} */}
-            {/* />)} */}
-            <Editor
+              <Editor
                 loading={<Skeleton className="h-full w-full" />}
                 height="20px"
                 language="javascript" // TODO: Change to actual language
@@ -174,11 +135,9 @@ export default function QuestionCard({
                   scrollBeyondLastLine: false,
                   cursorStyle: 'block',
                 }}
-            />
+              />
             </div>
           )}
-      </CardHeader>
-      <CardContent>
         {question.tags && question.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <TagIcon className="mr-2 h-4 w-4 text-gray-500" />
