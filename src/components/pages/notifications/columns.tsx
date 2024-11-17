@@ -48,7 +48,7 @@ export const getColumns = ({
     header: 'Triggered By',
     cell: ({ row }) =>
       row.original.actor_info ? (
-        <div className="flex justify-center">
+
           <Avatar className="h-8 w-8 rounded-lg">
             <AvatarImage
               src={`${row.original.actor_info?.profile_image_url}?t=${Date.now()}`}
@@ -58,9 +58,9 @@ export const getColumns = ({
               {row.original.actor_info?.username.charAt(0)}
             </AvatarFallback>
           </Avatar>
-        </div>
+
       ) : (
-        <div className="text-center">-</div>
+        <div>-</div>
       ),
   },
   {
@@ -100,7 +100,7 @@ export const getColumns = ({
                 handleDeleteNotification(notification.notification_id)
               }
             >
-              Delete Notification
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
