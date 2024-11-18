@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Folder, Forward, MoreHorizontal, Trash2, type LucideIcon } from "lucide-react"
+import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
 import { useUser } from '@/app/contexts/UserContext'
 import { useTheme } from 'next-themes'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -31,8 +30,7 @@ interface NavProjectsProps {
   projects: SidebarProject[]
 }
 
-export function NavProjects({ loading: initialLoading = false, projects }: NavProjectsProps) {
-  const [loading, setLoading] = useState(initialLoading)
+export function NavProjects({ loading, projects }: NavProjectsProps) {
   const { isMobile } = useSidebar()
   const { resolvedTheme } = useTheme()
 
