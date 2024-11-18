@@ -222,7 +222,7 @@ export default function BrowseFiles({
           fileContent
         )
 
-        if (!errorMessage && data && data.suggestions !== undefined) {
+        if (!errorMessage && data?.suggestions) {
           setSuggestions(data.suggestions)
         } else {
           console.error('Error:', errorMessage)
@@ -279,7 +279,7 @@ export default function BrowseFiles({
           <ScrollArea className="h-[calc(100vh-150px)] overflow-y-auto overflow-x-hidden">
             {isSuggestionsLoading ? (
               <div>
-                {[...Array(5)].map((_, i) => (
+                {[...Array.from({ length: 5 })].map((_, i) => (
                   <Skeleton key={i} className="mb-2 h-20" />
                 ))}
               </div>
@@ -311,7 +311,8 @@ export default function BrowseFiles({
                   AI Code Review
                 </Button>
                 <p className="pt-2">
-                  No suggestions yet. Click "AI Code Review" to get suggestions.
+                  No suggestions yet. Click &quot;AI Code Review&quot; to get
+                  suggestions.
                 </p>
               </div>
             )}

@@ -1,7 +1,7 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { Suggestion, type Project } from '@/types/Projects'
+import { type Suggestion, type Project } from '@/types/Projects'
 import { getSupaUser } from '@/utils/supabase/server'
 
 /**
@@ -59,7 +59,7 @@ export const createProject = async (values: {
  *   fileContent (string): Content of the file to review.
  *
  * Returns:
- *   Promise<ApiResponse<{ suggestions: Array<{ line_number: number, suggestion: string }> }>>:
+ *   Promise<ApiResponse<{ suggestions: Suggestion[] }>>:
  *   A list of code review suggestions on success, or an error message on failure.
  */
 export const codeReview = async (
@@ -67,9 +67,7 @@ export const codeReview = async (
   projectDescription: string,
   fileName: string,
   fileContent: string
-): Promise<
-  ApiResponse<{ suggestions: Array<Suggestion> }>
-> => {
+): Promise<ApiResponse<{ suggestions: Array<Suggestion> }>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/codeReview/`,
@@ -91,10 +89,14 @@ export const codeReview = async (
       throw new Error('Network response was not ok')
     }
 
-    const responseData = await response.json()
+    // Parse response and extract suggestions
+    const suggestions = (await response.json()) as Record<string, Suggestion>
+
+    // Convert the key-value suggestions to an array
+    const suggestionsArray = Object.values(suggestions)
     return {
       errorMessage: null,
-      data: { suggestions: responseData.suggestions },
+      data: { suggestions: suggestionsArray },
     }
   } catch (error) {
     console.error('Error performing code review:', error)
