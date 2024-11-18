@@ -15,7 +15,7 @@ export function AdminPanelLink() {
   return (
     <Link href="/admin/dashboard">
       <Button
-        variant="ghost"
+        variant="secondary"
         size="sm"
         className={`relative w-full ${open ? 'justify-start' : 'justify-center px-0'}`}
       >

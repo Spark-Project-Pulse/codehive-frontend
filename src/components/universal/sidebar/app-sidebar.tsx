@@ -8,6 +8,9 @@ import {
   PersonStanding,
 } from 'lucide-react'
 
+import { type Project, type SidebarProject } from '@/types/Projects'
+import { getProjectsByUserId } from '@/api/projects'
+
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
 import { NavCommunities } from '@/components/universal/sidebar/nav-communities'
@@ -48,9 +51,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
+  const [projectsLoading, setProjectsLoading] =
+    React.useState<boolean>(true)
   const [notificationsInfo, setNotificationsInfo] = React.useState<NotificatonsInfo>({ count: 0 })
   const [notificationsInfoLoading, setNotificationsInfoLoading] =
     React.useState<boolean>(true)
+
+  const [projects, setProjects] = React.useState<SidebarProject[]>([])
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      if (!user?.user) return
+
+      setProjectsLoading(true)
+      const response = await getProjectsByUserId(user.user)
+      if (response.data) {
+        const sidebarProjects: SidebarProject[] = response.data.map(project => ({
+          id: project.project_id,
+          title: project.title,
+          url: `/projects/${project.project_id}`
+        }))
+        setProjects(sidebarProjects)
+      }
+      setProjectsLoading(false)
+    }
+
+    void fetchProjects()
+  }, [user?.user])
 
   // Fetch communities/use cookies
   React.useEffect(() => {
@@ -153,10 +179,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: 'Add',
             url: '/projects/add-project',
           },
-          {
-            title: 'Explore Projects',
-            url: '#',
-          },
+          // TODO: Implement this page
+          // {
+          //   title: 'Explore Projects',
+          //   url: '#',
+          // },
         ],
       },
       {
@@ -173,13 +200,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: '/communities/browse',
           },
         ],
-      },
-    ],
-    projects: [
-      {
-        name: '[projext xyz]',
-        url: '#',
-        icon: Frame,
       },
     ],
   }
@@ -220,7 +240,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects
+          projects={projects}
+          loading={projectsLoading}
+        />
         <NavCommunities
           communities={communities}
           loading={communitiesLoading}

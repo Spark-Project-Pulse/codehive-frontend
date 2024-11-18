@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import BrowseFilesSkeleton from '@/components/pages/projects/[project_id]/browse-files/BrowseFilesSkeleton'
+import FileBrowser from '@/components/universal/code/FileBrowser'
 import { type Suggestion } from '@/types/Projects'
 import { codeReview, getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
 import { type RepoContent, type Project } from '@/types/Projects'
 import { fetchRepoContents } from '@/lib/github'
 import type { FileSystemItem } from '@/types/FileSystem'
-import { LoadingSpinner } from '@/components/ui/loading'
-import FileBrowser from '@/components/universal/code/FileBrowser'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -241,7 +241,7 @@ export default function BrowseFiles({
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <LoadingSpinner />
+    return <BrowseFilesSkeleton />
   }
 
   if (!project) {

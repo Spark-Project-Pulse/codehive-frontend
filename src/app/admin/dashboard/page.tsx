@@ -4,7 +4,7 @@ import { getCurrentUserRole } from '@/api/users'
 import AccessDenied from '@/app/access-denied'
 import { useUser } from '@/app/contexts/UserContext'
 import CommunityRequestsTab from '@/components/pages/admin/dashboard/CommunityRequestsTab'
-import { LoadingSpinner } from '@/components/ui/loading'
+import AdminDashboardSkeleton from '@/components/skeletons/AdminDashboardSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type UserRole } from '@/types/Users'
 import { CheckCircle, LayoutDashboardIcon, Settings, Users } from 'lucide-react'
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
 
   // Show loading state while user data is being fetched
   if (loading) {
-    return <LoadingSpinner />
+    return <AdminDashboardSkeleton />
   }
 
   // Render AccessDenied if the user is not an admin; otherwise, show the admin panel
