@@ -100,11 +100,6 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
 
   return (
     <div className="max-w-7xl p-6">
-      <div className="mb-4 flex justify-end">
-        <Button onClick={handleAskQuestionClick} className="rounded px-4 py-2">
-          Ask Question
-        </Button>
-      </div>
 
       <div className="flex flex-wrap gap-4 md:flex-nowrap">
         <div className="w-full flex-shrink-0 md:w-1/4">
@@ -150,24 +145,31 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
                   onClearSearchQuery={() => setSearchQuery('')}
                 />
               )}
-
-              <ul>
-                {questions.length > 0 ? (
+                <div className="flex justify-between items-start">
+                <ul className="flex-1">
+                  {questions.length > 0 ? (
                   questions.map((question) => (
                     <li key={question.question_id} className="mb-6">
-                      <QuestionCard
-                        key={question.question_id}
-                        question={question}
-                        href={`/questions/${question.question_id}`}
-                      />
+                    <QuestionCard
+                      key={question.question_id}
+                      question={question}
+                      href={`/questions/${question.question_id}`}
+                    />
                     </li>
                   ))
-                ) : (
+                  ) : (
                   <p className="text-center text-lg text-gray-700">
                     No questions match your search criteria.
                   </p>
-                )}
-              </ul>
+                  )}
+                </ul>
+
+                <div className="ml-4">
+                  <Button onClick={handleAskQuestionClick} className="rounded px-4 py-2">
+                  Ask Question
+                  </Button>
+                </div>
+                </div>
 
               {totalPages > 1 && (
                 <PaginationComponent
