@@ -92,11 +92,8 @@ export const codeReview = async (
     // Need to fix types in the future
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const responseData = await response.json()
-    return {
-      errorMessage: null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-      data: { suggestions: responseData.suggestions },
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+    return {errorMessage: null, data: { suggestions: responseData.suggestions }}
   } catch (error) {
     console.error('Error performing code review:', error)
     return { errorMessage: 'Error performing code review' }
