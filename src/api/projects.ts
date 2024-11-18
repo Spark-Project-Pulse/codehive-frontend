@@ -1,7 +1,7 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { type Suggestion, type Project } from '@/types/Projects'
+import { Suggestion, type Project } from '@/types/Projects'
 import { getSupaUser } from '@/utils/supabase/server'
 
 /**
@@ -59,7 +59,7 @@ export const createProject = async (values: {
  *   fileContent (string): Content of the file to review.
  *
  * Returns:
- *   Promise<ApiResponse<{ suggestions: Suggestion[] }>>:
+ *   Promise<ApiResponse<{ suggestions: Array<{ line_number: number, suggestion: string }> }>>:
  *   A list of code review suggestions on success, or an error message on failure.
  */
 export const codeReview = async (
@@ -89,14 +89,13 @@ export const codeReview = async (
       throw new Error('Network response was not ok')
     }
 
-    // Parse response and extract suggestions
-    const suggestions = (await response.json()) as Record<string, Suggestion>
-
-    // Convert the key-value suggestions to an array
-    const suggestionsArray = Object.values(suggestions)
+    // Need to fix types in the future
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const responseData = await response.json()
     return {
       errorMessage: null,
-      data: { suggestions: suggestionsArray },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+      data: { suggestions: responseData.suggestions },
     }
   } catch (error) {
     console.error('Error performing code review:', error)
