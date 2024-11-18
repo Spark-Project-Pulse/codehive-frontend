@@ -227,7 +227,7 @@ export default function QuestionForm({
                 <FormControl>
                   {loading ? (
                     <div className="space-y-2">
-                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-10 w-full" />
                     </div>
                   ) : (
                     <Select
