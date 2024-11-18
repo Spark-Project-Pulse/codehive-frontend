@@ -1,7 +1,7 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { Suggestion, type Project } from '@/types/Projects'
+import { type Suggestion, type Project } from '@/types/Projects'
 import { getSupaUser } from '@/utils/supabase/server'
 
 /**
