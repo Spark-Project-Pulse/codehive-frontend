@@ -3,7 +3,7 @@
 import { type SidebarCommunity } from '@/types/Communities'
 import { type UserRole, type User } from '@/types/Users'
 import { cookies } from 'next/headers'
-import { REFRESH_INTERVALS } from './constants/time'
+import { Time } from '@/lib/constants/time'
 import { type NotificatonsInfo } from '@/types/Notifications'
 
 // User Cookie Functions
@@ -13,7 +13,7 @@ import { type NotificatonsInfo } from '@/types/Notifications'
 export const setUserCookie = (userData: User) => {
   cookies().set('user_info', JSON.stringify(userData), {
     sameSite: 'lax',
-    maxAge: REFRESH_INTERVALS.INFREQUENT, // 5 minutes
+    maxAge: Time.intervalToSeconds("INFREQUENT"), // 5 minutes
   })
 }
 
@@ -40,7 +40,7 @@ export const clearUserCookie = () => {
 export const setUserRoleCookie = (userRoleData: UserRole) => {
   cookies().set('user_role_info', JSON.stringify(userRoleData), {
     sameSite: 'lax',
-    maxAge: REFRESH_INTERVALS.INFREQUENT, // 5 minutes
+    maxAge: Time.intervalToSeconds("INFREQUENT"), // 5 minutes
   })
 }
 
@@ -68,7 +68,7 @@ export const clearUserRoleCookie = () => {
 export const setCommunitiesCookie = (communityData: SidebarCommunity[]) => {
   cookies().set('communities_info', JSON.stringify(communityData), {
     sameSite: 'lax',
-    maxAge: REFRESH_INTERVALS.INFREQUENT, // 5 minutes
+    maxAge: Time.intervalToSeconds("INFREQUENT"), // 5 minutes
   })
 }
 
@@ -97,7 +97,7 @@ export const clearCommunitiesCookie = () => {
 export const setNotificationsCookie = (notificationData: NotificatonsInfo) => {
   cookies().set('notifications_info', JSON.stringify(notificationData), {
     sameSite: 'lax',
-    maxAge: REFRESH_INTERVALS.INFREQUENT, // 5 minutes
+    maxAge: Time.intervalToSeconds("STANDARD"), // 1 minute
   })
 }
 

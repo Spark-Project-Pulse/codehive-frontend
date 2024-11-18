@@ -17,7 +17,6 @@ import {
   getAllCommunityRequests,
   rejectCommunityRequest,
 } from '@/api/communities'
-import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
