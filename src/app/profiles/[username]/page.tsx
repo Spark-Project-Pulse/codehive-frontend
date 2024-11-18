@@ -1,6 +1,8 @@
 'use client'
 
-import { LoadingSpinner } from '@/components/ui/loading'
+import ProfileSkeleton from '@/components/pages/profiles/ProfileSkeleton'
+import ProjectsSkeleton from '@/components/pages/profiles/ProjectsSkeleton'
+import QuestionsSkeleton from '@/components/pages/profiles/QuestionsSkeleton'
 import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Project } from '@/types/Projects'
@@ -149,7 +151,7 @@ export default function ProfilePage({
 // Conditional rendering for loading state
 // TODO: Replace user loading spinner with Shadcn skeleton
   if (isUserLoading) {
-    return <LoadingSpinner />
+    return <ProfileSkeleton />
   }
 
   return (
@@ -217,7 +219,7 @@ export default function ProfilePage({
                 </CardHeader>
                 <CardContent>
                   {isProjectsLoading ? (
-                    <LoadingSpinner />
+                    <ProjectsSkeleton />
                   ) : projects.length === 0 && isCurrentUser ? (
                     <div className="flex justify-center items-center py-8">
                       <Button onClick={() => router.push('/projects/add-project')}>
@@ -252,7 +254,7 @@ export default function ProfilePage({
                 </CardHeader>
                 <CardContent>
                   {isQuestionsLoading ? (
-                    <LoadingSpinner />
+                    <QuestionsSkeleton />
                   ) : (
                     <ul className="space-y-4">
                       {questions.map((question, index) => (

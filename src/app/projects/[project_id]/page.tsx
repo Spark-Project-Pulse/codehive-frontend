@@ -1,12 +1,12 @@
 'use client'
 
-import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { type Project } from '@/types/Projects'
 import { Badge } from '@/components/ui/badge'
 import { getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import ProjectSkeleton from '@/components/pages/projects/[project_id]/ProjectSkeleton'
 
 export default function ProjectPage({
   params,
@@ -40,7 +40,7 @@ export default function ProjectPage({
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <LoadingSpinner />
+    return <ProjectSkeleton />
   }
 
   return (

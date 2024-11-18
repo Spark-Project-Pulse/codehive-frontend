@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { type Repo, type AddProject } from '@/types/Projects'
 import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
-import { LoadingSpinner } from '@/components/ui/loading'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/app/contexts/UserContext'
 
@@ -15,7 +14,7 @@ export default function AddProject() {
   const { toast } = useToast()
   const router = useRouter()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingRepos, setIsLoadingRepos] = useState(true)
   const [repos, setRepos] = useState<Repo[]>([])
   
   useEffect(() => {
@@ -38,7 +37,7 @@ export default function AddProject() {
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
-        setIsLoading(false)
+        setIsLoadingRepos(false)
       }
     }
 
@@ -81,6 +80,7 @@ export default function AddProject() {
     }
   }
 
+  return (
   // Conditional rendering for loading state
   if (isLoading || loading) {
     return <LoadingSpinner />

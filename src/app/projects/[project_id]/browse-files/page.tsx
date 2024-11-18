@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { LoadingSpinner } from '@/components/ui/loading'
+import BrowseFilesSkeleton from '@/components/pages/projects/[project_id]/browse-files/BrowseFilesSkeleton'
 import FileBrowser from '@/components/universal/code/FileBrowser'
 
 import { type RepoContent, type Project } from '@/types/Projects'
@@ -182,7 +182,7 @@ export default function BrowseFiles({ params }: { params: { project_id: string }
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <LoadingSpinner />
+    return <BrowseFilesSkeleton />
   }
 
   if (!project) {
