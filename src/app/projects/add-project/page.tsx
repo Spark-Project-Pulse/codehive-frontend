@@ -81,17 +81,15 @@ export default function AddProject() {
   }
 
   return (
-  // Conditional rendering for loading state
-  if (isLoading || loading) {
-    return <LoadingSpinner />
-  }
-
-  return (
     <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-center text-2xl font-bold text-gray-900">
+       <h1 className="text-center text-h2 font-bold font-subHeading text-secondary-foreground">
         Add a project
       </h1>
-      <ProjectForm repos={repos} onSubmit={handleFormSubmit} />
+      <ProjectForm 
+        repos={repos} 
+        onSubmit={handleFormSubmit} 
+        isLoading={isLoadingRepos}
+      />
     </div>
   )
 }
