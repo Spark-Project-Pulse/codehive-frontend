@@ -16,11 +16,11 @@ import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/Skele
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default function QuestionPage({
-  params,
-}: {
+interface QuestionPageProps {
   params: { question_id: string }
-}) {
+}
+
+export default function QuestionPage({ params }: QuestionPageProps) {
   const { toast } = useToast()
   const [question, setQuestion] = useState<Question | null>(null)
   const [answers, setAnswers] = useState<Answer[]>([])
@@ -179,14 +179,16 @@ export default function QuestionPage({
         {isLoadingQuestion ? (
           <SkeletonQuestionCard />
         ) : question ? (
-          <QuestionCard question={question} />
+          <QuestionCard
+            question={question}
+          />
         ) : (
           <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
             <h2 className="text-lg font-bold">Question not found</h2>
           </div>
         )}
 
-        {/* Show all current answers below question, if answers exists */}
+        {/* Show all current answers below question, if answers exist */}
         {isLoadingAnswers ? (
           <div className="mt-8">
             <Skeleton className="h-6 w-12" />
@@ -219,7 +221,7 @@ export default function QuestionPage({
           )
         )}
 
-        {/* Answer button */}
+        {/* Answer form */}
         {!isLoading && (
           <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
             <h1 className="text-center text-2xl font-bold">
