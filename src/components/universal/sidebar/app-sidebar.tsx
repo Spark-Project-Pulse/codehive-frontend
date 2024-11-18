@@ -48,6 +48,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
+  const [projectsLoading, setProjectsLoading] =
+    React.useState<boolean>(true)
   const [notificationsInfo, setNotificationsInfo] = React.useState<NotificatonsInfo>({ count: 0 })
   const [notificationsInfoLoading, setNotificationsInfoLoading] =
     React.useState<boolean>(true)
@@ -153,10 +155,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: 'Add',
             url: '/projects/add-project',
           },
-          {
-            title: 'Explore Projects',
-            url: '#',
-          },
+          // TODO: Implement this page
+          // {
+          //   title: 'Explore Projects',
+          //   url: '#',
+          // },
         ],
       },
       {
@@ -176,11 +179,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
     projects: [
-      {
-        name: '[projext xyz]',
-        url: '#',
-        icon: Frame,
-      },
     ],
   }
 
@@ -220,7 +218,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects
+          projects={data.projects}
+          loading={projectsLoading}
+        />
         <NavCommunities
           communities={communities}
           loading={communitiesLoading}

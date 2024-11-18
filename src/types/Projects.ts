@@ -1,5 +1,6 @@
 import { type UUID } from 'crypto'
 import { type User } from '@/types/Users'
+import { type LucideIcon } from 'lucide-react'
 
 export interface Project {
   project_id: UUID
@@ -54,4 +55,10 @@ export interface RepoContent {
 export interface Suggestion {
   line_number: string
   suggestion: string
+}
+
+export interface SidebarProject {
+  id: string
+  title: string
+  url: string
 }
