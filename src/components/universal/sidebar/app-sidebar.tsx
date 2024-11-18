@@ -33,15 +33,23 @@ import { ThemeToggle } from '@/components/universal/sidebar/ThemeToggle'
 import {
   communitiesCookieExists,
   getCommunitiesCookie,
+  getNotificationsCookie,
+  notificationsCookieExists,
   setCommunitiesCookie,
+  setNotificationsCookie,
 } from '@/lib/cookies'
 import { AdminPanelLink } from '@/components/universal/sidebar/nav-admin'
+import { type NotificatonsInfo } from '@/types/Notifications'
+import { getUnreadNotificationsCountByUserId } from '@/api/notifications'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
+    React.useState<boolean>(true)
+  const [notificationsInfo, setNotificationsInfo] = React.useState<NotificatonsInfo>({ count: 0 })
+  const [notificationsInfoLoading, setNotificationsInfoLoading] =
     React.useState<boolean>(true)
 
   // Fetch communities/use cookies
@@ -84,7 +92,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setCommunitiesLoading(false)
     }
 
+    const fetchNotificationsInfo = async () => {
+      if (loading) return
+
+      if (!loading && user === null) {
+        setNotificationsInfoLoading(false)
+        return
+      }
+
+      setNotificationsInfoLoading(true)
+      try {
+        // Check if notificationsCount info cookie exists
+        if (await notificationsCookieExists()) {
+          const cookieData = await getNotificationsCookie()
+          setNotificationsInfo(cookieData)
+        } else {
+          // Fetch community data and set cookie if not already cached
+          const { data, errorMessage } = await getUnreadNotificationsCountByUserId()
+          if (data) {
+
+            setNotificationsInfo(data)
+            setNotificationsCookie(data) // Cache the notifications
+          } else {
+            console.error(errorMessage)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching notificatiinos:', error)
+      }
+      setNotificationsInfoLoading(false)
+    }
+
     void fetchCommunities()
+    void fetchNotificationsInfo()
   }, [loading, user])
 
   const data = {
@@ -208,7 +248,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Skeleton className="mx-auto h-8 w-8 rounded-full" />
           )
         ) : (
-          <NavUser user={user} />
+          <NavUser user={user} notificationInfos={notificationsInfo} />
         )}
       </SidebarFooter>
       <SidebarRail />
