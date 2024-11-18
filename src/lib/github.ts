@@ -26,6 +26,6 @@ export const fetchRepoContents = async (
 
     return { errorMessage: null, data: data }
   } catch (error: unknown) {
-    return { errorMessage: 'Error fetching repo contents', data: null }
+    return { errorMessage: `Error fetching repo contents: ${error?.toString()}`, data: null }
   }
 }
