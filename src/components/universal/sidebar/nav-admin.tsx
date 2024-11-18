@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { useUser } from '@/app/contexts/UserContext'
 import { useSidebar } from '@/components/ui/sidebar'
 
-// AdminPanel function
 export function AdminPanelLink() {
   const { role } = useUser()
   const { open } = useSidebar()
