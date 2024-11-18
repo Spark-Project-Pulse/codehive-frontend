@@ -1,6 +1,6 @@
 export interface ApiResponse<T> {
   errorMessage: string | null
-  data?: T
+  data?: T | null
 }
 
 // A success response type that can be used for extracting the API success message, and showing in toast, etc.
