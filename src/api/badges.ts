@@ -40,26 +40,31 @@ export const getAllBadges = async (): Promise<ApiResponse<Badge[]>> => {
  * Returns:
  *   Promise<ApiResponse<UserBadge[]>>: A list of earned badges on success, or an error message on failure.
  */
-export const getUserBadges = async (userId: string): Promise<ApiResponse<UserBadge[]>> => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getUserBadges/${userId}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+export const getUserBadges = async (userId: string): Promise<ApiResponse<Badge[]>> => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getUserBadges/${userId}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log('Fetch Response:', response); // Log the response details
+  
+      if (!response.ok) {
+        const errorResponse = await response.text(); // Log additional error details
+        console.error('Error response body:', errorResponse);
+        throw new Error('Network response was not ok');
+      }
+  
+      const badges = await response.json();
+      return { errorMessage: null, data: badges };
+    } catch (error) {
+      console.error('Error getting user badges:', error);
+      return { errorMessage: 'Error fetching user badges', data: [] };
     }
-
-    const userBadges = (await response.json()) as UserBadge[];
-    return { errorMessage: null, data: userBadges };
-  } catch (error) {
-    console.error('Error fetching user badges:', error);
-    return { errorMessage: 'Error fetching user badges' };
-  }
-}
+  };
+  
 
 /**
  * Fetches badge progress for a user from the backend.

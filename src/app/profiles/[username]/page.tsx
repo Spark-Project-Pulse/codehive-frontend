@@ -4,7 +4,7 @@ import { LoadingSpinner } from '@/components/ui/loading'
 import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Project } from '@/types/Projects'
-import { type Badge } from '@/types/Badges'
+import { type Badge, UserBadge } from '@/types/Badges'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge as BadgeComponent } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,7 +29,7 @@ export default function ProfilePage({
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
-  const [badges, setBadges] = useState<Badge[]>([])
+  const [badges, setBadges] = useState<Badge[]>([]);
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -112,16 +112,20 @@ export default function ProfilePage({
           console.error('Error fetching badges:', response.errorMessage);
           return;
         }
-    
+
         // Transform UserBadge[] into Badge[]
-        const badgesData = response.data?.map((userBadge) => userBadge.badge_info) ?? [];
+        const badgesData: Badge[] = ((response.data as unknown) as UserBadge[])?.map(
+          (userBadge) => userBadge.badge_info
+        ) ?? [];
+        
         setBadges(badgesData);
       } catch (error) {
         console.error('Error fetching badges:', error);
       } finally {
         setIsBadgesLoading(false);
       }
-    }
+    };
+
 
     if (user) {
       void fetchProjects()
@@ -212,20 +216,28 @@ export default function ProfilePage({
                 Reputation: {user?.reputation}
               </BadgeComponent>
               {!isBadgesLoading && badges.length > 0 && (
-                <div className="mt-4 space-y-2">
+                <div className="mt-4 flex justify-center gap-4">
                   {badges.map((badge) => (
-                    <div key={badge.badge_id} className="flex items-center gap-2">
-                      <img
-                        src={badge.image_url ?? '/default-badge.png'}
-                        alt={badge.name}
-                        className="h-6 w-6"
-                      />
-                      <span className="text-sm">{badge.name}</span>
-                    </div>
+                    <Popover key={badge.badge_id}>
+                      <PopoverTrigger asChild>
+                        <div className="relative">
+                          <img
+                            src={badge.image_url ?? '/default-badge.png'}
+                            alt={badge.name}
+                            className="h-8 w-8 cursor-pointer"
+                          />
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-md p-2 z-10">
+                        <h4 className="font-medium">{badge.name}</h4>
+                        <p className="text-sm text-gray-600">{badge.description}</p>
+                      </PopoverContent>
+                    </Popover>
                   ))}
                 </div>
               )}
             </CardContent>
+
           </Card>
         </div>
         <div className="md:w-2/3">
