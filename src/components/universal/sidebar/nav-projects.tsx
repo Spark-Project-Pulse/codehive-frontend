@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Folder, Forward, MoreHorizontal, Trash2, type LucideIcon } from "lucide-react"
-import { type Project, type SidebarProject } from '@/types/Projects'
-import { getProjectsByUserId } from '@/api/projects'
 import { useUser } from '@/app/contexts/UserContext'
 import { useTheme } from 'next-themes'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -26,37 +24,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from 'next/link'
+import { SidebarProject } from '@/types/Projects'
 
 interface NavProjectsProps {
   loading?: boolean
+  projects: SidebarProject[]
 }
 
-export function NavProjects({ loading: initialLoading = false }: NavProjectsProps) {
-  const [projects, setProjects] = useState<SidebarProject[]>([])
+export function NavProjects({ loading: initialLoading = false, projects }: NavProjectsProps) {
   const [loading, setLoading] = useState(initialLoading)
   const { isMobile } = useSidebar()
-  const { user } = useUser()
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      if (!user?.user) return
-
-      setLoading(true)
-      const response = await getProjectsByUserId(user.user)
-      if (response.data) {
-        const sidebarProjects: SidebarProject[] = response.data.map(project => ({
-          id: project.project_id,
-          title: project.title,
-          url: `/projects/${project.project_id}`
-        }))
-        setProjects(sidebarProjects)
-      }
-      setLoading(false)
-    }
-
-    void fetchProjects()
-  }, [user?.user])
-
   const { resolvedTheme } = useTheme()
 
   return (
