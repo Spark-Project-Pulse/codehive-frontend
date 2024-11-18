@@ -15,6 +15,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 import { type Project } from '@/types/Projects'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -126,9 +127,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         onMount={handleEditorMount}
       />
       {selectedLine !== null && (
-        <div className="absolute bottom-0 right-6 rounded shadow-lg">
+        <div className="fixed bottom-4 right-6 z-50 rounded shadow-lg">
           <Sheet>
-            <SheetTrigger>Ask on line {selectedLine}</SheetTrigger>
+            <SheetTrigger>
+              <Button>Ask on line {selectedLine}</Button>
+            </SheetTrigger>
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Ask a Question</SheetTitle>
