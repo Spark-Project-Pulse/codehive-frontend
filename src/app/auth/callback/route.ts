@@ -37,7 +37,11 @@ export async function GET(request: Request) {
         }
 
         // If the user doesn't exist, create a new user in the DB
+        console.log("Checked if user exists", existsResponse);
+        console.log("Does user exist?", existsResponse.data?.exists);
+        
         if (!existsResponse.data?.exists) {
+          console.log('Starting createUser call...');
           const createUserResponse = await createUser({
             user: authUser.id,
             username: authUser.user_metadata.user_name as string, // TODO: figure out better approach than `as string`

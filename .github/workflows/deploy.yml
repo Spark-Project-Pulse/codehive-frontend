@@ -3,7 +3,7 @@ name: Deploy Frontend to Google Cloud Run
 on:
   push:
     branches:
-      - main
+      - hotfix/will/debug-create-user
 
 jobs:
   deploy-frontend:
