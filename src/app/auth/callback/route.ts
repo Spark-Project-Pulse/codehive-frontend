@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   let next = searchParams.get('next') ?? '/';
 
-  console.log("Checking code exists", code);
+  // console.log("Checking code exists", code);
   
   if (code) {
     console.log("Creating supabase client");
