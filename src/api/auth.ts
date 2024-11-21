@@ -26,8 +26,6 @@ export const loginAction = async (
     // Await the promise to get the resolved SupabaseAuthClient
     const supabaseAuthClient = await createClient()
 
-    console.log('NEXT_PUBLIC_BASE_URL:', process.env.NEXT_PUBLIC_BASE_URL);
-
     // Now you can call `signInWithOAuth` on the resolved object
     const { data, error } = await supabaseAuthClient.auth.signInWithOAuth({
       provider,
