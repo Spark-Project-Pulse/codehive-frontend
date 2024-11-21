@@ -11,13 +11,18 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   let next = searchParams.get('next') ?? '/';
 
+  console.log("Checking code exists", code);
+  
   if (code) {
+    console.log("Creating supabase client");
     // Create the Supabase client
     const supabase = await createClient();
-
+    
     // Exchange the code for a session
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+    console.log("Exchanging code for session", error);
 
+    
     if (!error) {
       // Get the authenticated user after exchanging the code for a session
       const {
