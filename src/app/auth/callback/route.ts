@@ -14,10 +14,10 @@ export async function GET(request: Request) {
   if (code) {
     // Create the Supabase client
     const supabase = await createClient();
-    
+
     // Exchange the code for a session
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!error) {
       // Get the authenticated user after exchanging the code for a session
       const {
