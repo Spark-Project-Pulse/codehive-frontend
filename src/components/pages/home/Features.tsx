@@ -11,7 +11,7 @@ const features = [
     description: 'Get personal feedback on your work.',
     href: '/',
     cta: 'Learn more',
-    background: <img className="absolute -right-20 -top-20 opacity-60" />,
+    background: <img src='/home/features/questions.png' className=" opacity-60" />,
     className: 'lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3',
   },
   {
@@ -47,7 +47,7 @@ const features = [
     description: 'Get notified when your question is answered.',
     href: '/',
     cta: 'Learn more',
-    background: <img className="absolute -right-20 -top-20 opacity-60" />,
+    background: <img src='/home/features/notifications.png' className=" opacity-60" />,
     className: 'lg:col-start-3 lg:col-end-3 lg:row-start-2 lg:row-end-4',
   },
 ]
