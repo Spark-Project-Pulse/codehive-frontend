@@ -26,6 +26,10 @@ export interface Notification {
   actor: UUID | null
 }
 
+export interface NotificatonsInfo {
+  count: number
+}
+
 type NotificationType =
   | "question_answered"
   | "answer_commented"

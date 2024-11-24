@@ -69,7 +69,7 @@ export const changeReputationByAmount = async (
 
     if (!response.ok) {
       const errorData = (await response.json()) as ErrorResponse
-      throw new Error(errorData.message ?? 'Network response was not ok')
+      throw new Error(errorData.error ?? 'Network response was not ok')
     }
 
     // Extract the JSON data from the response

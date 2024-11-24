@@ -1,6 +1,6 @@
 export interface ApiResponse<T> {
   errorMessage: string | null
-  data?: T
+  data?: T | null
 }
 
 // A success response type that can be used for extracting the API success message, and showing in toast, etc.
@@ -10,5 +10,5 @@ export interface SuccessResponse {
 
 // An error response type that can be used for extracting the API error thrown, and showing in toast, etc.
 export interface ErrorResponse {
-  message?: string
+  error?: string
 }

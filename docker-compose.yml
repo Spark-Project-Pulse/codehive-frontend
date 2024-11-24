@@ -13,12 +13,12 @@ services:
       - DOCKER_LOCAL=true
   backend:
     build:
-      context: ../backend
+      context: ../codehive-backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     env_file:
-      - ../backend/.env.local
+      - ../codehive-backend/.env.local
     environment:
       - DOCKER_LOCAL=true
     profiles:

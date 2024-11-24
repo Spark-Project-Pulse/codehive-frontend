@@ -15,6 +15,9 @@ export interface Question {
   related_project_info?: Project
   related_community_id?: UUID
   related_community_info?: Community
+  code_context: string;
+  code_context_full_pathname: string;
+  code_context_line_number: number;
   toxic?: boolean
 }
 

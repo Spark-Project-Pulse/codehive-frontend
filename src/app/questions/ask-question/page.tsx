@@ -63,7 +63,7 @@ function AskQuestion() {
 
   return (
     <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-center text-h2 font-bold font-subHeading text-secondary-foreground">
+      <h1 className="text-center text-h2 font-bold">
         Ask a Question
       </h1>
       <QuestionForm onSubmit={handleFormSubmit} communityId={communityId} />

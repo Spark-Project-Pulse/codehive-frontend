@@ -36,7 +36,7 @@ export default function GithubLoginButton() {
     <Button
       onClick={() => handleClickLoginButton('github')}
       disabled={isPending}
-      className="flex items-center space-x-2"
+      className="flex items-center space-x-2 w-full"
     >
       {isPending ? (
         <>

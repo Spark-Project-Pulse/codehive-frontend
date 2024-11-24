@@ -14,6 +14,8 @@ import { createQuestion } from '@/api/questions'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 import { type Project } from '@/types/Projects'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -22,6 +24,7 @@ interface CodeViewerProps {
   filename: string | null
   lineNumbers?: boolean
   language?: string
+  loading?: boolean
 }
 
 export const CodeViewer: React.FC<CodeViewerProps> = ({
@@ -30,6 +33,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   pathname,
   lineNumbers = true,
   language = 'javascript', // TODO: dynamically pass this from parent component
+  loading = true,
 }) => {
   const { toast } = useToast()
   const router = useRouter()
@@ -91,6 +95,10 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     }
   }
 
+  if (loading) {
+    return <Skeleton className="h-full w-full" />
+  }
+
   if (fileContent == null) {
     return (
       <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
@@ -100,9 +108,10 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   }
 
   return (
-    <div className="relative">
+    <div className="h-full">
       <Editor
-        height="40vh"
+        loading={<Skeleton className="h-full w-full" />}
+        height="60vh"
         language={language}
         value={fileContent}
         options={{
@@ -118,9 +127,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         onMount={handleEditorMount}
       />
       {selectedLine !== null && (
-        <div className="absolute bottom-0 right-6 rounded shadow-lg">
+        <div className="fixed bottom-4 right-6 z-50 rounded shadow-lg">
           <Sheet>
-            <SheetTrigger>Ask on line {selectedLine}</SheetTrigger>
+            <SheetTrigger>
+              <Button>Ask on line {selectedLine}</Button>
+            </SheetTrigger>
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Ask a Question</SheetTitle>

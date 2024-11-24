@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
@@ -65,6 +66,10 @@ export default function CommunityHeader({
         </div>
       </div>
       {/* Join or leave community button */}
+      {!userIsMember && (
+        <Skeleton className="h-10 w-32" />
+      )}
+
       {userIsMember === false && (
         <ButtonWithLoading
           onClick={handleJoinCommunity}

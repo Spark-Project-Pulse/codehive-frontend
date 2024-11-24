@@ -11,7 +11,7 @@ import NotFound from '@/app/not-found'
 import CommunityContributorsTab from '@/components/pages/communities/[community_title]/CommunityContributorsTab'
 import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
 import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
-import { LoadingSpinner } from '@/components/ui/loading'
+import CommunitySkeleton from '@/components/pages/communities/[community_title]/CommunitySkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/use-toast'
 import { type Community } from '@/types/Communities'
@@ -133,7 +133,7 @@ export default function CommunityPage({
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <LoadingSpinner />
+    return <CommunitySkeleton />
   }
 
   return (
