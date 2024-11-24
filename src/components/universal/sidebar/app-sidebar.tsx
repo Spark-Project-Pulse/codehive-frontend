@@ -2,13 +2,12 @@
 
 import * as React from 'react'
 import {
-  Frame,
   MessageCircleQuestion,
   FolderKanban,
   PersonStanding,
 } from 'lucide-react'
 
-import { type Project, type SidebarProject } from '@/types/Projects'
+import { type SidebarProject } from '@/types/Projects'
 import { getProjectsByUserId } from '@/api/projects'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
