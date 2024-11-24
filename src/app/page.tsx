@@ -8,9 +8,9 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <Hero />
-        {/* <Features />
-        <Testimonials />
-        <FAQ /> */}
+        {/* <Features /> */}
+        {/* <Testimonials /> */}
+        {/* <FAQ /> */}
       </main>
     </div>
   );
