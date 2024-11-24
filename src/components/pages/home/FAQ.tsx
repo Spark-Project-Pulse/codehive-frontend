@@ -6,6 +6,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const faqData = [
   {
@@ -16,17 +18,22 @@ const faqData = [
   {
     question: 'How do I integrate GitHub with my account?',
     answer:
-      'You can easily sync your GitHub repos by connecting your account in the settings. Visit your profile and follow the steps to link your GitHub.',
-  },
-  {
-    question: 'Is there a free trial available?',
-    answer:
-      "Yes, we offer a 14-day free trial with access to all premium features so you can explore the platform's full potential.",
+      'You can easily sync your GitHub repos by logging in with GitHub and creating a project.',
   },
   {
     question: 'What kind of communities can I join?',
-    answer:
-      'You can join communities based on your interests, such as AI, open source, frontend development, and many more.',
+    answer: (
+      <>
+        You can join communities based on your interests, such as AI, open
+        source, frontend development, and many more. You can also create a{' '}
+        <Link href="/communities/create">
+          <Button className="p-0" variant="link">
+            community request
+          </Button>
+        </Link>{' '}
+        if you want to see a new community on CodeHive!
+      </>
+    ),
   },
   {
     question: 'How can I get help if I face an issue?',
@@ -44,7 +51,8 @@ export default function FAQ() {
           Frequently Asked Questions
         </h2>
         <p className="mt-2 text-lg text-muted-foreground">
-          Got questions? We&apos;ve got answers! Explore some common inquiries below.
+          Got questions? We&apos;ve got answers! Explore some common inquiries
+          below.
         </p>
       </div>
 
@@ -52,7 +60,7 @@ export default function FAQ() {
       <Accordion type="single" collapsible className="space-y-4">
         {faqData.map((faq, index) => (
           <AccordionItem key={index} value={`faq-${index}`}>
-            <AccordionTrigger className="text-lg font-medium ">
+            <AccordionTrigger className="text-lg font-medium">
               {faq.question}
             </AccordionTrigger>
             <AccordionContent className="text-gray-700 dark:text-gray-300">
