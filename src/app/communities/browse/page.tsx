@@ -120,7 +120,7 @@ export default function BrowseCommunities() {
   return (
     <div className="max-w-7xl p-6">
       {/* Main title for the communities page */}
-      <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
+      <h1 className="text-center text-h2 font-bold text-secondary-foreground">
         Communities
       </h1>
 
