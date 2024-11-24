@@ -1,17 +1,17 @@
 "use client"
 
+import Hero from "@/components/pages/home/Hero";
+
 export default function Home() {
 
   return (
-    <section className="flex items-center justify-center" style={{ height: 'calc(100vh - 4rem)' }}>
-      <div className="text-h1 font-bold uppercase font-heading tracking-wider">
-        <div className="text-secondary-foreground">
-          Welcome to
-        </div>
-        <div className="text-accent">
-          CodeHive
-        </div>
-      </div>
-    </section >
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">
+        <Hero />
+        {/* <Features />
+        <Testimonials />
+        <FAQ /> */}
+      </main>
+    </div>
   );
 }
