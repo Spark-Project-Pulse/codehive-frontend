@@ -14,6 +14,7 @@ import CommunityQuestionsTab from '@/components/pages/communities/[community_tit
 import CommunitySkeleton from '@/components/pages/communities/[community_title]/CommunitySkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/use-toast'
+import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
 import { useEffect, useState } from 'react'
@@ -27,6 +28,7 @@ export default function CommunityPage({
   // State for user being a member of this community, null if user is not authenticated
   const [userIsMember, setUserIsMember] = useState<true | false | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [authPopupOpen, setAuthPopupOpen] = useState(false) // State to control popup visibility
 
   const [tags, setTags] = useState<TagOption[]>([])
 
@@ -59,6 +61,8 @@ export default function CommunityPage({
 
         if (!errorMessage && data) {
           setUserIsMember(data.is_member)
+        } else if (errorMessage === 'User not authenticated') {
+          setUserIsMember(false)
         } else {
           console.error('Error:', errorMessage)
         }
@@ -98,6 +102,9 @@ export default function CommunityPage({
           title: 'Success!',
           description: `You are now a part of the ${community.title} community`,
         })
+      } else if (errorMessage === 'User not authenticated') {
+        // Open the authentication popup
+        setAuthPopupOpen(true)
       } else {
         console.error('Error:', errorMessage)
       }
@@ -123,6 +130,9 @@ export default function CommunityPage({
           title: 'Success!',
           description: `You have left the ${community.title} community`,
         })
+      } else if (errorMessage === 'User not authenticated') {
+        // Open the authentication popup
+        setAuthPopupOpen(true)
       } else {
         console.error('Error:', errorMessage)
       }
@@ -138,6 +148,15 @@ export default function CommunityPage({
 
   return (
     <>
+      {/* Popup for unauthenticated users */}
+      <NotAuthenticatedPopup
+        isOpen={authPopupOpen}
+        onClose={() => {
+          setAuthPopupOpen(false)
+        }}
+      />
+
+      {/* Community page content */}
       {community !== null ? (
         <div className="container mx-auto px-4 py-8">
           <CommunityHeader

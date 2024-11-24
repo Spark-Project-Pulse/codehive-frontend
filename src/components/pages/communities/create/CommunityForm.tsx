@@ -39,10 +39,10 @@ type FormValues = z.infer<typeof formSchema>
 
 // The CommunityForm component
 export default function CommunityForm({
-    onSubmit,
-  }: {
-    onSubmit: (values: FormValues) => Promise<void>
-  }) {
+  onSubmit,
+}: {
+  onSubmit: (values: FormValues) => Promise<void>
+}) {
   // Initialize the form with react-hook-form
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -79,6 +79,19 @@ export default function CommunityForm({
     )
   }, [selectedTags, form])
 
+  // State to handle form submission
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Handle form submission
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true)
+    try {
+      await onSubmit(values)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   // Handle file upload for avatar
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null
@@ -87,7 +100,7 @@ export default function CommunityForm({
 
   return (
     <Form {...form}>
-      <form className="space-y-8">
+      <form className="space-y-8" onSubmit={form.handleSubmit(handleSubmit)}>
         {/* Title Field */}
         <FormField
           control={form.control}
@@ -96,7 +109,11 @@ export default function CommunityForm({
             <FormItem>
               <FormLabel htmlFor="title">Community Title</FormLabel>
               <FormControl>
-                <Input id="title" placeholder="Enter community title" {...field} />
+                <Input
+                  id="title"
+                  placeholder="Enter community title"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -148,7 +165,9 @@ export default function CommunityForm({
           name="avatar"
           render={() => (
             <FormItem>
-              <FormLabel htmlFor="avatar">Community Avatar (optional)</FormLabel>
+              <FormLabel htmlFor="avatar">
+                Community Avatar (optional)
+              </FormLabel>
               <FormControl>
                 <Input
                   id="avatar"
@@ -164,9 +183,9 @@ export default function CommunityForm({
 
         {/* Submit Button */}
         <ButtonWithLoading
-          onClick={form.handleSubmit(onSubmit)}
           buttonText="Create Community"
           buttonType="submit"
+          isLoading={isSubmitting}
         />
       </form>
     </Form>
