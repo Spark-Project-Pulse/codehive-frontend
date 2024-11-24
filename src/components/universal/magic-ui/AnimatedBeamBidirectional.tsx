@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useRef } from 'react'
 
-import { cn } from "@/lib/utils";
-import { AnimatedBeam } from "@/components/ui/animated-beam";
-import { GitHubLogoIcon, PersonIcon } from "@radix-ui/react-icons";
+import { cn } from '@/lib/utils'
+import { AnimatedBeam } from '@/components/ui/animated-beam'
+import { GitHubLogoIcon, PersonIcon } from '@radix-ui/react-icons'
 
 const Circle = forwardRef<
   HTMLDivElement,
@@ -14,32 +14,29 @@ const Circle = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
-        className,
+        'z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]',
+        className
       )}
     >
       {children}
     </div>
-  );
-});
+  )
+})
 
-Circle.displayName = "Circle";
+Circle.displayName = 'Circle'
 
 export function AnimatedBeamBidirectional({
   className,
 }: {
-  className?: string;
+  className?: string
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const div1Ref = useRef<HTMLDivElement>(null);
-  const div2Ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const div1Ref = useRef<HTMLDivElement>(null)
+  const div2Ref = useRef<HTMLDivElement>(null)
 
   return (
     <div
-      className={cn(
-        "flex justify-center items-center relative",
-        className
-      )}
+      className={cn('relative flex items-center justify-center', className)}
       ref={containerRef}
     >
       <div className="flex size-full flex-col items-stretch justify-between gap-10">
@@ -71,11 +68,10 @@ export function AnimatedBeamBidirectional({
         reverse
       />
     </div>
-  );
+  )
 }
 
 const Icons = {
   openai: GitHubLogoIcon,
-  user: PersonIcon
-  ,
-};
+  user: PersonIcon,
+}
