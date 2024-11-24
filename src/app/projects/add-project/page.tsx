@@ -82,8 +82,8 @@ export default function AddProject() {
 
   return (
     <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-       <h1 className="text-center text-h2 font-bold font-subHeading text-secondary-foreground">
-        Add a project
+       <h1 className="text-center text-h2 font-bold">
+        Add a Project
       </h1>
       <ProjectForm 
         repos={repos} 
