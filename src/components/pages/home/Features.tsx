@@ -59,7 +59,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="w-full px-20">
+    <section className="w-full">
       <BentoGrid className="lg:grid-rows-3">
         {features.map((feature) => (
           <BentoCard key={feature.name} {...feature} />
