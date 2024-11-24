@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
-import { useUser } from '@/app/contexts/UserContext'
 import { useTheme } from 'next-themes'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -23,7 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import Link from 'next/link'
-import { SidebarProject } from '@/types/Projects'
+import { type SidebarProject } from '@/types/Projects'
 
 interface NavProjectsProps {
   loading?: boolean

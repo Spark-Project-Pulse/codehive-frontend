@@ -41,7 +41,7 @@ export default function LoginPage() {
       <div className="mt-12 w-full max-w-3xl space-y-8">
         <section>
           <h2 className="mb-4 text-2xl font-bold">
-            What's the buzz about CodeHive?
+            What&apos;s the buzz about CodeHive?
           </h2>
           <p className="text-muted-foreground">
             CodeHive is the sweetest spot for developers to collaborate, share
