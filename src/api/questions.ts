@@ -23,7 +23,7 @@ export const createQuestion = async (values: {
   try {
     const user = await getSupaUser()
 
-    const vals = { asker: user?.id, is_answered: false, ...values }
+    const vals = { asker: user?.id, ...values }
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/create/`,
       {

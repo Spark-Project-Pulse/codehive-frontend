@@ -222,7 +222,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
           ) : question ? (
             <>
               {isAnswered && (
-                <div className="rounded-lg border border-green-400 bg-green-100 p-4 text-green-700">
+                <div className="mb-4 rounded-lg border border-green-400 bg-green-100 p-4 text-green-700">
                   {isOwner ? (
                     <h2 className="text-lg font-bold">
                       You have marked this question as answered
