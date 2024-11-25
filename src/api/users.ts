@@ -246,7 +246,7 @@ export const userExists = async (
 export const uploadProfileImage = async (
   user_id: string,
   formData: FormData
-): Promise<ApiResponse<{ user_id: string }>> => {
+): Promise<ApiResponse<User>> => {
   try {
     const user = await getSupaUser()
 
@@ -268,7 +268,7 @@ export const uploadProfileImage = async (
 
     // Extract the JSON data from the response
     const responseData = (await response.json()) as User
-    return { errorMessage: null, data: { user_id: responseData.user } }
+    return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error uploading photo image: ', error)
     return { errorMessage: 'Error uploading photo image' }

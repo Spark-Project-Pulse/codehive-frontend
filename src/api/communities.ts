@@ -20,7 +20,7 @@ import { type UUID } from 'crypto'
  */
 export const createCommunityRequest = async (
   formData: FormData
-): Promise<ApiResponse<{ community_id: string; title: string }>> => {
+): Promise<ApiResponse<{ community_id: string; title: string; toxic: boolean; avatar_image_nsfw: boolean }>> => {
   try {
     const user = await getSupaUser()
     if (!user) {
@@ -45,12 +45,16 @@ export const createCommunityRequest = async (
     const responseData = (await response.json()) as {
       community_id: string
       title: string
+      toxic: boolean
+      avatar_image_nsfw: boolean
     }
     return {
       errorMessage: null,
       data: {
         community_id: responseData.community_id,
         title: responseData.title,
+        toxic: responseData.toxic,
+        avatar_image_nsfw: responseData.avatar_image_nsfw,
       },
     }
   } catch (error) {

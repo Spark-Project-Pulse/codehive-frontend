@@ -23,7 +23,7 @@ import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
-import { toast } from '@/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 
 export default function ProfilePage({
@@ -40,6 +40,7 @@ export default function ProfilePage({
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
+  const { toast } = useToast()
   const router = useRouter()
   const isCurrentUser = user?.user === currentUser?.user
 
@@ -143,14 +144,14 @@ export default function ProfilePage({
       try {
         const formData = new FormData()
         formData.append('profile_image', file)
-        const { errorMessage } = await uploadProfileImage(user.user, formData)
+        const { data } = await uploadProfileImage(user.user, formData)
         setShowUploadFiles(false)
-
-        if (errorMessage) {
+        if (data?.profile_image_nsfw) {
+          // Show innapropriate content toast if there is innapropriate content
           toast({
             variant: 'destructive',
             title: 'Error',
-            description: errorMessage,
+            description: 'Innapropriate content detected in your image.',
           })
         }
       } catch (error) {
