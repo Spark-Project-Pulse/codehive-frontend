@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import Link from 'next/link'
 
 interface NotAuthenticatedPopupProps {
   isOpen: boolean
@@ -19,17 +20,11 @@ export default function NotAuthenticatedPopup({
   isOpen,
   onClose,
 }: NotAuthenticatedPopupProps) {
-  const router = useRouter()
   const [open, setOpen] = useState(isOpen)
 
   useEffect(() => {
     setOpen(isOpen)
   }, [isOpen])
-
-  const handleLogin = () => {
-    router.push('/login')
-    onClose()
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -44,7 +39,9 @@ export default function NotAuthenticatedPopup({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleLogin}>Fly to Login</Button>
+          <Link href='/login'>
+            <Button>Fly to Login</Button>
+          </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>
