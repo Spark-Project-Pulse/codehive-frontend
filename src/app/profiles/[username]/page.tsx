@@ -218,7 +218,7 @@ export default function ProfilePage({
                 Reputation: {user?.reputation}
               </BadgeComponent>
               {!isBadgesLoading && badges.length > 0 && (
-                <div className="mt-4 flex justify-center gap-4">
+                <div className="mt-4 grid grid-cols-6 gap-x-4 gap-y-4 justify-items-center">
                   {badges.map((badge) => (
                     <Popover key={badge.badge_id}>
                       <PopoverTrigger asChild>
@@ -239,6 +239,7 @@ export default function ProfilePage({
                 </div>
               )}
             </CardContent>
+
 
           </Card>
         </div>
