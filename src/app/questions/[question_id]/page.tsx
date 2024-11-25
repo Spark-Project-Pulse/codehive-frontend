@@ -30,8 +30,8 @@ export default function QuestionPage({ params }: QuestionPageProps) {
   const [answers, setAnswers] = useState<Answer[]>([])
   const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
   const [isAnswered, setIsAnswered] = useState<boolean | null>(null)
-  const isOwner = question?.asker === currentUser?.user
-
+  const isOwner = question?.asker && currentUser?.user ? question.asker === currentUser.user : false; // ensures both asker and user are `non-null`
+  
   const [isLoadingQuestion, setIsLoadingQuestion] = useState<boolean>(true)
   const [isLoadingAnswers, setIsLoadingAnswers] = useState<boolean>(true)
   const [isLoadingComments, setIsLoadingComments] = useState<
@@ -50,7 +50,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
         if (!errorMessage && data) {
           setQuestion(data)
           setIsAnswered(data.is_answered)
-          console.log("is_owner: ", isOwner)
+          console.log('is_owner: ', isOwner)
         } else {
           console.error('Error:', errorMessage)
         }
@@ -224,12 +224,15 @@ export default function QuestionPage({ params }: QuestionPageProps) {
             <>
               {isAnswered && (
                 <div className="rounded-lg border border-green-400 bg-green-100 p-4 text-green-700">
-                  {isOwner ? <h2 className="text-lg font-bold">
-                    You have marked this question as answered
-                  </h2> : <h2 className="text-lg font-bold">
-                    This question has already been answered
-                  </h2>}
-
+                  {isOwner ? (
+                    <h2 className="text-lg font-bold">
+                      You have marked this question as answered
+                    </h2>
+                  ) : (
+                    <h2 className="text-lg font-bold">
+                      This question has already been answered
+                    </h2>
+                  )}
                 </div>
               )}
               <QuestionCard question={question} />
@@ -240,17 +243,15 @@ export default function QuestionPage({ params }: QuestionPageProps) {
             </div>
           )}
 
-          {isOwner && (
+          {isOwner && isAnswered !== null && (
             <Button
               variant="outline"
               onClick={() => handleChangeMark()}
-              id="width"
-              className="col-span-2 h-10"
+              className="mt-4"
             >
-              {isAnswered ? "Mark as Unanswered" : "Mark as Answered"}
+              {isAnswered == true ? 'Mark as Unanswered' : 'Mark as Answered'}
             </Button>
           )}
-
 
           {/* Show all current answers below question, if answers exist */}
           {isLoadingAnswers ? (
