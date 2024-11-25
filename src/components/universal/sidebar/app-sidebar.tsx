@@ -227,10 +227,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Link
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
-          >
-            CodeHive
-          </Link>
-        ) : (
+            >
+            {/* Try to show logo-and-codehive image, fallback to text */}
+            <Image
+              src="/logo-and-codehive.svg"
+              alt="CodeHive and its logo"
+              width={235}
+              height={50}
+              onError={(e) => {
+              e.currentTarget.onerror = null; // Prevent infinite loop
+              if (e.currentTarget.parentElement) {
+                e.currentTarget.parentElement.innerHTML = 'CodeHive';
+              }
+              }}
+            />
+            </Link>
+          ) : (
           <Link
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
