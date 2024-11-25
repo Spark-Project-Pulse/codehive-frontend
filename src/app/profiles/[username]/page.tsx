@@ -178,7 +178,7 @@ export default function ProfilePage({
                     alt="User profile picture"
                   />
                   <AvatarFallback className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground">
-                    {user?.username?.charAt(0).toUpperCase() || 'G'}
+                    {user?.username?.charAt(0).toUpperCase() ?? 'G'}
                   </AvatarFallback>
                 </Avatar>
                 {isCurrentUser && (
