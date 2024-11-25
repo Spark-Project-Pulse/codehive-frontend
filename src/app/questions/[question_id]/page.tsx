@@ -8,7 +8,7 @@ import AnswerForm from '@/components/pages/questions/[question_id]/AnswerForm'
 import { useToast } from '@/components/ui/use-toast'
 import { type Answer } from '@/types/Answers'
 import { type Comment } from '@/types/Comments'
-import { getQuestionById } from '@/api/questions'
+import { getQuestionById, changeMark } from '@/api/questions'
 import { createAnswer, getAnswersByQuestionId } from '@/api/answers'
 import { createComment, getCommentsByAnswerId } from '@/api/comments'
 import { type UUID } from 'crypto'
@@ -16,6 +16,8 @@ import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/Skele
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
+import { Button } from '@/components/ui/button'
+import { useUser } from '@/app/contexts/UserContext'
 
 interface QuestionPageProps {
   params: { question_id: string }
@@ -23,9 +25,12 @@ interface QuestionPageProps {
 
 export default function QuestionPage({ params }: QuestionPageProps) {
   const { toast } = useToast()
+  const { user: currentUser } = useUser()
   const [question, setQuestion] = useState<Question | null>(null)
   const [answers, setAnswers] = useState<Answer[]>([])
   const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
+  const [isAnswered, setIsAnswered] = useState<boolean | null>(null)
+  const isOwner = question?.asker === currentUser?.user
 
   const [isLoadingQuestion, setIsLoadingQuestion] = useState<boolean>(true)
   const [isLoadingAnswers, setIsLoadingAnswers] = useState<boolean>(true)
@@ -44,6 +49,8 @@ export default function QuestionPage({ params }: QuestionPageProps) {
 
         if (!errorMessage && data) {
           setQuestion(data)
+          setIsAnswered(data.is_answered)
+          console.log("is_owner: ", isOwner)
         } else {
           console.error('Error:', errorMessage)
         }
@@ -181,6 +188,25 @@ export default function QuestionPage({ params }: QuestionPageProps) {
     }
   }
 
+  async function handleChangeMark(): Promise<void> {
+    try {
+      const response = await changeMark(params.question_id)
+      const { errorMessage, data } = response
+      if (!errorMessage && data) {
+        // Update state for mark
+        setIsAnswered(data.is_answered)
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error)
+    }
+  }
+
   return (
     <>
       {/* Popup for unauthenticated users */}
@@ -195,12 +221,36 @@ export default function QuestionPage({ params }: QuestionPageProps) {
           {isLoadingQuestion ? (
             <SkeletonQuestionCard />
           ) : question ? (
-            <QuestionCard question={question} />
+            <>
+              {isAnswered && (
+                <div className="rounded-lg border border-green-400 bg-green-100 p-4 text-green-700">
+                  {isOwner ? <h2 className="text-lg font-bold">
+                    You have marked this question as answered
+                  </h2> : <h2 className="text-lg font-bold">
+                    This question has already been answered
+                  </h2>}
+
+                </div>
+              )}
+              <QuestionCard question={question} />
+            </>
           ) : (
             <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
               <h2 className="text-lg font-bold">Question not found</h2>
             </div>
           )}
+
+          {isOwner && (
+            <Button
+              variant="outline"
+              onClick={() => handleChangeMark()}
+              id="width"
+              className="col-span-2 h-10"
+            >
+              {isAnswered ? "Mark as Unanswered" : "Mark as Answered"}
+            </Button>
+          )}
+
 
           {/* Show all current answers below question, if answers exist */}
           {isLoadingAnswers ? (

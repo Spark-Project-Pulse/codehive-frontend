@@ -23,7 +23,7 @@ export const createQuestion = async (values: {
   try {
     const user = await getSupaUser()
 
-    const vals = { asker: user?.id, ...values }
+    const vals = { asker: user?.id, is_answered: false, ...values }
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/create/`,
       {
@@ -192,5 +192,38 @@ export const getAllQuestions = async (
   } catch (error) {
     console.error('Error fetching questions:', error)
     return { errorMessage: 'Error fetching questions' }
+  }
+}
+
+/**
+ * Marks a question as answered or un-answered, depending on current state
+ *
+ * Args:
+ *   None
+ *
+ * Returns:
+ *   Promise<ApiResponse<Question>>: The question data on success, or an error message on failure.
+ */
+export const changeMark = async (question_id: string): Promise<ApiResponse<Question>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/changeMark/${question_id}/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const questionData = (await response.json()) as Question
+    return { errorMessage: null, data: questionData }
+  } catch (error) {
+    console.error('Error fetching question: ', error)
+    return { errorMessage: 'Error fetching question' }
   }
 }
