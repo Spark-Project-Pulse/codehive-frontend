@@ -42,7 +42,7 @@ export default function TutorialPage() {
                 Open the sidebar, navigate to the &quot;Questions&quot; section, and click &quot;Ask&quot;
               </AccordionContent>
               <AccordionContent>
-                Fill in the title and description of your question. You'll also find a few optional fields
+                Fill in the title and description of your question. You&apos;ll also find a few optional fields
               </AccordionContent>
               <AccordionContent>
                 You can include relevant tags, share the question within a specific community, and optionally link it to a related project. Keep in mind that linking a question to a project is not mandatory
@@ -78,7 +78,7 @@ export default function TutorialPage() {
             <AccordionItem value="item-5">
               <AccordionTrigger>About CodeHive</AccordionTrigger>
               <AccordionContent>
-                We provide a platform for growing developers to request feedback tailored to their project's context
+                We provide a platform for growing developers to request feedback tailored to their project&apos;s context
               </AccordionContent>
             </AccordionItem>
           </BoxReveal>
