@@ -50,39 +50,46 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
-  const [projectsLoading, setProjectsLoading] =
-    React.useState<boolean>(true)
-  const [notificationsInfo, setNotificationsInfo] = React.useState<NotificatonsInfo>({ count: 0 })
+  const [projectsLoading, setProjectsLoading] = React.useState<boolean>(true)
+  const [notificationsInfo, setNotificationsInfo] =
+    React.useState<NotificatonsInfo>({ count: 0 })
   const [notificationsInfoLoading, setNotificationsInfoLoading] =
     React.useState<boolean>(true)
 
   const [projects, setProjects] = React.useState<SidebarProject[]>([])
   React.useEffect(() => {
     const fetchProjects = async () => {
-      if (!user?.user) return
+      if (loading) return
+
+      if (!user?.user) {
+        setProjectsLoading(false)
+        return
+      }
 
       setProjectsLoading(true)
       const response = await getProjectsByUserId(user.user)
       if (response.data) {
-        const sidebarProjects: SidebarProject[] = response.data.map(project => ({
-          id: project.project_id,
-          title: project.title,
-          url: `/projects/${project.project_id}`
-        }))
+        const sidebarProjects: SidebarProject[] = response.data.map(
+          (project) => ({
+            id: project.project_id,
+            title: project.title,
+            url: `/projects/${project.project_id}`,
+          })
+        )
         setProjects(sidebarProjects)
       }
       setProjectsLoading(false)
     }
 
     void fetchProjects()
-  }, [user?.user])
+  }, [user?.user, loading])
 
   // Fetch communities/use cookies
   React.useEffect(() => {
     const fetchCommunities = async () => {
       if (loading) return
 
-      if (!loading && user === null) {
+      if (!user?.user) {
         setCommunitiesLoading(false)
         return
       }
@@ -133,9 +140,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           setNotificationsInfo(cookieData)
         } else {
           // Fetch community data and set cookie if not already cached
-          const { data, errorMessage } = await getUnreadNotificationsCountByUserId()
+          const { data, errorMessage } =
+            await getUnreadNotificationsCountByUserId()
           if (data) {
-
             setNotificationsInfo(data)
             setNotificationsCookie(data) // Cache the notifications
           } else {
@@ -239,10 +246,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects
-          projects={projects}
-          loading={projectsLoading}
-        />
+        <NavProjects projects={projects} loading={projectsLoading} />
         <NavCommunities
           communities={communities}
           loading={communitiesLoading}

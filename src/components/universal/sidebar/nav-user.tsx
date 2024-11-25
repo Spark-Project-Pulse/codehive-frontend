@@ -72,22 +72,20 @@ export function NavUser({ user, notificationInfos }: NavUserProps) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                  src={`${user?.profile_image_url}?t=${Date.now()}`}
                   alt={user?.username}
                 />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">{user?.username?.charAt(0).toUpperCase() ?? 'G'}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <div className="flex items-center gap-2">
                   <span className="truncate font-semibold">
-                    {user?.username}
+                    {user?.username ?? "Guest"}
                   </span>
                   {notificationInfos.count > 0 && (
                     <div className="h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
-                <span className="truncate text-xs">{'fakemail@gmail.com'}</span>
-                {/* TODO: replace with actual email */}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -102,19 +100,15 @@ export function NavUser({ user, notificationInfos }: NavUserProps) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                    src={`${user?.profile_image_url}?t=${Date.now()}`}
                     alt={user?.username}
                   />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{user?.username?.charAt(0).toUpperCase() ?? 'G'}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {user?.username}
+                    {user?.username ?? "Guest"}
                   </span>
-                  <span className="truncate text-xs">
-                    {'fakemail@gmail.com'}
-                  </span>
-                  {/* TODO: replace with actual email */}
                 </div>
               </div>
             </DropdownMenuLabel>
