@@ -6,17 +6,15 @@ import QuestionsSkeleton from '@/components/pages/profiles/QuestionsSkeleton'
 import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Project } from '@/types/Projects'
+import { type Badge, UserBadge } from '@/types/Badges'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import { Badge as BadgeComponent } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { getUserBadges } from '@/api/badges'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId, updateQuestion } from '@/api/questions'
@@ -37,12 +35,15 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-  const [isUserLoading, setIsUserLoading] = useState(true)
-  const [isProjectsLoading, setIsProjectsLoading] = useState(true)
-  const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true);
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(true);
+  const [isBadgesLoading, setIsBadgesLoading] = useState(true);
+  const isCurrentUser = user?.user === currentUser?.user;
+
   const { toast } = useToast()
   const router = useRouter()
-  const isCurrentUser = user?.user === currentUser?.user
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -111,10 +112,37 @@ export default function ProfilePage({
       }
     }
 
+    const fetchBadges = async () => {
+      if (!user?.user) {
+        console.error('User ID is undefined.')
+        return;
+      }
+      setIsBadgesLoading(true);
+      try {
+        const response = await getUserBadges(user.user);
+        if (response.errorMessage) {
+          console.error('Error fetching badges:', response.errorMessage);
+          return;
+        }
+
+        // Transform UserBadge[] into Badge[]
+        const badgesData: Badge[] = ((response.data as unknown) as UserBadge[])?.map(
+          (userBadge) => userBadge.badge_info
+        ) ?? [];
+        
+        setBadges(badgesData);
+      } catch (error) {
+        console.error('Error fetching badges:', error);
+      } finally {
+        setIsBadgesLoading(false);
+      }
+    };
+
     // Only fetch questions/projects/profileImage if user is set
     if (user) {
       void fetchProjects()
       void fetchQuestions()
+      void fetchBadges()
     }
   }, [user])
 
@@ -147,11 +175,11 @@ export default function ProfilePage({
         const { data } = await uploadProfileImage(user.user, formData)
         setShowUploadFiles(false)
         if (data?.profile_image_nsfw) {
-          // Show innapropriate content toast if there is innapropriate content
+          // Show inappropriate content toast if there is inappropriate content
           toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Innapropriate content detected in your image.',
+            description: 'Inappropriate content detected in your image.',
           })
         }
       } catch (error) {
@@ -260,9 +288,30 @@ export default function ProfilePage({
               <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <Badge variant="secondary" className="px-3 py-1 text-lg">
+              <BadgeComponent variant="secondary" className="px-3 py-1 text-lg">
                 Reputation: {user?.reputation}
-              </Badge>
+              </BadgeComponent>
+              {!isBadgesLoading && badges.length > 0 && (
+                <div className="mt-4 grid grid-cols-6 gap-x-4 gap-y-4 justify-items-center">
+                  {badges.map((badge) => (
+                    <Popover key={badge.badge_id}>
+                      <PopoverTrigger asChild>
+                        <div className="relative">
+                          <img
+                            src={badge.image_url ?? '/default-badge.png'}
+                            alt={badge.name}
+                            className="h-8 w-8 cursor-pointer"
+                          />
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-md p-2 z-10">
+                        <h4 className="font-medium">{badge.name}</h4>
+                        <p className="text-sm text-gray-600">{badge.description}</p>
+                      </PopoverContent>
+                    </Popover>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
