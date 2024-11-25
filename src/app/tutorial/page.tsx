@@ -27,7 +27,7 @@ export default function TutorialPage() {
                 First, ensure your account is connected to GitHub by authenticating through this link
               </AccordionContent>
               <AccordionContent>
-                Then, open the sidebar, navigate to the "Projects" section, and click "Add"
+                Then, open the sidebar, navigate to the &quot;Projects&quot; section, and click &quot;Add&quot;
               </AccordionContent>
               <AccordionContent>
                 Finally, complete the project details, including privacy settings, title, and description. Select the GitHub repository associated with your project
@@ -39,7 +39,7 @@ export default function TutorialPage() {
             <AccordionItem value="item-2">
               <AccordionTrigger>Ask a Question</AccordionTrigger>
               <AccordionContent>
-                Open the sidebar, navigate to the "Questions" section, and click "Ask"
+                Open the sidebar, navigate to the &quot;Questions&quot; section, and click &quot;Ask&quot;
               </AccordionContent>
               <AccordionContent>
                 Fill in the title and description of your question. You'll also find a few optional fields
@@ -54,7 +54,7 @@ export default function TutorialPage() {
             <AccordionItem value="item-3">
               <AccordionTrigger>Answer a Question</AccordionTrigger>
               <AccordionContent>
-                Open the sidebar, navigate to the "Questions" section, and click "Find Questions"
+                Open the sidebar, navigate to the &quot;Questions&quot; section, and click &quot;Find Questions&quot;
               </AccordionContent>
               <AccordionContent>
                 Use the search and filter options to explore questions by keywords and tags
@@ -66,7 +66,7 @@ export default function TutorialPage() {
             <AccordionItem value="item-4">
               <AccordionTrigger>Join a Community</AccordionTrigger>
               <AccordionContent>
-                Open the sidebar, navigate to the "Communities" section
+                Open the sidebar, navigate to the &quot;Communities&quot; section
               </AccordionContent>
               <AccordionContent>
                 You can either browse the current communities, or submit a request to create your own community
