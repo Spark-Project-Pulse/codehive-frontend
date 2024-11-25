@@ -50,7 +50,6 @@ export default function QuestionPage({ params }: QuestionPageProps) {
         if (!errorMessage && data) {
           setQuestion(data)
           setIsAnswered(data.is_answered)
-          console.log('is_owner: ', isOwner)
         } else {
           console.error('Error:', errorMessage)
         }
