@@ -14,6 +14,7 @@ import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import CollapsibleComments from './CollapsibleComments'
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface AnswerCardProps {
   answer: Answer
@@ -35,6 +36,10 @@ export default function AnswerCard({
   onCommentSubmit,
   isLoadingComments,
 }: AnswerCardProps) {
+
+  console.log('AnswerCard answer:', answer);
+  console.log('Expert Badges in AnswerCard:', answer.expert_badges);
+
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
   const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
@@ -162,9 +167,8 @@ export default function AnswerCard({
           <Button
             onClick={() => handleUpvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
           >
             👍
           </Button>
@@ -172,9 +176,8 @@ export default function AnswerCard({
           <Button
             onClick={() => handleDownvote()}
             variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
+            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
           >
             👎
           </Button>
@@ -188,9 +191,9 @@ export default function AnswerCard({
             {/* Expert info */}
             <div className="mt-4 flex items-center justify-between">
               <div
-                className={`flex items-center space-x-4 ${answer.expert_info && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
-                onClick={handleProfileClick}
-              >
+                  className={`flex items-center space-x-4 ${answer.expert_info && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
+                  onClick={handleProfileClick}
+                >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={answer.expert_info.profile_image_url} />
                   <AvatarFallback>
@@ -210,6 +213,28 @@ export default function AnswerCard({
                 {format(new Date(answer.created_at), 'PPP')}
               </div>
             </div>
+
+            {/* Expert Badges */}
+            {answer.expert_badges && answer.expert_badges.length > 0 && (
+              <div className="mt-4 flex items-center space-x-2">
+                {answer.expert_badges.map((badge) => (
+                  <Popover key={badge.badge__badge_id}>
+                    <PopoverTrigger asChild>
+                      <div className="relative">
+                        <img
+                          src={badge.badge__image_url || '/default-badge.png'}
+                          alt={badge.badge__name || 'Badge'}
+                          className="h-8 w-8 cursor-pointer" style={{ marginLeft: '7px' }}
+                        />
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-2 z-10 w-auto" >
+                      <h4 className="font-medium text-sm whitespace-nowrap">{badge.badge__name || 'Unnamed Badge'}</h4>
+                    </PopoverContent>
+                  </Popover>
+                ))}
+              </div>
+            )}
           </CardContent>
 
           {/* Comments Section */}
@@ -218,8 +243,7 @@ export default function AnswerCard({
             answer={answer}
             isLoadingComments={isLoadingComments}
             onCommentSubmit={onCommentSubmit}
-           />
-          
+          />
         </div>
       </div>
     </Card>
