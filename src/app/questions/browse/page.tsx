@@ -107,7 +107,7 @@ const QuestionsPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl p-6">
-      <h1 className="text-center font-subHeading text-h2 font-bold text-secondary-foreground">
+      <h1 className="text-center text-h2 font-bold">
         Questions
       </h1>
 

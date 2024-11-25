@@ -1,51 +1,100 @@
 'use client'
 
-import { LoadingSpinner } from '@/components/ui/loading'
-import { useEffect, useState } from 'react'
-import { type RepoContent, type Project } from '@/types/Projects'
-import { getProjectById } from '@/api/projects'
+import React, { useEffect, useState } from 'react'
+import BrowseFilesSkeleton from '@/components/pages/projects/[project_id]/browse-files/BrowseFilesSkeleton'
+import FileBrowser from '@/components/universal/code/FileBrowser'
+import { type Suggestion } from '@/types/Projects'
+import { codeReview, getProjectById } from '@/api/projects'
 import { Button } from '@/components/ui/button'
+import { type RepoContent, type Project } from '@/types/Projects'
 import { fetchRepoContents } from '@/lib/github'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { CodeViewer } from '@/components/universal/code/CodeViewer'
+import type { FileSystemItem } from '@/types/FileSystem'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from '@/components/ui/use-toast'
+import { useUser } from '@/app/contexts/UserContext'
 
 export default function BrowseFiles({
   params,
 }: {
   params: { project_id: string }
 }) {
+  const { user } = useUser()
   const [project, setProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [repoContents, setRepoContents] = useState<RepoContent[]>([])
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [isSuggestionsLoading, setIsSuggestionsLoading] =
+    useState<boolean>(false)
+  const [fileSystemTree, setFileSystemTree] = useState<FileSystemItem[]>([])
   const [fileContent, setFileContent] = useState<string | null>(null)
+  const [currentFilePath, setCurrentFilePath] = useState<string | null>(null)
+  const [isLoadingFileContent, setIsLoadingFileContent] =
+    useState<boolean>(false)
+  const [isLoadingDirectory, setIsLoadingDirectory] = useState<boolean>(false)
 
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const currentPath = searchParams.get('path') ?? '' // use URL search param 'path' for currentPath
-
-  // helper function -> calls `github/fetchRepoContents` function and updates state
-  const loadRepoContents = async (path: string, repoFullName: string) => {
-    setIsLoading(true)
-    setFileContent(null)
-    const { errorMessage, data } = await fetchRepoContents(path, repoFullName)
-
-    if (!errorMessage && data) {
-      setRepoContents(data.repoContent)
-      router.replace(`?path=${path}`)
-    } else {
-      console.error('Failed to load repo contents:', errorMessage)
-    }
-    setIsLoading(false)
+  // Helper functions
+  const convertRepoContentsToFSItems = (
+    repoContents: RepoContent[]
+  ): FileSystemItem[] => {
+    return repoContents.map((item) => ({
+      name: item.name,
+      path: item.path,
+      type: item.type === 'dir' ? 'folder' : 'file',
+      isExpanded: false,
+    }))
   }
 
+  const findNodeInTree = (
+    tree: FileSystemItem[],
+    path: string
+  ): FileSystemItem | null => {
+    for (const item of tree) {
+      if (item.path === path) {
+        return item
+      } else if (item.type === 'folder' && item.children) {
+        const result = findNodeInTree(item.children, path)
+        if (result) return result
+      }
+    }
+    return null
+  }
+
+  const updateTreeWithChildren = (
+    tree: FileSystemItem[],
+    path: string,
+    children: FileSystemItem[]
+  ): FileSystemItem[] => {
+    return tree.map((item) => {
+      if (item.path === path) {
+        return { ...item, children, isExpanded: true }
+      } else if (item.type === 'folder' && item.children) {
+        return {
+          ...item,
+          children: updateTreeWithChildren(item.children, path, children),
+        }
+      } else {
+        return item
+      }
+    })
+  }
+
+  const toggleNodeExpansion = (
+    tree: FileSystemItem[],
+    path: string
+  ): FileSystemItem[] => {
+    return tree.map((item) => {
+      if (item.path === path) {
+        return { ...item, isExpanded: !item.isExpanded }
+      } else if (item.type === 'folder' && item.children) {
+        return { ...item, children: toggleNodeExpansion(item.children, path) }
+      } else {
+        return item
+      }
+    })
+  }
+
+  // Fetch the project and root directory on mount
   useEffect(() => {
     const fetchProject = async () => {
       setIsLoading(true)
@@ -57,8 +106,18 @@ export default function BrowseFiles({
           setProject(data)
 
           if (data?.repo_full_name) {
-            // initial call to github api (fetches top level contents)
-            void loadRepoContents('', data.repo_full_name)
+            // Fetch root directory contents
+            const { errorMessage, data: repoData } = await fetchRepoContents(
+              '',
+              data.repo_full_name
+            )
+
+            if (!errorMessage && repoData) {
+              const fsItems = convertRepoContentsToFSItems(repoData.repoContent)
+              setFileSystemTree(fsItems)
+            } else {
+              console.error('Failed to load repo contents:', errorMessage)
+            }
           }
         } else {
           console.error('Error:', errorMessage)
@@ -73,29 +132,116 @@ export default function BrowseFiles({
     void fetchProject()
   }, [params.project_id])
 
-  const handleItemClick = async (item: RepoContent, repoFullName: string) => {
-    if (item.type === 'dir') {
-      void loadRepoContents(item.path, repoFullName)
-    } else if (item.type === 'file' && item.download_url) {
-      try {
-        setIsLoading(true)
-        const response = await fetch(item.download_url)
-        const content = await response.text()
-        setFileContent(content)
-        router.replace(`?path=${item.path}`)
-      } catch (error) {
-        console.error('Error fetching file contents:', error)
-      } finally {
-        setIsLoading(false)
+  const handleFolderClick = async (path: string) => {
+    if (!project?.repo_full_name) return
+    const node = findNodeInTree(fileSystemTree, path)
+
+    if (node) {
+      if (node.isExpanded) {
+        // Collapse folder
+        const newTree = toggleNodeExpansion(fileSystemTree, path)
+        setFileSystemTree(newTree)
+      } else {
+        // Expand folder and fetch contents if not already loaded
+        if (!node.children) {
+          setIsLoadingDirectory(true)
+          const { errorMessage, data } = await fetchRepoContents(
+            path,
+            project.repo_full_name
+          )
+          if (!errorMessage && data) {
+            const children = convertRepoContentsToFSItems(data.repoContent)
+            const newTree = updateTreeWithChildren(
+              fileSystemTree,
+              path,
+              children
+            )
+            setFileSystemTree(newTree)
+          } else {
+            console.error('Failed to load repo contents:', errorMessage)
+          }
+          setIsLoadingDirectory(false)
+        } else {
+          const newTree = toggleNodeExpansion(fileSystemTree, path)
+          setFileSystemTree(newTree)
+        }
       }
     }
   }
 
-  const breadcrumbSegments = currentPath.split('/').filter(Boolean)
+  const handleFileClick = async (path: string) => {
+    if (!project?.repo_full_name) return
+    const node = findNodeInTree(fileSystemTree, path)
 
-  // conditional rendering for loading state
+    if (node && node.type === 'file') {
+      try {
+        // Clear the suggestions when a new file is clicked
+        setSuggestions([])
+
+        setIsLoadingFileContent(true)
+        const { errorMessage, data } = await fetchRepoContents(
+          path,
+          project.repo_full_name
+        )
+        if (!errorMessage && data?.repoContent) {
+          const fileData = data.repoContent[0]
+          if (fileData?.content && fileData.encoding === 'base64') {
+            // Decode Base64 content
+            const decodedContent = atob(fileData.content)
+            setFileContent(decodedContent)
+            setCurrentFilePath(path)
+          } else if (fileData.download_url) {
+            // Fallback to download URL
+            const response = await fetch(fileData.download_url)
+            const content = await response.text()
+            setFileContent(content)
+            setCurrentFilePath(path)
+          } else {
+            console.error('File content not found')
+          }
+        } else {
+          console.error('Error fetching file contents', errorMessage)
+        }
+      } catch (error) {
+        console.error('Error fetching file contents:', error)
+      } finally {
+        setIsLoadingFileContent(false)
+      }
+    }
+  }
+
+  // Handle the AI Code Review button click
+  const handleCodeReviewClicked =
+    (filename: string | null, fileContent: string) => async () => {
+      try {
+        setIsSuggestionsLoading(true)
+        const { errorMessage, data } = await codeReview(
+          project?.title ?? '',
+          project?.description ?? '',
+          filename ?? '',
+          fileContent
+        )
+
+        if (!errorMessage && data?.suggestions) {
+          setSuggestions(data.suggestions)
+        } else {
+          console.error('Error:', errorMessage)
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error)
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: `We encountered an error while processing your file. Please try again later.`,
+        })
+      } finally {
+        setIsSuggestionsLoading(false)
+      }
+    }
+
+  // Conditional rendering for loading state
   if (isLoading) {
-    return <LoadingSpinner />
+    return <BrowseFilesSkeleton />
   }
 
   if (!project) {
@@ -115,95 +261,64 @@ export default function BrowseFiles({
   }
 
   return (
-    <section className="min-h-screen py-24">
-      <div className="mx-auto max-w-4xl px-4">
-        <div className="rounded-lg bg-white p-6 shadow-lg">
-          <h1 className="mb-4 text-2xl font-bold">{project.title}</h1>
-          <p className="mb-4 text-gray-600">{project.description}</p>
-
-          {/* render breadcrumbs + back button */}
-          <div className="mb-4 flex flex-row items-center justify-between">
-            <Breadcrumb className="mb-4">
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    href={`?path=`}
-                    onClick={() =>
-                      loadRepoContents('', project?.repo_full_name ?? '')
-                    }
-                  >
-                    {project.title}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                {breadcrumbSegments.map((segment, index) => {
-                  const path = breadcrumbSegments.slice(0, index + 1).join('/')
-                  const isLast = index === breadcrumbSegments.length - 1
-                  return (
-                    <BreadcrumbItem key={path}>
-                      <BreadcrumbSeparator />
-                      {isLast ? (
-                        <BreadcrumbPage>{segment}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink
-                          href={`?path=${path}`}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            void loadRepoContents(
-                              path,
-                              project?.repo_full_name ?? ''
-                            )
-                          }}
-                        >
-                          {segment}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                  )
-                })}
-              </BreadcrumbList>
-            </Breadcrumb>
-
-            {currentPath && (
-              <Button
-                onClick={() =>
-                  loadRepoContents(
-                    currentPath.split('/').slice(0, -1).join('/'), // remove last item from path
-                    project.repo_full_name ?? '' // this is just here for the linter (it is handled in the if statements above)
-                  )
-                }
-              >
-                Back
-              </Button>
-            )}
-          </div>
-
-          {/* conditionally render the file content or directory contents */}
-          {fileContent ? (
-            <CodeViewer
-              fileContent={fileContent}
-              pathname={currentPath}
-              filename={
-                breadcrumbSegments[breadcrumbSegments.length - 1] ?? null
-              }
-              project={project}
-            />
-          ) : (
-            <ul className="space-y-2">
-              {repoContents.map((item) => (
-                <li
-                  key={item.path}
-                  className="cursor-pointer text-blue-500 hover:underline"
-                  onClick={() =>
-                    handleItemClick(item, project.repo_full_name ?? '')
-                  }
+    <section className="flex min-h-screen py-2">
+      <FileBrowser
+        project={project}
+        isLoadingDirectory={isLoadingDirectory}
+        fileSystemTree={fileSystemTree}
+        handleFolderClick={handleFolderClick}
+        handleFileClick={handleFileClick}
+        currentFilePath={currentFilePath}
+        isLoadingFileContent={isLoadingFileContent}
+        fileContent={fileContent}
+      />
+      {/* Suggestions Panel */}
+      {fileContent && user?.user === project?.owner && (
+        <div className="w-1/4 border-l p-2">
+          <h2 className="mb-4 text-center text-xl font-bold">Suggestions</h2>
+          <ScrollArea className="h-[calc(100vh-150px)] overflow-y-auto overflow-x-hidden">
+            {isSuggestionsLoading ? (
+              <div>
+                {[...Array.from({ length: 5 })].map((_, i) => (
+                  <Skeleton key={i} className="mb-2 h-20" />
+                ))}
+              </div>
+            ) : suggestions.length > 0 ? (
+              <div className="space-y-4">
+                {suggestions.map((suggestion, i) => (
+                  <Card key={i} className="w-full">
+                    <CardHeader>
+                      <CardTitle className="truncate text-sm font-medium">
+                        Line {suggestion.line_number}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="break-words text-sm">
+                        {suggestion.suggestion}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center">
+                <Button
+                  onClick={handleCodeReviewClicked(
+                    currentFilePath,
+                    fileContent
+                  )}
                 >
-                  {item.type === 'dir' ? '📁' : '📄'} {item.name}
-                </li>
-              ))}
-            </ul>
-          )}
+                  AI Code Review
+                </Button>
+                <p className="pt-2">
+                  No suggestions yet. Click &quot;AI Code Review&quot; to get
+                  suggestions.
+                </p>
+              </div>
+            )}
+          </ScrollArea>
         </div>
-      </div>
+      )}
     </section>
   )
 }

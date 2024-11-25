@@ -2,11 +2,13 @@
 
 import * as React from 'react'
 import {
-  Frame,
   MessageCircleQuestion,
   FolderKanban,
   PersonStanding,
 } from 'lucide-react'
+
+import { type SidebarProject } from '@/types/Projects'
+import { getProjectsByUserId } from '@/api/projects'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
@@ -33,9 +35,14 @@ import { ThemeToggle } from '@/components/universal/sidebar/ThemeToggle'
 import {
   communitiesCookieExists,
   getCommunitiesCookie,
+  getNotificationsCookie,
+  notificationsCookieExists,
   setCommunitiesCookie,
+  setNotificationsCookie,
 } from '@/lib/cookies'
 import { AdminPanelLink } from '@/components/universal/sidebar/nav-admin'
+import { type NotificatonsInfo } from '@/types/Notifications'
+import { getUnreadNotificationsCountByUserId } from '@/api/notifications'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
@@ -43,13 +50,46 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
+  const [projectsLoading, setProjectsLoading] = React.useState<boolean>(true)
+  const [notificationsInfo, setNotificationsInfo] =
+    React.useState<NotificatonsInfo>({ count: 0 })
+  const [notificationsInfoLoading, setNotificationsInfoLoading] =
+    React.useState<boolean>(true)
+
+  const [projects, setProjects] = React.useState<SidebarProject[]>([])
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      if (loading) return
+
+      if (!user?.user) {
+        setProjectsLoading(false)
+        return
+      }
+
+      setProjectsLoading(true)
+      const response = await getProjectsByUserId(user.user)
+      if (response.data) {
+        const sidebarProjects: SidebarProject[] = response.data.map(
+          (project) => ({
+            id: project.project_id,
+            title: project.title,
+            url: `/projects/${project.project_id}`,
+          })
+        )
+        setProjects(sidebarProjects)
+      }
+      setProjectsLoading(false)
+    }
+
+    void fetchProjects()
+  }, [user?.user, loading])
 
   // Fetch communities/use cookies
   React.useEffect(() => {
     const fetchCommunities = async () => {
       if (loading) return
 
-      if (!loading && user === null) {
+      if (!user?.user) {
         setCommunitiesLoading(false)
         return
       }
@@ -84,7 +124,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setCommunitiesLoading(false)
     }
 
+    const fetchNotificationsInfo = async () => {
+      if (loading) return
+
+      if (!loading && user === null) {
+        setNotificationsInfoLoading(false)
+        return
+      }
+
+      setNotificationsInfoLoading(true)
+      try {
+        // Check if notificationsCount info cookie exists
+        if (await notificationsCookieExists()) {
+          const cookieData = await getNotificationsCookie()
+          setNotificationsInfo(cookieData)
+        } else {
+          // Fetch community data and set cookie if not already cached
+          const { data, errorMessage } =
+            await getUnreadNotificationsCountByUserId()
+          if (data) {
+            setNotificationsInfo(data)
+            setNotificationsCookie(data) // Cache the notifications
+          } else {
+            console.error(errorMessage)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching notificatiinos:', error)
+      }
+      setNotificationsInfoLoading(false)
+    }
+
     void fetchCommunities()
+    void fetchNotificationsInfo()
   }, [loading, user])
 
   const data = {
@@ -113,10 +185,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: 'Add',
             url: '/projects/add-project',
           },
-          {
-            title: 'Explore Projects',
-            url: '#',
-          },
+          // TODO: Implement this page
+          // {
+          //   title: 'Explore Projects',
+          //   url: '#',
+          // },
         ],
       },
       {
@@ -133,13 +206,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: '/communities/browse',
           },
         ],
-      },
-    ],
-    projects: [
-      {
-        name: '[projext xyz]',
-        url: '#',
-        icon: Frame,
       },
     ],
   }
@@ -180,7 +246,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects projects={projects} loading={projectsLoading} />
         <NavCommunities
           communities={communities}
           loading={communitiesLoading}
@@ -208,7 +274,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Skeleton className="mx-auto h-8 w-8 rounded-full" />
           )
         ) : (
-          <NavUser user={user} />
+          <NavUser user={user} notificationInfos={notificationsInfo} />
         )}
       </SidebarFooter>
       <SidebarRail />

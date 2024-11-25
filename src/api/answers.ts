@@ -21,6 +21,10 @@ export const createAnswer = async (answerData: {
   try {
     const user = await getSupaUser()
 
+    if (!user) {
+      return { errorMessage: 'User not authenticated' }
+    }
+
     const vals = { expert: user?.id, ...answerData }
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/create/`,

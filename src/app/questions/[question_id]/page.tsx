@@ -15,12 +15,13 @@ import { type UUID } from 'crypto'
 import SkeletonAnswerCard from '@/components/pages/questions/[question_id]/SkeletonAnswerCard'
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
 import { Skeleton } from '@/components/ui/skeleton'
+import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
 
-export default function QuestionPage({
-  params,
-}: {
+interface QuestionPageProps {
   params: { question_id: string }
-}) {
+}
+
+export default function QuestionPage({ params }: QuestionPageProps) {
   const { toast } = useToast()
   const [question, setQuestion] = useState<Question | null>(null)
   const [answers, setAnswers] = useState<Answer[]>([])
@@ -32,6 +33,7 @@ export default function QuestionPage({
     Record<UUID, boolean>
   >({})
   const isLoading = isLoadingQuestion || isLoadingAnswers
+  const [authPopupOpen, setAuthPopupOpen] = useState(false) // State to control popup visibility
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -127,6 +129,9 @@ export default function QuestionPage({
           title: 'Error',
           description: 'Toxic content detected in your answer.',
         })
+      } else if (errorMessage === 'User not authenticated') {
+        // Open the authentication popup
+        setAuthPopupOpen(true)
       } else {
         toast({
           variant: 'destructive',
@@ -161,6 +166,9 @@ export default function QuestionPage({
           title: 'Error',
           description: 'Toxic content detected in your comment.',
         })
+      } else if (errorMessage === 'User not authenticated') {
+        // Open the authentication popup
+        setAuthPopupOpen(true)
       } else {
         toast({
           variant: 'destructive',
@@ -174,61 +182,70 @@ export default function QuestionPage({
   }
 
   return (
-    <section className="min-h-screen py-24">
-      <div className="mx-auto max-w-4xl px-4">
-        {isLoadingQuestion ? (
-          <SkeletonQuestionCard />
-        ) : question ? (
-          <QuestionCard question={question} />
-        ) : (
-          <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
-            <h2 className="text-lg font-bold">Question not found</h2>
-          </div>
-        )}
-
-        {/* Show all current answers below question, if answers exists */}
-        {isLoadingAnswers ? (
-          <div className="mt-8">
-            <Skeleton className="h-6 w-12" />
-            <div className="list-disc pl-5">
-              {Array.from({ length: 2 }).map((_, index) => (
-                <SkeletonAnswerCard key={index} />
-              ))}
+    <>
+      {/* Popup for unauthenticated users */}
+      <NotAuthenticatedPopup
+        isOpen={authPopupOpen}
+        onClose={() => {
+          setAuthPopupOpen(false)
+        }}
+      />
+      <section className="min-h-screen py-24">
+        <div className="mx-auto max-w-4xl px-4">
+          {isLoadingQuestion ? (
+            <SkeletonQuestionCard />
+          ) : question ? (
+            <QuestionCard question={question} />
+          ) : (
+            <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
+              <h2 className="text-lg font-bold">Question not found</h2>
             </div>
-          </div>
-        ) : (
-          answers.length > 0 && (
+          )}
+
+          {/* Show all current answers below question, if answers exist */}
+          {isLoadingAnswers ? (
             <div className="mt-8">
-              <h2 className="text-lg font-bold">
-                {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
-              </h2>
+              <Skeleton className="h-6 w-12" />
               <div className="list-disc pl-5">
-                {answers.map((answer) => (
-                  <AnswerCard
-                    key={answer.answer_id}
-                    answer={answer}
-                    comments={comments}
-                    upvoted={answer.curr_user_upvoted ?? false}
-                    downvoted={answer.curr_user_downvoted ?? false}
-                    onCommentSubmit={handleCommentSubmit}
-                    isLoadingComments={isLoadingComments[answer.answer_id]}
-                  />
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <SkeletonAnswerCard key={index} />
                 ))}
               </div>
             </div>
-          )
-        )}
+          ) : (
+            answers.length > 0 && (
+              <div className="mt-8">
+                <h2 className="text-lg font-bold">
+                  {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+                </h2>
+                <div className="list-disc pl-5">
+                  {answers.map((answer) => (
+                    <AnswerCard
+                      key={answer.answer_id}
+                      answer={answer}
+                      comments={comments}
+                      upvoted={answer.curr_user_upvoted ?? false}
+                      downvoted={answer.curr_user_downvoted ?? false}
+                      onCommentSubmit={handleCommentSubmit}
+                      isLoadingComments={isLoadingComments[answer.answer_id]}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          )}
 
-        {/* Answer button */}
-        {!isLoading && (
-          <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-            <h1 className="text-center text-2xl font-bold text-gray-900">
-              Answer Question
-            </h1>
-            <AnswerForm onSubmit={handleAnswerSubmit} />
-          </div>
-        )}
-      </div>
-    </section>
+          {/* Answer form */}
+          {!isLoading && (
+            <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
+              <h1 className="text-center text-2xl font-bold">
+                Answer Question
+              </h1>
+              <AnswerForm onSubmit={handleAnswerSubmit} />
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   )
 }

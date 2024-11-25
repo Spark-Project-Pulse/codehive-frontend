@@ -17,10 +17,10 @@ import {
   getAllCommunityRequests,
   rejectCommunityRequest,
 } from '@/api/communities'
-import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
+import Image from 'next/image'
 
 export default function CommunityRequestsTab() {
   // State for community requests fetched from the API
@@ -154,7 +154,7 @@ export default function CommunityRequestsTab() {
                     {request.owner_info?.username}
                   </TableCell>
                   <TableCell>
-                    <img
+                    <Image
                       src={
                         request.avatar_url ?? '/default-community-avatar.png'
                       }

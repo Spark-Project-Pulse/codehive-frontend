@@ -25,8 +25,15 @@ import { signOutAction } from '@/api/auth'
 import { useUser } from '@/app/contexts/UserContext'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/use-toast'
+import { type NotificatonsInfo } from '@/types/Notifications'
+import { Badge } from '@/components/ui/badge'
 
-export function NavUser({ user }: { user: SidebarUser | null }) {
+interface NavUserProps {
+  user: SidebarUser | null
+  notificationInfos: NotificatonsInfo
+}
+
+export function NavUser({ user, notificationInfos }: NavUserProps) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -65,15 +72,20 @@ export function NavUser({ user }: { user: SidebarUser | null }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                  src={`${user?.profile_image_url}?t=${Date.now()}`}
                   alt={user?.username}
                 />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">{user?.username?.charAt(0).toUpperCase() ?? 'G'}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user?.username}</span>
-                <span className="truncate text-xs">{'fakemail@gmail.com'}</span>
-                {/* TODO: replace with actual email */}
+                <div className="flex items-center gap-2">
+                  <span className="truncate font-semibold">
+                    {user?.username ?? "Guest"}
+                  </span>
+                  {notificationInfos.count > 0 && (
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                  )}
+                </div>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -88,19 +100,15 @@ export function NavUser({ user }: { user: SidebarUser | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                    src={`${user?.profile_image_url}?t=${Date.now()}`}
                     alt={user?.username}
                   />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{user?.username?.charAt(0).toUpperCase() ?? 'G'}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {user?.username}
+                    {user?.username ?? "Guest"}
                   </span>
-                  <span className="truncate text-xs">
-                    {'fakemail@gmail.com'}
-                  </span>
-                  {/* TODO: replace with actual email */}
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -119,11 +127,16 @@ export function NavUser({ user }: { user: SidebarUser | null }) {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
-                      className="flex w-full cursor-pointer items-center gap-2"
+                      className="flex w-full cursor-pointer items-center justify-between"
                       href={'/notifications'}
                     >
-                      <Bell />
-                      Notifications
+                      <div className='flex items-center gap-2'>
+                        <Bell />
+                        Notifications
+                      </div>
+                      {notificationInfos.count > 0 &&
+                        <Badge>{notificationInfos.count}</Badge>
+                      }
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

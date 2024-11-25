@@ -37,7 +37,7 @@ export function NavCommunities({
       <SidebarGroupLabel>Your Communities</SidebarGroupLabel>
       <SidebarMenu>
         {loading ? (
-          <Skeleton className="mb-2 h-6 w-3/4" />
+          <Skeleton className="mb-2 h-6 w-full" />
         ) : communities.length === 0 ? (
           // Display message if no communities
           <div className="pl-3 text-sm">You are not in any communities</div>

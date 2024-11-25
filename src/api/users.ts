@@ -69,7 +69,7 @@ export const changeReputationByAmount = async (
 
     if (!response.ok) {
       const errorData = (await response.json()) as ErrorResponse
-      throw new Error(errorData.message ?? 'Network response was not ok')
+      throw new Error(errorData.error ?? 'Network response was not ok')
     }
 
     // Extract the JSON data from the response
@@ -248,6 +248,12 @@ export const uploadProfileImage = async (
   formData: FormData
 ): Promise<ApiResponse<User>> => {
   try {
+    const user = await getSupaUser()
+
+    if (!user || user.id !== user_id) {
+      return { errorMessage: 'Cannot upload photo for another user' }
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/updateProfileImageById/${user_id}/`,
       {

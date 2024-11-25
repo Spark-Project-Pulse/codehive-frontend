@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
@@ -65,6 +66,8 @@ export default function CommunityHeader({
         </div>
       </div>
       {/* Join or leave community button */}
+      {userIsMember === null && <Skeleton className="h-10 w-32" />}
+
       {userIsMember === false && (
         <ButtonWithLoading
           onClick={handleJoinCommunity}
@@ -76,16 +79,15 @@ export default function CommunityHeader({
       {userIsMember === true && (
         <AlertDialog>
           <AlertDialogTrigger>
-            <Button type="button">
-              Leave community
-            </Button>
+            <Button type="button">Leave community</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your
-                community related data, including your reputation and contributions.
+                community related data, including your reputation and
+                contributions.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

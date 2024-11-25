@@ -1,8 +1,8 @@
 'use server'
 
 import { type ApiResponse } from '@/types/Api'
-import { type Project } from '@/types/Projects'
-import { getSupaUser } from '@/utils/supabase/server';
+import { type Suggestion, type Project } from '@/types/Projects'
+import { getSupaUser } from '@/utils/supabase/server'
 
 /**
  * Creates a new project by sending a POST request to the backend.
@@ -14,40 +14,88 @@ import { getSupaUser } from '@/utils/supabase/server';
  *   Promise<ApiResponse<{ project_id: string }>>: The created project's ID on success, or an error message on failure.
  */
 export const createProject = async (values: {
-    public: boolean;
-    title: string;
-    description: string;
-  }): Promise<ApiResponse<{ project_id: string }>> => {
-    try {
-      const user = await getSupaUser()
+  public: boolean
+  title: string
+  description: string
+}): Promise<ApiResponse<{ project_id: string }>> => {
+  try {
+    const user = await getSupaUser()
 
-      const vals = { owner: user?.id, ...values }
+    const vals = { owner: user?.id, ...values }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/create/`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(vals),
-        }
-      );
-  
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/create/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(vals),
       }
-  
-      const responseData = (await response.json()) as Project;
-      return {
-        errorMessage: null,
-        data: { project_id: responseData.project_id },
-      };
-    } catch (error) {
-      console.error('Error creating project:', error);
-      return { errorMessage: 'Error creating project' };
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
     }
-  };
+
+    const responseData = (await response.json()) as Project
+    return {
+      errorMessage: null,
+      data: { project_id: responseData.project_id },
+    }
+  } catch (error) {
+    console.error('Error creating project:', error)
+    return { errorMessage: 'Error creating project' }
+  }
+}
+
+/**
+ * Performs a code review on the provided file and returns suggestions.
+ *
+ * Args:
+ *   projectTitle (string): Title of the project.
+ *   projectDescription (string): Description of the project.
+ *   fileName (string): Name of the file to review.
+ *   fileContent (string): Content of the file to review.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ suggestions: Array<{ line_number: number, suggestion: string }> }>>:
+ *   A list of code review suggestions on success, or an error message on failure.
+ */
+export const codeReview = async (
+  projectTitle: string,
+  projectDescription: string,
+  fileName: string,
+  fileContent: string
+): Promise<ApiResponse<{ suggestions: Array<Suggestion> }>> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/projects/codeReview/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project_title: projectTitle,
+          project_description: projectDescription,
+          file_name: fileName,
+          file_content: fileContent,
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const responseData = await response.json() as { suggestions?: Suggestion[] }
+    return {errorMessage: null, data: { suggestions: responseData.suggestions ?? [] }}
+  } catch (error) {
+    console.error('Error performing code review:', error)
+    return { errorMessage: 'Error performing code review' }
+  }
+}
 
 /**
  * Fetches all the projects associated with a user by their ID from the backend.
