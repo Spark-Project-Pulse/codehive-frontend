@@ -1,6 +1,6 @@
 'use server'
 
-import { type ApiResponse } from '@/types/Api'
+import { type ApiResponse, SuccessResponse } from '@/types/Api'
 import { type Badge, UserBadge, UserBadgeProgress } from '@/types/Badges'
 import { type UUID } from 'crypto'
 
@@ -57,7 +57,7 @@ export const getUserBadges = async (userId: string): Promise<ApiResponse<Badge[]
         throw new Error('Network response was not ok');
       }
   
-      const badges = await response.json();
+      const badges = (await response.json()) as Badge[];
       return { errorMessage: null, data: badges };
     } catch (error) {
       console.error('Error getting user badges:', error);
@@ -123,7 +123,7 @@ export const assignBadge = async (
       throw new Error('Network response was not ok');
     }
 
-    const result = await response.json();
+    const result = (await response.json()) as SuccessResponse;
     return { errorMessage: null, data: result };
   } catch (error) {
     console.error('Error assigning badge:', error);

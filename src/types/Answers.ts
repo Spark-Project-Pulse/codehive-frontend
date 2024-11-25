@@ -13,10 +13,5 @@ export interface Answer {
   curr_user_upvoted?: boolean
   curr_user_downvoted?: boolean
   toxic?: boolean
-  expert_badges?: Array<{
-    badge__badge_id: number;
-    badge__name: string;
-    badge__description: string;
-    badge__image_url: string;
-  }>;
+  expert_badges?: Badge[]
 }
