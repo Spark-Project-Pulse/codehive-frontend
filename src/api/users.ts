@@ -248,6 +248,12 @@ export const uploadProfileImage = async (
   formData: FormData
 ): Promise<ApiResponse<{ user_id: string }>> => {
   try {
+    const user = await getSupaUser()
+
+    if (!user || user.id !== user_id) {
+      return { errorMessage: 'Cannot upload photo for another user' }
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/updateProfileImageById/${user_id}/`,
       {

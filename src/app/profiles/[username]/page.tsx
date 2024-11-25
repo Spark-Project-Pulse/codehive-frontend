@@ -10,36 +10,42 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
+import { toast } from '@/components/ui/use-toast'
+import { AvatarFallback } from '@radix-ui/react-avatar'
 
 export default function ProfilePage({
   params,
 }: {
   params: { username: string }
 }) {
-  const { user: currentUser } = useUser();
+  const { user: currentUser } = useUser()
   const [user, setUser] = useState<User | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
 
-  const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isUserLoading, setIsUserLoading] = useState(true)
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
   const router = useRouter()
-  const isCurrentUser = user?.user === currentUser?.user;
+  const isCurrentUser = user?.user === currentUser?.user
 
   useEffect(() => {
     const fetchUser = async () => {
-      setIsUserLoading(true);
+      setIsUserLoading(true)
       try {
         const response = await getUserByUsername(params.username)
         if (response.errorMessage) {
@@ -49,20 +55,18 @@ export default function ProfilePage({
 
         // Set the user state with the fetched data
         setUser(response.data ?? null)
-
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
-        setIsUserLoading(false);
+        setIsUserLoading(false)
       }
     }
     void fetchUser()
   }, [params.username])
 
   useEffect(() => {
-
     const fetchProjects = async () => {
-        // Check if user id is defined before proceeding
+      // Check if user id is defined before proceeding
       if (!user?.user) {
         console.error('User ID is undefined.')
         return
@@ -75,7 +79,7 @@ export default function ProfilePage({
           console.error('Error fetching projects:', response.errorMessage)
           return
         }
-       // Set the projects state with the fetched data
+        // Set the projects state with the fetched data
         setProjects(response.data ?? [])
       } catch (error) {
         console.error('Error fetching projects:', error)
@@ -97,7 +101,7 @@ export default function ProfilePage({
           console.error('Error fetching questions:', response.errorMessage)
           return
         }
-      // Set the questions state with the fetched data
+        // Set the questions state with the fetched data
         setQuestions(response.data ?? [])
       } catch (error) {
         console.error('Error fetching questions:', error)
@@ -106,26 +110,26 @@ export default function ProfilePage({
       }
     }
 
-        // Only fetch questions/projects/profileImage if user is set
+    // Only fetch questions/projects/profileImage if user is set
     if (user) {
       void fetchProjects()
       void fetchQuestions()
     }
   }, [user])
 
-    // Handle navigation on click for projects
+  // Handle navigation on click for projects
   const handleProjectClick = (projectId: string) => {
     router.push(`/projects/${projectId}`)
   }
 
-    // Handle navigation on click for questions
+  // Handle navigation on click for questions
   const handleQuestionClick = (questionId: string) => {
     router.push(`/questions/${questionId}`)
   }
 
-    // Handle show edit profile on click
+  // Handle show edit profile on click
   function handleShowEditProfileClick() {
-        // If the show upload files button is there, then hide it. Else show it
+    // If the show upload files button is there, then hide it. Else show it
     if (showUploadFiles) {
       setShowUploadFiles(false)
     } else {
@@ -134,22 +138,29 @@ export default function ProfilePage({
   }
 
   async function handlePhotoUpload(photo: React.ChangeEvent<HTMLInputElement>) {
-    const file = photo.target.files?.[0];
+    const file = photo.target.files?.[0]
     if (file && user) {
       try {
-        const formData = new FormData();
-        formData.append('profile_image', file);
-        await uploadProfileImage(user.user, formData);
-        setShowUploadFiles(false);
+        const formData = new FormData()
+        formData.append('profile_image', file)
+        const { errorMessage } = await uploadProfileImage(user.user, formData)
+        setShowUploadFiles(false)
+
+        if (errorMessage) {
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: errorMessage,
+          })
+        }
       } catch (error) {
-        console.error('File upload failed:', error);
+        console.error('File upload failed:', error)
       }
     } else {
       console.error('File upload error')
     }
   }
-// Conditional rendering for loading state
-// TODO: Replace user loading spinner with Shadcn skeleton
+  // Conditional rendering for loading state
   if (isUserLoading) {
     return <ProfileSkeleton />
   }
@@ -161,41 +172,72 @@ export default function ProfilePage({
           <Card>
             <CardHeader className="flex flex-col items-center">
               <div className="relative h-32 w-32">
-                <Avatar className="h-32 w-32">
+                <Avatar className="h-32 w-32 rounded-full bg-muted">
                   <AvatarImage
-                    src={`${user?.profile_image_url ?? '/anon-user-pfp.jpg'}?t=${Date.now()}`}
+                    src={`${user?.profile_image_url}?t=${Date.now()}`}
                     alt="User profile picture"
                   />
+                  <AvatarFallback className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground">
+                    {user?.username?.charAt(0).toUpperCase() ?? 'G'}
+                  </AvatarFallback>
                 </Avatar>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="absolute bottom-2 right-2 h-6 w-6 p-0 bg-transparent border-none cursor-pointer edit-icon" aria-label="Edit Profile">
-                      <img src="/edit_pencil.svg" alt="Edit Profile" className="h-full w-full" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium leading-none">Profile Picture</h4>
-                        <p className="text-sm text-muted-foreground">
-                          A picture helps people recognize you and lets you know when you signed in to your account
-                        </p>
-                      </div>
-                      <div className="grid gap-2">
-                        <div className="grid grid-cols-3 items-center gap-4">
-                          <Button variant="outline" onClick={() => handleShowEditProfileClick()} id="width" className="col-span-2 h-10"> Change Image
-                            <img src="/edit_pencil.svg" alt="Edit Profile" className="h-full w-full" />
-                          </Button>
+                {isCurrentUser && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        className="edit-icon absolute bottom-2 right-2 h-6 w-6 cursor-pointer border-none bg-transparent p-0"
+                        aria-label="Edit Profile"
+                      >
+                        <img
+                          src="/edit_pencil.svg"
+                          alt="Edit Profile"
+                          className="h-full w-full"
+                        />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                      <div className="grid gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium leading-none">
+                            Profile Picture
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            A picture helps people recognize you and lets you
+                            know when you signed in to your account
+                          </p>
                         </div>
-                        {showUploadFiles && (
+                        <div className="grid gap-2">
                           <div className="grid grid-cols-3 items-center gap-4">
-                            <Input type="file" id="height" className="col-span-2 h-10" onChange={handlePhotoUpload} />
+                            <Button
+                              variant="outline"
+                              onClick={() => handleShowEditProfileClick()}
+                              id="width"
+                              className="col-span-2 h-10"
+                            >
+                              {' '}
+                              Change Image
+                              <img
+                                src="/edit_pencil.svg"
+                                alt="Edit Profile"
+                                className="h-full w-full"
+                              />
+                            </Button>
                           </div>
-                        )}
+                          {showUploadFiles && (
+                            <div className="grid grid-cols-3 items-center gap-4">
+                              <Input
+                                type="file"
+                                id="height"
+                                className="col-span-2 h-10"
+                                onChange={handlePhotoUpload}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                    </PopoverContent>
+                  </Popover>
+                )}
               </div>
               <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
             </CardHeader>
@@ -221,8 +263,10 @@ export default function ProfilePage({
                   {isProjectsLoading ? (
                     <ProjectsSkeleton />
                   ) : projects.length === 0 && isCurrentUser ? (
-                    <div className="flex justify-center items-center py-8">
-                      <Button onClick={() => router.push('/projects/add-project')}>
+                    <div className="flex items-center justify-center py-8">
+                      <Button
+                        onClick={() => router.push('/projects/add-project')}
+                      >
                         Add your first project
                       </Button>
                     </div>

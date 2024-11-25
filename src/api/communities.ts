@@ -98,7 +98,7 @@ export const approveCommunityRequest = async (
       )
     }
 
-    const responseData = await response.json() as { message: string }
+    const responseData = (await response.json()) as { message: string }
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error approving community request:', error)
@@ -145,7 +145,7 @@ export const rejectCommunityRequest = async (
       )
     }
 
-    const responseData = await response.json() as { message: string }
+    const responseData = (await response.json()) as { message: string }
     return { errorMessage: null, data: responseData }
   } catch (error) {
     console.error('Error rejecting community request:', error)
@@ -170,7 +170,7 @@ export const addUserToCommunity = async (
     const user = await getSupaUser()
 
     if (!user) {
-      throw new Error('User not authenticated')
+      return { errorMessage: 'User not authenticated' }
     }
 
     const response = await fetch(
@@ -216,7 +216,7 @@ export const removeUserFromCommunity = async (
     const user = await getSupaUser()
 
     if (!user) {
-      throw new Error('User not authenticated')
+      return { errorMessage: 'User not authenticated' }
     }
 
     const response = await fetch(
@@ -542,7 +542,7 @@ export const userIsPartOfCommunity = async (
     const user = await getSupaUser()
 
     if (!user) {
-      throw new Error('User not authenticated')
+      return { errorMessage: 'User not authenticated' }
     }
 
     const response = await fetch(

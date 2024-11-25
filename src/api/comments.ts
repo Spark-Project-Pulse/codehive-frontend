@@ -18,8 +18,11 @@ export const createComment = async (commentData: {
   answer: string
 }): Promise<ApiResponse<Comment>> => {
   try {
-
     const user = await getSupaUser()
+
+    if (!user) {
+      return { errorMessage: 'User not authenticated' }
+    }
 
     const vals = { expert: user?.id, ...commentData }
     const response = await fetch(

@@ -66,9 +66,7 @@ export default function CommunityHeader({
         </div>
       </div>
       {/* Join or leave community button */}
-      {!userIsMember && (
-        <Skeleton className="h-10 w-32" />
-      )}
+      {userIsMember === null && <Skeleton className="h-10 w-32" />}
 
       {userIsMember === false && (
         <ButtonWithLoading
@@ -81,16 +79,15 @@ export default function CommunityHeader({
       {userIsMember === true && (
         <AlertDialog>
           <AlertDialogTrigger>
-            <Button type="button">
-              Leave community
-            </Button>
+            <Button type="button">Leave community</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. This will permanently delete your
-                community related data, including your reputation and contributions.
+                community related data, including your reputation and
+                contributions.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

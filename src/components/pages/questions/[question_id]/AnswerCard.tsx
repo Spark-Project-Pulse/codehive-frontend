@@ -14,6 +14,7 @@ import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import CollapsibleComments from './CollapsibleComments'
+import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
 
 interface AnswerCardProps {
   answer: Answer
@@ -38,6 +39,7 @@ export default function AnswerCard({
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
   const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
+  const [authPopupOpen, setAuthPopupOpen] = useState(false) // State to control popup visibility
   const router = useRouter()
 
   // Function to change user's reputation
@@ -81,7 +83,9 @@ export default function AnswerCard({
         answer.answer_id,
         answer.expert
       )
-      if (errorMessage) throw new Error(errorMessage)
+      if (errorMessage) {
+        throw new Error(errorMessage)
+      }
       await handleChangeReputation(reputationChange.toString())
     } catch (error) {
       // Revert changes if API call fails
@@ -93,11 +97,16 @@ export default function AnswerCard({
         error instanceof Error
           ? error.message
           : 'Upvote failed. Please try again.'
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: errorMessage,
-      })
+
+      if (errorMessage === 'User not authenticated') {
+        setAuthPopupOpen(true)
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
     }
   }
 
@@ -127,7 +136,9 @@ export default function AnswerCard({
         answer.answer_id,
         answer.expert
       )
-      if (errorMessage) throw new Error(errorMessage)
+      if (errorMessage) {
+        throw new Error(errorMessage)
+      }
       await handleChangeReputation(reputationChange.toString())
     } catch (error) {
       // Revert changes if API call fails
@@ -139,11 +150,16 @@ export default function AnswerCard({
         error instanceof Error
           ? error.message
           : 'Downvote failed. Please try again.'
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: errorMessage,
-      })
+
+      if (errorMessage === 'User not authenticated') {
+        setAuthPopupOpen(true)
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
+      }
     }
   }
 
@@ -155,73 +171,81 @@ export default function AnswerCard({
   }
 
   return (
-    <Card className="mb-6 mt-6">
-      <div className="flex">
-        {/* Upvote/Downvote and Score */}
-        <div className="flex flex-col items-center space-y-2 pl-6 pt-6">
-          <Button
-            onClick={() => handleUpvote()}
-            variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
-          >
-            👍
-          </Button>
-          <h1>{optimisticScore}</h1>
-          <Button
-            onClick={() => handleDownvote()}
-            variant="outline"
-            className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-              hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-            }`}
-          >
-            👎
-          </Button>
-        </div>
+    <>
+      {/* Popup for unauthenticated users */}
+      <NotAuthenticatedPopup
+        isOpen={authPopupOpen}
+        onClose={() => {
+          setAuthPopupOpen(false)
+        }}
+      />
+      <Card className="mb-6 mt-6">
+        <div className="flex">
+          {/* Upvote/Downvote and Score */}
+          <div className="flex flex-col items-center space-y-2 pl-6 pt-6">
+            <Button
+              onClick={() => handleUpvote()}
+              variant="outline"
+              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+                hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
+            >
+              👍
+            </Button>
+            <h1>{optimisticScore}</h1>
+            <Button
+              onClick={() => handleDownvote()}
+              variant="outline"
+              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
+                hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+              }`}
+            >
+              👎
+            </Button>
+          </div>
 
-        {/* Card Content */}
-        <div className="flex-1">
-          <CardContent className="mt-6">
-            <p>{answer.response}</p>
+          {/* Card Content */}
+          <div className="flex-1">
+            <CardContent className="mt-6">
+              <p>{answer.response}</p>
 
-            {/* Expert info */}
-            <div className="mt-4 flex items-center justify-between">
-              <div
-                className={`flex items-center space-x-4 ${answer.expert_info && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
-                onClick={handleProfileClick}
-              >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={answer.expert_info.profile_image_url} />
-                  <AvatarFallback>
-                    {answer.expert_info?.username?.[0] ?? (
-                      <UserIcon className="h-4 w-4" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-medium">
-                    {answer.expert_info?.username ?? 'Anonymous User'}
-                  </p>
+              {/* Expert info */}
+              <div className="mt-4 flex items-center justify-between">
+                <div
+                  className={`flex items-center space-x-4 ${answer.expert_info && 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'}`}
+                  onClick={handleProfileClick}
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={answer?.expert_info?.profile_image_url} />
+                    <AvatarFallback>
+                      {answer.expert_info?.username?.[0] ?? (
+                        <UserIcon className="h-4 w-4" />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">
+                      {answer.expert_info?.username ?? 'Anonymous User'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(new Date(answer.created_at), 'PPP')}
                 </div>
               </div>
-              <div className="flex items-center text-sm text-gray-500">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {format(new Date(answer.created_at), 'PPP')}
-              </div>
-            </div>
-          </CardContent>
+            </CardContent>
 
-          {/* Comments Section */}
-          <CollapsibleComments
-            comments={comments[answer.answer_id] ?? []}
-            answer={answer}
-            isLoadingComments={isLoadingComments}
-            onCommentSubmit={onCommentSubmit}
-           />
-          
+            {/* Comments Section */}
+            <CollapsibleComments
+              comments={comments[answer.answer_id] ?? []}
+              answer={answer}
+              isLoadingComments={isLoadingComments}
+              onCommentSubmit={onCommentSubmit}
+            />
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </>
   )
 }
