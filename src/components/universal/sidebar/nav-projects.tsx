@@ -1,6 +1,5 @@
 "use client"
 
-import Image from 'next/image'
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
 // Removed useTheme import
 import { Skeleton } from '@/components/ui/skeleton'
