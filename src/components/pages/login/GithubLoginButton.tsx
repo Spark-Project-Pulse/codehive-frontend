@@ -5,7 +5,7 @@ import { loginAction } from '@/api/auth'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/use-toast'
 import { ButtonLoadingSpinner } from '@/components/ui/loading'
-import Image from 'next/image'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
 export default function GithubLoginButton() {
   const [isPending, startTransaction] = useTransition()
@@ -45,13 +45,7 @@ export default function GithubLoginButton() {
         </>
       ) : (
         <>
-          <Image
-            src="/github-logo.png"
-            alt="Github logo"
-            width={20}
-            height={20}
-            className="h-5 w-5"
-          />
+          <GitHubLogoIcon />
           <span>Login with GitHub</span>
         </>
       )}

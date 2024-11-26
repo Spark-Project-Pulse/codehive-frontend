@@ -4,7 +4,8 @@ import React, { forwardRef, useRef } from 'react'
 
 import { cn } from '@/lib/utils'
 import { AnimatedBeam } from '@/components/ui/animated-beam'
-import { GitHubLogoIcon, PersonIcon } from '@radix-ui/react-icons'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import Image from 'next/image'
 
 const Circle = forwardRef<
   HTMLDivElement,
@@ -73,5 +74,31 @@ export function AnimatedBeamBidirectional({
 
 const Icons = {
   openai: GitHubLogoIcon,
-  user: PersonIcon,
+  user: () => (
+    <>
+      <Image
+        src="/logo.svg"
+        alt="Github logo"
+        width={20}
+        height={20}
+        className="h-5 w-5"
+      />
+
+      {/* TODO: replace the above with the following light/dark implementation */}
+      {/* <Image
+        src="/logo.svg"
+        alt="Github logo"
+        width={20}
+        height={20}
+        className="h-5 w-5 dark:hidden"
+      />
+      <Image
+        src="/logo-dark.svg"
+        alt="Github logo"
+        width={20}
+        height={20}
+        className="hidden h-5 w-5 dark:block"
+      /> */}
+    </>
+  ),
 }

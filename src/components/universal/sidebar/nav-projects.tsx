@@ -1,8 +1,6 @@
 "use client"
 
-import Image from 'next/image'
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
-import { useTheme } from 'next-themes'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import {
@@ -23,6 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from 'next/link'
 import { type SidebarProject } from '@/types/Projects'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
 interface NavProjectsProps {
   loading?: boolean
@@ -31,7 +30,6 @@ interface NavProjectsProps {
 
 export function NavProjects({ loading, projects }: NavProjectsProps) {
   const { isMobile } = useSidebar()
-  const { resolvedTheme } = useTheme()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -46,14 +44,8 @@ export function NavProjects({ loading, projects }: NavProjectsProps) {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <Link href={item.url}>
-                  <Image
-                  src={`/github-logo-${resolvedTheme === 'dark' ? 'light' : 'dark'}.svg`}
-                  alt='Github logo'
-                  width={20}
-                  height={20}
-                  className='h-5 w-5'
-                  />
-                  <span>{item.title}</span>
+                <GitHubLogoIcon />
+                <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
               <DropdownMenu>

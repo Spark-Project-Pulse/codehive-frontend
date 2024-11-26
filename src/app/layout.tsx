@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description: 'Keep on buzzing!',
 }
 import { ThemeProvider } from "@/components/universal/theme-provider"
+import SiteFooter from '@/components/universal/footer/footer'
 
 export default function RootLayout({
   children,
@@ -46,12 +47,13 @@ export default function RootLayout({
                       </TooltipTrigger>
                       <TooltipContent side="right">
                         {/* TODO: fix tooltip styling (doesn't seem correct) */}
-                        <p>⌘ /</p>
+                        <p>⌘ /</p>  
                       </TooltipContent>
                     </Tooltip>
                   </div>
                 </header>
                 {children}
+                <SiteFooter />
                 <Toaster />
               </SidebarInset>
             </SidebarProvider>
