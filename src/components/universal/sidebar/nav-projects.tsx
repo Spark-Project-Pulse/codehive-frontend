@@ -30,7 +30,6 @@ interface NavProjectsProps {
 
 export function NavProjects({ loading, projects }: NavProjectsProps) {
   const { isMobile } = useSidebar()
-  // Removed resolvedTheme
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
