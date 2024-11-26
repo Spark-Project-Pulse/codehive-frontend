@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from 'next/link'
 import { type SidebarProject } from '@/types/Projects'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
 interface NavProjectsProps {
   loading?: boolean
@@ -46,21 +47,8 @@ export function NavProjects({ loading, projects }: NavProjectsProps) {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <Link href={item.url}>
-                  <Image
-                    src="/github-logo-dark.svg"
-                    alt="Github logo"
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 dark:hidden"
-                  />
-                  <Image
-                    src="/github-logo-light.svg"
-                    alt="Github logo"
-                    width={20}
-                    height={20}
-                    className="hidden h-5 w-5 dark:block"
-                  />
-                  <span>{item.title}</span>
+                <GitHubLogoIcon />
+                <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
               <DropdownMenu>
