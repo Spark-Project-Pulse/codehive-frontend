@@ -4,10 +4,7 @@ import React, { forwardRef, useRef } from 'react'
 
 import { cn } from '@/lib/utils'
 import { AnimatedBeam } from '@/components/ui/animated-beam'
-import { GitHubLogoIcon, PersonIcon } from '@radix-ui/react-icons'
-import LightModeLogoIcon from '/logo-and-codehive-light.svg'
-import DarkModeLogoIcon from '/logo-and-codehive-dark.svg'
-import { useTheme } from 'next-themes'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 
 const Circle = forwardRef<
