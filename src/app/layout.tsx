@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: 'Keep on buzzing!',
 }
 import { ThemeProvider } from "@/components/universal/theme-provider"
-import SiteFooter from '@/components/universal/footer'
+import SiteFooter from '@/components/universal/footer/footer'
 
 export default function RootLayout({
   children,

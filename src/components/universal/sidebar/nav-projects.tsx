@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react"
-import { useTheme } from 'next-themes'
+// Removed useTheme import
 import { Skeleton } from '@/components/ui/skeleton'
 
 import {
@@ -31,7 +31,7 @@ interface NavProjectsProps {
 
 export function NavProjects({ loading, projects }: NavProjectsProps) {
   const { isMobile } = useSidebar()
-  const { resolvedTheme } = useTheme()
+  // Removed resolvedTheme
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -47,11 +47,18 @@ export function NavProjects({ loading, projects }: NavProjectsProps) {
               <SidebarMenuButton asChild>
                 <Link href={item.url}>
                   <Image
-                  src={`/github-logo-${resolvedTheme === 'dark' ? 'light' : 'dark'}.svg`}
-                  alt='Github logo'
-                  width={20}
-                  height={20}
-                  className='h-5 w-5'
+                    src="/github-logo-dark.svg"
+                    alt="Github logo"
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 dark:hidden"
+                  />
+                  <Image
+                    src="/github-logo-light.svg"
+                    alt="Github logo"
+                    width={20}
+                    height={20}
+                    className="hidden h-5 w-5 dark:block"
                   />
                   <span>{item.title}</span>
                 </Link>

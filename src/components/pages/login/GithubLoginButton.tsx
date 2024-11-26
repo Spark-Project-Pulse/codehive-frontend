@@ -6,12 +6,10 @@ import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/use-toast'
 import { ButtonLoadingSpinner } from '@/components/ui/loading'
 import Image from 'next/image'
-import { useTheme } from 'next-themes'
 
 export default function GithubLoginButton() {
   const [isPending, startTransaction] = useTransition()
   const router = useRouter()
-  const { resolvedTheme } = useTheme()
 
   const handleClickLoginButton = (provider: Provider) => {
     startTransaction(async () => {
@@ -48,11 +46,18 @@ export default function GithubLoginButton() {
       ) : (
         <>
           <Image
-            src={`/github-logo-${resolvedTheme === 'dark' ? 'dark' : 'light'}.svg`}
+            src="/github-logo-light.svg"
             alt="Github logo"
             width={20}
             height={20}
-            className="h-5 w-5"
+            className="h-5 w-5 dark:hidden"
+          />
+          <Image
+            src="/github-logo-dark.svg"
+            alt="Github logo"
+            width={20}
+            height={20}
+            className="hidden h-5 w-5 dark:block"
           />
           <span>Login with GitHub</span>
         </>

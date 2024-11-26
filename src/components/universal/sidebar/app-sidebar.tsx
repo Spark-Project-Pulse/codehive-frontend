@@ -50,7 +50,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
   const [communitiesLoading, setCommunitiesLoading] =
     React.useState<boolean>(true)
-  const [projectsLoading, setProjectsLoading] = React.useState<boolean>(true)
+  const [projectsLoading, setProjectsLoading] =
+    React.useState<boolean>(true)
   const [notificationsInfo, setNotificationsInfo] =
     React.useState<NotificatonsInfo>({ count: 0 })
   const [notificationsInfoLoading, setNotificationsInfoLoading] =
@@ -227,22 +228,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Link
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
-            >
-            {/* Try to show logo-and-codehive image, fallback to text */}
+          >
             <Image
-              src="/logo-and-codehive.svg"
+              src="/logo-and-codehive-dark.svg"
+              className="block dark:hidden"
               alt="CodeHive and its logo"
               width={235}
               height={50}
               onError={(e) => {
-              e.currentTarget.onerror = null; // Prevent infinite loop
-              if (e.currentTarget.parentElement) {
-                e.currentTarget.parentElement.innerHTML = 'CodeHive';
-              }
+                e.currentTarget.onerror = null;
+                if (e.currentTarget.parentElement) {
+                  e.currentTarget.parentElement.innerHTML = 'CodeHive';
+                }
               }}
             />
-            </Link>
-          ) : (
+            <Image
+              src="/logo-and-codehive-light.svg"
+              className="hidden dark:block"
+              alt="CodeHive and its logo"
+              width={235}
+              height={50}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                if (e.currentTarget.parentElement) {
+                  e.currentTarget.parentElement.innerHTML = 'CodeHive';
+                }
+              }}
+            />
+          </Link>
+        ) : (
           <Link
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
@@ -250,7 +264,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Image
               src="/logo.svg"
               alt="CodeHive Logo"
-              width={150}
+              width={50}
               height={50}
             />
           </Link>
