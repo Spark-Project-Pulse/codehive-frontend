@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from '@/components/ui/use-toast'
@@ -88,7 +87,7 @@ export default function SuggestionsPanel({
         <div className="p-4 text-center">
           <Button onClick={handleCodeReviewClicked}>AI Code Review</Button>
           <p className="mt-2 text-sm">
-            No suggestions yet. Click "AI Code Review" to get started.
+            No suggestions yet. Click &quot;AI Code Review&quot; to get started.
           </p>
         </div>
       )}

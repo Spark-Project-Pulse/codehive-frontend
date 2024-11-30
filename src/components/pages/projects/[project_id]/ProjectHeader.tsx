@@ -1,12 +1,4 @@
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
 import { Project } from '@/types/Projects'
 
 interface ProjectHeaderProps {
@@ -26,7 +18,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
         </Badge>
         {/* Project owner */}
         <p className="mt-4 text-sm text-muted-foreground">
-          Owner: {project.owner_info?.username || 'Anonymous User'}
+          Owner: {project.owner_info?.username ?? 'Anonymous User'}
         </p>
       </div>
     </div>

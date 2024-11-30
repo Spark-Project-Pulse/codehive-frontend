@@ -58,7 +58,8 @@ export default function ProjectPage({
         setIsLoading(false)
       }
     }
-    fetchProject()
+
+    void fetchProject()
   }, [params.project_id])
 
   const convertRepoContentsToFSItems = (
@@ -204,7 +205,7 @@ export default function ProjectPage({
       <div className="mx-auto max-w-6xl px-4">
         {/* Project Header */}
         <ProjectHeader project={project} />
-        
+
         {/* Resizable Panels */}
         <ResizablePanelGroup direction="horizontal">
           {/* File Browser Panel */}
