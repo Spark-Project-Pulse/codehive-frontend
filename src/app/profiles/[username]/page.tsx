@@ -25,6 +25,16 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
 import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import UpdateQuestionForm from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
+import { DialogDescription } from '@radix-ui/react-dialog'
+import { type FormValues } from '@/components/pages/questions/[question_id]/UpdateQuestionForm';
 
 export default function ProfilePage({
   params,
@@ -166,6 +176,10 @@ export default function ProfilePage({
     return <ProfileSkeleton />
   }
 
+  const handleQuestionUpdate = async (data: FormValues) => {
+    console.log(data)
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col gap-8 md:flex-row">
@@ -302,18 +316,48 @@ export default function ProfilePage({
                     <QuestionsSkeleton />
                   ) : (
                     <ul className="space-y-4">
-                      {questions.map((question, index) => (
-                        <li
-                          key={index}
-                          className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
-                          onClick={() =>
-                            handleQuestionClick(question.question_id)
-                          }
-                        >
-                          <h3 className="text-lg font-semibold">
-                            {question.title}
-                          </h3>
-                        </li>
+                      {questions.map((question) => (
+                        <div key={question.question_id} className="relative">
+                          {/* The clickable card */}
+                          <li
+                            className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                            onClick={() =>
+                              handleQuestionClick(question.question_id)
+                            }
+                          >
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-lg font-semibold">
+                                {question.title}
+                              </h3>
+                            </div>
+                          </li>
+
+                          {/* The "Edit" button, which is outside the clickable card */}
+                          {isCurrentUser && (
+                            <div className="absolute right-4 top-4">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm">
+                                    Edit
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Edit Question</DialogTitle>
+                                    <DialogDescription>
+                                      Edit the title or description of your
+                                      question!
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <UpdateQuestionForm
+                                    question={question}
+                                    onSubmit={handleQuestionUpdate}
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </ul>
                   )}
