@@ -35,6 +35,7 @@ import {
 import UpdateQuestionForm from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { type FormValues } from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
+import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
 
 export default function ProfilePage({
   params,
@@ -175,56 +176,21 @@ export default function ProfilePage({
     return <ProfileSkeleton />
   }
 
-  const handleQuestionUpdate = async (form_data: FormValues) => {
-    try {
-      // Call the updateQuestion API with the new data
-      const { errorMessage, data } = await updateQuestion({
-        questionId: form_data.question_id,
-        asker: form_data.asker,
-        title: form_data.title,
-        description: form_data.description,
-      })
+  // Function to update the question state when a question is updated
+  const handleQuestionUpdate = (updatedQuestion: Question) => {
+    const updatedQuestions = questions.map((question) =>
+      question.question_id === updatedQuestion.question_id
+        ? updatedQuestion
+        : question
+    )
+    setQuestions(updatedQuestions)
+  }
 
-      if (errorMessage) {
-        throw new Error(errorMessage)
-      }
-
-      if (data?.toxic === true) {
-        throw new Error('Toxic content detected in your question.')
-      }
-
-      // Update the question in the local state
-      const updatedQuestions = questions.map((question) =>
-        question.question_id === form_data.question_id
-          ? {
-              ...question,
-              title: form_data.title,
-              description: form_data.description,
-            }
-          : question
-      )
-
-      // Update the state with the modified questions array
-      setQuestions(updatedQuestions)
-
-      // Show a success toast
-      toast({
-        title: 'Question Updated',
-        description: 'The question was updated successfully.',
-      })
-    } catch (error) {
-      console.error('Error updating question:', error)
-
-      // Show an error toast
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description:
-          error instanceof Error
-            ? error.message
-            : 'An error occurred while updating the question.',
-      })
-    }
+  // Function to delete a question from the state when a question is deleted
+  const handleQuestionDelete = (questionId: string) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((question) => question.question_id !== questionId)
+    )
   }
 
   return (
@@ -382,26 +348,11 @@ export default function ProfilePage({
                           {/* The "Edit" button, which is outside the clickable card */}
                           {isCurrentUser && (
                             <div className="absolute right-4 top-4">
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm">
-                                    Edit
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <DialogHeader>
-                                    <DialogTitle>Edit Question</DialogTitle>
-                                    <DialogDescription>
-                                      Edit the title or description of your
-                                      question!
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <UpdateQuestionForm
-                                    question={question}
-                                    onSubmit={handleQuestionUpdate}
-                                  />
-                                </DialogContent>
-                              </Dialog>
+                              <UpdateDeleteQuestionDialog
+                                question={question}
+                                onUpdate={handleQuestionUpdate}
+                                onDelete={handleQuestionDelete}
+                              />
                             </div>
                           )}
                         </div>

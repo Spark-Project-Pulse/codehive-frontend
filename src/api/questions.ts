@@ -286,3 +286,56 @@ export const updateQuestion = async (values: {
     throw new Error('Error updating question')
   }
 }
+
+/**
+ * Deletes an existing question by sending a DELETE request to the backend.
+ *
+ * Args:
+ *   questionId: The question id for the question to be deleted.
+ *   asker: The user id of the user who asked the question.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ message: string }>>: A message if the question was deleted, otherwise an error message.
+ */
+export const deleteQuestion = async (
+  questionId: string,
+  asker?: string
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    if (user.id !== asker) {
+      throw new Error('You are not authorized to delete this question')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/delete/${questionId}/`,
+      {
+        method: 'DELETE', // Use DELETE
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ asker }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const responseData = (await response.json()) as string
+    return {
+      errorMessage: null,
+      data: {
+        message: responseData,
+      },
+    }
+  } catch (error) {
+    console.error('Error deleting question: ', error)
+    throw new Error('Error deleting question')
+  }
+}
