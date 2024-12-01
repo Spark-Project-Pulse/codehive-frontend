@@ -30,7 +30,7 @@ export default function BrowseCommunities() {
   const [currentPage, setCurrentPage] = useState<number>(1) // Current page for pagination
   const [pageSize] = useState<number>(30) // Number of communities per page
   const [totalPages, setTotalPages] = useState<number>(1) // Total number of pages available
-  const [totalCommunities, setTotalCommunities] = useState<number>(0) // Total number of communities fetched
+  const [, setTotalCommunities] = useState<number>(0) // Total number of communities fetched
 
   // State for the search query and debouncing to limit API calls
   const [searchQuery, setSearchQuery] = useState<string>('')

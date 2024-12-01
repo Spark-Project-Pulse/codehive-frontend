@@ -54,7 +54,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     React.useState<boolean>(true)
   const [notificationsInfo, setNotificationsInfo] =
     React.useState<NotificatonsInfo>({ count: 0 })
-  const [notificationsInfoLoading, setNotificationsInfoLoading] =
+  const [, setNotificationsInfoLoading] =
     React.useState<boolean>(true)
 
   const [projects, setProjects] = React.useState<SidebarProject[]>([])

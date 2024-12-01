@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { type Project } from '@/types/Projects'
-import { getProjectById, codeReview } from '@/api/projects'
+import { getProjectById } from '@/api/projects'
 import FileBrowser from '@/components/universal/code/FileBrowser'
 import { useUser } from '@/app/contexts/UserContext'
 import type { FileSystemItem } from '@/types/FileSystem'
-import type { RepoContent, Suggestion } from '@/types/Projects'
+import type { RepoContent } from '@/types/Projects'
 import { fetchRepoContents } from '@/lib/github'
 import ProjectHeader from '@/components/pages/projects/[project_id]/ProjectHeader'
 import ProjectHeaderSkeleton from '@/components/pages/projects/[project_id]/ProjectHeaderSkeleton'

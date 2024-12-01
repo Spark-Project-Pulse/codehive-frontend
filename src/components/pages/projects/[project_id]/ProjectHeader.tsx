@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge'
-import { Project } from '@/types/Projects'
+import { type Project } from '@/types/Projects'
 
 interface ProjectHeaderProps {
   project: Project
