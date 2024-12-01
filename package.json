@@ -45,6 +45,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
+    "react-resizable-panels": "^2.1.7",
     "react-select": "^5.8.1",
     "resize-observer-polyfill": "^1.5.1",
     "tailwind-merge": "^2.5.4",

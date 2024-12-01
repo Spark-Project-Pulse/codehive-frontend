@@ -9,6 +9,11 @@ import {
 } from 'lucide-react'
 import type { FileSystemItem } from '@/types/FileSystem'
 import type { Project } from '@/types/Projects'
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from '@/components/ui/resizable'
 
 interface FileBrowserProps {
   project: Project
@@ -89,10 +94,9 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
   return (
     <section className="min-h-screen py-2">
       <div className="mx-auto w-full px-4">
-        <h1 className="mb-4 text-2xl font-bold">{project.title}</h1>
-        <p className="mb-4">{project.description}</p>
-        <div className="flex">
-          <div className="w-1/4">
+        <ResizablePanelGroup direction="horizontal">
+          {/* File Tree Panel */}
+          <ResizablePanel defaultSize={20}>
             {isLoadingDirectory && !fileSystemTree.length ? (
               <Skeleton className="h-full w-full" />
             ) : (
@@ -102,8 +106,10 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
                 </div>
               </div>
             )}
-          </div>
-          <div className="ml-4 w-3/4">
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          {/* File Content Panel */}
+          <ResizablePanel defaultSize={80}>
             {isLoadingFileContent ? (
               <Skeleton className="h-full w-full" />
             ) : fileContent ? (
@@ -118,10 +124,12 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
                 />
               </>
             ) : (
-              <p>Select a file to view its contents.</p>
+              <p className="text-center text-xl">
+                Select a file to view its contents.
+              </p>
             )}
-          </div>
-        </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </section>
   )
