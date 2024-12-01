@@ -5,8 +5,6 @@ import { type Question, type ListQuestionsRepsonse } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
-
-
 /**
  * Creates a new question by sending a POST request to the backend.
  *
@@ -19,7 +17,7 @@ import { type UUID } from 'crypto'
 export const createQuestion = async (values: {
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string, toxic?: boolean }>> => {
+}): Promise<ApiResponse<{ question_id: string; toxic?: boolean }>> => {
   try {
     const user = await getSupaUser()
 
@@ -42,7 +40,10 @@ export const createQuestion = async (values: {
     const responseData = (await response.json()) as Question
     return {
       errorMessage: null,
-      data: { question_id: responseData.question_id, toxic: responseData.toxic },
+      data: {
+        question_id: responseData.question_id,
+        toxic: responseData.toxic,
+      },
     }
   } catch (error) {
     console.error('Error creating question: ', error)
@@ -176,10 +177,12 @@ export const getAllQuestions = async (
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`)
+      throw new Error(
+        `HTTP error! Status: ${response.status}, Message: ${errorText}`
+      )
     }
 
-    const responseData = await response.json() as ListQuestionsRepsonse
+    const responseData = (await response.json()) as ListQuestionsRepsonse
 
     return {
       errorMessage: null,
@@ -188,7 +191,6 @@ export const getAllQuestions = async (
         totalQuestions: responseData.totalQuestions,
       },
     }
-
   } catch (error) {
     console.error('Error fetching questions:', error)
     return { errorMessage: 'Error fetching questions' }
@@ -204,7 +206,9 @@ export const getAllQuestions = async (
  * Returns:
  *   Promise<ApiResponse<Question>>: The question data on success, or an error message on failure.
  */
-export const changeMark = async (question_id: string): Promise<ApiResponse<Question>> => {
+export const changeMark = async (
+  question_id: string
+): Promise<ApiResponse<Question>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/changeMark/${question_id}/`,
@@ -225,5 +229,113 @@ export const changeMark = async (question_id: string): Promise<ApiResponse<Quest
   } catch (error) {
     console.error('Error fetching question: ', error)
     return { errorMessage: 'Error fetching question' }
+  }
+}
+
+/**
+ * Updates an existing question by sending a PUT request to the backend.
+ *
+ * Args:
+ *   values: An object containing `question_id`, `asker`, `title` and `description` for the question.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ question_id: string, toxic: boolean }>>: The updated question's ID on success, or an error message on failure.
+ */
+export const updateQuestion = async (values: {
+  questionId: string
+  asker: string
+  title: string
+  description: string
+}): Promise<ApiResponse<{ question_id: string; toxic?: boolean }>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    if (user.id !== values.asker) {
+      throw new Error('You are not authorized to update this question')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/update/${values.questionId}/`,
+      {
+        method: 'PUT', // Use PUT for updates
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const responseData = (await response.json()) as Question
+    return {
+      errorMessage: null,
+      data: {
+        question_id: responseData.question_id,
+        toxic: responseData.toxic,
+      },
+    }
+  } catch (error) {
+    console.error('Error updating question: ', error)
+    throw new Error('Error updating question')
+  }
+}
+
+/**
+ * Deletes an existing question by sending a DELETE request to the backend.
+ *
+ * Args:
+ *   questionId: The question id for the question to be deleted.
+ *   asker: The user id of the user who asked the question.
+ *
+ * Returns:
+ *   Promise<ApiResponse<{ message: string }>>: A message if the question was deleted, otherwise an error message.
+ */
+export const deleteQuestion = async (
+  questionId: string,
+  asker?: string
+): Promise<ApiResponse<{ message: string }>> => {
+  try {
+    const user = await getSupaUser()
+
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    if (user.id !== asker) {
+      throw new Error('You are not authorized to delete this question')
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/delete/${questionId}/`,
+      {
+        method: 'DELETE', // Use DELETE
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ asker }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const responseData = (await response.json()) as string
+    return {
+      errorMessage: null,
+      data: {
+        message: responseData,
+      },
+    }
+  } catch (error) {
+    console.error('Error deleting question: ', error)
+    throw new Error('Error deleting question')
   }
 }

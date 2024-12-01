@@ -19,6 +19,8 @@ import { getAllTags } from '@/api/tags'
 import { useRouter } from 'next/navigation'
 import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useUser } from '@/app/contexts/UserContext'
+import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 
 interface QuestionCardProps {
   question: Question
@@ -26,12 +28,17 @@ interface QuestionCardProps {
   codeLine?: string | null
   isLoadingCodeLine?: boolean
   codeLineError?: string | null
+  onUpdate?: (updatedQuestion: Question) => void
 }
 
 export default function QuestionCard({
   question,
   href,
+  onUpdate,
 }: QuestionCardProps) {
+  const { user: currentUser } = useUser()
+  const isCurrentUser = question.asker === currentUser?.user
+
   const [tags, setTags] = useState<TagOption[]>([])
   const router = useRouter()
 
@@ -61,18 +68,25 @@ export default function QuestionCard({
     }
   }
 
+  // Function to handle question deletion
+  const handleQuestionDelete = () => {
+    router.push('/') // Navigate to the home page upon deletion
+  }
+
   const QuestionCardContent = (
     <Card
-      className={`w-full ${href &&
+      className={`relative w-full ${
+        href &&
         'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'
-        }`}
+      }`}
     >
       <CardHeader>
         {question.related_community_info ? (
           <div
-            className={`flex items-center space-x-3 rounded-t-lg pb-2 ${!href &&
+            className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
+              !href &&
               'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
-              }`}
+            }`}
             onClick={handleCommunityClick}
           >
             <Avatar className="h-10 w-10">
@@ -100,12 +114,15 @@ export default function QuestionCard({
           question.code_context_full_pathname &&
           typeof question.code_context_line_number === 'number' &&
           question.code_context && (
-            <div className="p-4 bg-gray-50 rounded-lg shadow">
-              <h2 className="mb-2 flex items-center">
-                Code Context:
-              </h2>
-              <h3 className="inline-block items-center cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100"
-                onClick={() => router.push(`/projects/${question.related_project_info?.project_id}`)}
+            <div className="rounded-lg bg-gray-50 p-4 shadow">
+              <h2 className="mb-2 flex items-center">Code Context:</h2>
+              <h3
+                className="inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 hover:bg-gray-100"
+                onClick={() =>
+                  router.push(
+                    `/projects/${question.related_project_info?.project_id}`
+                  )
+                }
               >
                 <div className="flex items-center">
                   {/* GitHub Icon */}
@@ -126,7 +143,8 @@ export default function QuestionCard({
                 language="javascript" // TODO: Change to actual language
                 value={question.code_context}
                 options={{
-                  lineNumbers: num => (num + question.code_context_line_number).toString(),
+                  lineNumbers: (num) =>
+                    (num + question.code_context_line_number).toString(),
                   automaticLayout: true,
                   selectOnLineNumbers: true,
                   readOnly: true,
@@ -154,10 +172,11 @@ export default function QuestionCard({
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <div
-          className={`flex items-center space-x-4 ${question.asker_info && !href
-            ? 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
-            : ''
-            }`}
+          className={`flex items-center space-x-4 ${
+            question.asker_info && !href
+              ? 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
+              : ''
+          }`}
           onClick={handleProfileClick}
         >
           <Avatar className="h-8 w-8">
@@ -179,6 +198,16 @@ export default function QuestionCard({
           {format(new Date(question.created_at), 'PPP')}
         </div>
       </CardFooter>
+
+      {isCurrentUser && !href && (
+        <div className="absolute right-4 top-4">
+          <UpdateDeleteQuestionDialog
+            question={question}
+            onUpdate={(updatedQuestion) => onUpdate?.(updatedQuestion)}
+            onDelete={handleQuestionDelete}
+          />
+        </div>
+      )}
     </Card>
   )
 
