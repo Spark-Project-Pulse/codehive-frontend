@@ -230,7 +230,8 @@ export const changeMark = async (
  * Updates an existing question by sending a PUT request to the backend.
  *
  * @param {Object} values - An object containing `question_id`, `asker`, `title` and `description` for the question.
- * @param {string} values.asker - The asker of th question.
+ * @param {string} values.questionId - The id of the question.
+ * @param {string} values.asker - The asker of the question.
  * @param {string} values.title - The title of the question.
  * @param {string} values.description - The description of the question.
  * @returns {Promise<ApiResponse<{ question_id: string }>>} The updated question's ID on success, or an error message on failure.
