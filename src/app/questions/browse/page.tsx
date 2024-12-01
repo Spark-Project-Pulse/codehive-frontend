@@ -23,7 +23,7 @@ const QuestionsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize] = useState<number>(20) // You can make this adjustable if needed
   const [totalPages, setTotalPages] = useState<number>(1)
-  const [totalQuestions, setTotalQuestions] = useState<number>(0)
+  const [, setTotalQuestions] = useState<number>(0)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)

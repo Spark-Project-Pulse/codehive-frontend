@@ -32,7 +32,7 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize] = useState<number>(20)
   const [totalPages, setTotalPages] = useState<number>(1)
-  const [totalQuestions, setTotalQuestions] = useState<number>(0)
+  const [, setTotalQuestions] = useState<number>(0)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
 
