@@ -248,7 +248,7 @@ export const updateQuestion = async (values: {
   asker: string
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string; toxic?: boolean }>> => {
+}): Promise<ApiResponse<{ question_id: string }>> => {
   try {
     const user = await getSupaUser()
 
@@ -275,13 +275,17 @@ export const updateQuestion = async (values: {
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as Question
-    return {
-      errorMessage: null,
-      data: {
-        question_id: responseData.question_id,
-        toxic: responseData.toxic,
-      },
+    const responseData = (await response.json()) as Question | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: {
+          question_id: responseData.question_id,
+        },
+      }
     }
   } catch (error) {
     console.error('Error updating question: ', error)

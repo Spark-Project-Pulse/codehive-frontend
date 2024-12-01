@@ -39,7 +39,7 @@ export default function UpdateDeleteQuestionDialog({
 
   const handleQuestionUpdate = async (form_data: FormValues) => {
     try {
-      const { errorMessage, data } = await updateQuestion({
+      const { errorMessage } = await updateQuestion({
         questionId: form_data.question_id,
         asker: form_data.asker,
         title: form_data.title,
@@ -47,11 +47,13 @@ export default function UpdateDeleteQuestionDialog({
       })
 
       if (errorMessage) {
+        // Show innapropriate content toast if there is innapropriate content
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: errorMessage,
+        })
         throw new Error(errorMessage)
-      }
-
-      if (data?.toxic) {
-        throw new Error('Toxic content detected in your question.')
       }
 
       const updatedQuestion = { ...question, ...form_data }

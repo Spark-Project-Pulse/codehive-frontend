@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
-import { getQuestionsByUserId, updateQuestion } from '@/api/questions'
+import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
