@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
-import { getQuestionsByUserId } from '@/api/questions'
+import { getQuestionsByUserId, updateQuestion } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
@@ -34,7 +34,7 @@ import {
 } from '@/components/ui/dialog'
 import UpdateQuestionForm from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { type FormValues } from '@/components/pages/questions/[question_id]/UpdateQuestionForm';
+import { type FormValues } from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
 
 export default function ProfilePage({
   params,
@@ -46,7 +46,6 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
@@ -176,8 +175,56 @@ export default function ProfilePage({
     return <ProfileSkeleton />
   }
 
-  const handleQuestionUpdate = async (data: FormValues) => {
-    console.log(data)
+  const handleQuestionUpdate = async (form_data: FormValues) => {
+    try {
+      // Call the updateQuestion API with the new data
+      const { errorMessage, data } = await updateQuestion({
+        questionId: form_data.question_id,
+        asker: form_data.asker,
+        title: form_data.title,
+        description: form_data.description,
+      })
+
+      if (errorMessage) {
+        throw new Error(errorMessage)
+      }
+
+      if (data?.toxic === true) {
+        throw new Error('Toxic content detected in your question.')
+      }
+
+      // Update the question in the local state
+      const updatedQuestions = questions.map((question) =>
+        question.question_id === form_data.question_id
+          ? {
+              ...question,
+              title: form_data.title,
+              description: form_data.description,
+            }
+          : question
+      )
+
+      // Update the state with the modified questions array
+      setQuestions(updatedQuestions)
+
+      // Show a success toast
+      toast({
+        title: 'Question Updated',
+        description: 'The question was updated successfully.',
+      })
+    } catch (error) {
+      console.error('Error updating question:', error)
+
+      // Show an error toast
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'An error occurred while updating the question.',
+      })
+    }
   }
 
   return (

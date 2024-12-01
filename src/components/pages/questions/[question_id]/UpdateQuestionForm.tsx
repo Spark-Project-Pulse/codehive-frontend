@@ -19,6 +19,8 @@ import { Question } from '@/types/Questions'
 
 // Define the schema for validation using zod
 const formSchema = z.object({
+  question_id: z.string().uuid({ message: 'Invalid question ID.' }),
+  asker: z.string().uuid({ message: 'Invalid asker ID.' }),
   title: z.string().min(1, { message: 'Title cannot be empty.' }),
   description: z.string().min(1, { message: 'Description cannot be empty.' }),
 })
@@ -38,6 +40,8 @@ export default function UpdateQuestionForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      question_id: question.question_id,
+      asker: question.asker,
       title: question.title,
       description: question.description,
     },
