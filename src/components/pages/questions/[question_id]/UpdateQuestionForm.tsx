@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
-import { Question } from '@/types/Questions'
+import { type Question } from '@/types/Questions'
 
 // Define the schema for validation using zod
 const formSchema = z.object({

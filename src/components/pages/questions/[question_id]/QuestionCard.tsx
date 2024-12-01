@@ -20,19 +20,6 @@ import { useRouter } from 'next/navigation'
 import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
-import { Edit3 } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import UpdateQuestionForm, { FormValues } from './UpdateQuestionForm'
-import { Button } from '@/components/ui/button'
-import { toast } from '@/components/ui/use-toast'
-import { updateQuestion } from '@/api/questions'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 
 interface QuestionCardProps {

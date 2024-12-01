@@ -18,8 +18,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import UpdateQuestionForm, { FormValues } from './UpdateQuestionForm'
-import { Question } from '@/types/Questions'
+import UpdateQuestionForm, { type FormValues } from './UpdateQuestionForm'
+import { type Question } from '@/types/Questions'
 import { toast } from '@/components/ui/use-toast'
 import { updateQuestion, deleteQuestion } from '@/api/questions'
 import { useState } from 'react'

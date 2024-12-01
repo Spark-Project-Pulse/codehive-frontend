@@ -25,16 +25,6 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
 import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import UpdateQuestionForm from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
-import { DialogDescription } from '@radix-ui/react-dialog'
-import { type FormValues } from '@/components/pages/questions/[question_id]/UpdateQuestionForm'
 import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
 
 export default function ProfilePage({
