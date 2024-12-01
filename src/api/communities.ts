@@ -20,7 +20,7 @@ import { type UUID } from 'crypto'
  */
 export const createCommunityRequest = async (
   formData: FormData
-): Promise<ApiResponse<{ community_id: string; title: string; toxic: boolean; avatar_image_nsfw: boolean }>> => {
+): Promise<ApiResponse<{ community_id: string; title: string }>> => {
   try {
     const user = await getSupaUser()
     if (!user) {
@@ -42,20 +42,23 @@ export const createCommunityRequest = async (
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as {
-      community_id: string
-      title: string
-      toxic: boolean
-      avatar_image_nsfw: boolean
-    }
-    return {
-      errorMessage: null,
-      data: {
-        community_id: responseData.community_id,
-        title: responseData.title,
-        toxic: responseData.toxic,
-        avatar_image_nsfw: responseData.avatar_image_nsfw,
-      },
+    const responseData = (await response.json()) as
+      | {
+          community_id: string
+          title: string
+        }
+      | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: {
+          community_id: responseData.community_id,
+          title: responseData.title,
+        },
+      }
     }
   } catch (error) {
     console.error('Error creating community request: ', error)

@@ -42,7 +42,7 @@ export default function CreateCommunityPage() {
       const response = await createCommunityRequest(formData)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data?.title && !data?.toxic && !data?.avatar_image_nsfw) {
+      if (!errorMessage && data?.title) {
         // Navigate to the home page
         router.push('/')
         toast({
@@ -52,19 +52,12 @@ export default function CreateCommunityPage() {
       } else if (errorMessage === 'User not authenticated') {
         // Open the authentication popup
         setAuthPopupOpen(true)
-      } else if (data?.toxic) {
+      } else if (errorMessage) {
         // Show toxic content toast if there is toxic content
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'Toxic content detected in your title.',
-        })
-      } else if (data?.avatar_image_nsfw) {
-        // Show innapropiate content toast if there is innapropiate content
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Innapropiate content detected in your avatar.',
+          description: errorMessage,
         })
       } else {
         // Show error toast if an error occurs
