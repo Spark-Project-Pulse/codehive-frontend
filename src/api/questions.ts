@@ -5,8 +5,6 @@ import { type Question, type ListQuestionsRepsonse } from '@/types/Questions'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
-
-
 /**
  * Creates a new question by sending a POST request to the backend.
  *
@@ -19,7 +17,7 @@ import { type UUID } from 'crypto'
 export const createQuestion = async (values: {
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string, toxic?: boolean }>> => {
+}): Promise<ApiResponse<{ question_id: string }>> => {
   try {
     const user = await getSupaUser()
 
@@ -39,10 +37,15 @@ export const createQuestion = async (values: {
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as Question
-    return {
-      errorMessage: null,
-      data: { question_id: responseData.question_id, toxic: responseData.toxic },
+    const responseData = (await response.json()) as Question | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: { question_id: responseData.question_id },
+      }
     }
   } catch (error) {
     console.error('Error creating question: ', error)
@@ -176,10 +179,12 @@ export const getAllQuestions = async (
 
     if (!response.ok) {
       const errorText = await response.text()
-      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`)
+      throw new Error(
+        `HTTP error! Status: ${response.status}, Message: ${errorText}`
+      )
     }
 
-    const responseData = await response.json() as ListQuestionsRepsonse
+    const responseData = (await response.json()) as ListQuestionsRepsonse
 
     return {
       errorMessage: null,
@@ -188,7 +193,6 @@ export const getAllQuestions = async (
         totalQuestions: responseData.totalQuestions,
       },
     }
-
   } catch (error) {
     console.error('Error fetching questions:', error)
     return { errorMessage: 'Error fetching questions' }
@@ -204,7 +208,9 @@ export const getAllQuestions = async (
  * Returns:
  *   Promise<ApiResponse<Question>>: The question data on success, or an error message on failure.
  */
-export const changeMark = async (question_id: string): Promise<ApiResponse<Question>> => {
+export const changeMark = async (
+  question_id: string
+): Promise<ApiResponse<Question>> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/changeMark/${question_id}/`,

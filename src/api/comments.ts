@@ -40,8 +40,13 @@ export const createComment = async (commentData: {
       throw new Error('Network response was not ok')
     }
 
-    const createdComment = (await response.json()) as Comment
-    return { errorMessage: null, data: createdComment }
+    const responseData = (await response.json()) as Comment | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return { errorMessage: null, data: responseData }
+    }
   } catch (error) {
     console.error('Error submitting comment:', error)
     return { errorMessage: 'Error submitting comment' }

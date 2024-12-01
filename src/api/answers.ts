@@ -41,8 +41,12 @@ export const createAnswer = async (answerData: {
       throw new Error('Network response was not ok')
     }
 
-    const createdAnswer = (await response.json()) as Answer
-    return { errorMessage: null, data: createdAnswer }
+    const responseData = (await response.json()) as Answer | { error: string }
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return { errorMessage: null, data: responseData }
+    }
   } catch (error) {
     console.error('Error submitting answer:', error)
     return { errorMessage: 'Error submitting answer' }
@@ -71,7 +75,7 @@ export const upvoteAnswer = async (
     }
 
     if (expert === user?.id) {
-      throw new Error("You cannot upvote your own answer")
+      throw new Error('You cannot upvote your own answer')
     }
 
     const response = await fetch(
@@ -124,7 +128,7 @@ export const downvoteAnswer = async (
     }
 
     if (expert === user?.id) {
-      throw new Error("You cannot downvote your own answer")
+      throw new Error('You cannot downvote your own answer')
     }
 
     const response = await fetch(

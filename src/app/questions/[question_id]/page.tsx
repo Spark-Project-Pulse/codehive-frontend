@@ -128,13 +128,6 @@ export default function QuestionPage({ params }: QuestionPageProps) {
       if (!errorMessage && data && !data?.toxic) {
         // Update the answers state to include the new answer
         setAnswers((prevAnswers) => [...prevAnswers, data])
-      } else if (data?.toxic) {
-        // Show toxic content toast if there is toxic content
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Toxic content detected in your answer.',
-        })
       } else if (errorMessage === 'User not authenticated') {
         // Open the authentication popup
         setAuthPopupOpen(true)
@@ -142,7 +135,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: errorMessage,
+          description: errorMessage ?? "Unkown error occurred",
         })
       }
     } catch (error) {
@@ -159,19 +152,12 @@ export default function QuestionPage({ params }: QuestionPageProps) {
       const response = await createComment(values)
       const { errorMessage, data } = response
 
-      if (!errorMessage && data && !data?.toxic) {
+      if (!errorMessage && data) {
         // Update the comments state to include new comment
         setComments((prevComments) => ({
           ...prevComments,
           [data.answer]: [...(prevComments[data.answer] || []), data],
         }))
-      } else if (data?.toxic) {
-        // Show toxic content toast if there is toxic content
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Toxic content detected in your comment.',
-        })
       } else if (errorMessage === 'User not authenticated') {
         // Open the authentication popup
         setAuthPopupOpen(true)
@@ -179,7 +165,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: errorMessage,
+          description: errorMessage ?? "Unkown error occurred",
         })
       }
     } catch (error) {
