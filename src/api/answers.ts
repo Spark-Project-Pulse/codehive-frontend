@@ -6,13 +6,11 @@ import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
 /**
- * Submits an answer to a question.
+ * @param {Object} answerData - The data for the answer to be created.
+ * @param {string} answerData.response - The response text of the answer.
+ * @param {string} answerData.question - The ID of the question the answer is for.
  *
- * Args:
- *   answerData: The response and question ID for the answer.
- *
- * Returns:
- *   Promise<ApiResponse<Answer>>: The created answer on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<Answer>>} A promise that resolves with the created answer on success, or an error message on failure.
  */
 export const createAnswer = async (answerData: {
   response: string
@@ -54,14 +52,10 @@ export const createAnswer = async (answerData: {
 }
 
 /**
- * Upvotes an answer, decreasing its score by 1.
- * If the user has already upvoted, the vote is switched to a upvote.
+ * @param {string} answer_id - The ID of the answer to upvote.
+ * @param {UUID} expert - The ID of the expert who created the answer.
  *
- * Args:
- *   answer_id: The ID of the answer to upvote.
- *
- * Returns:
- *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<{ new_score: number }>>} A promise that resolves with the updated score on success, or an error message on failure.
  */
 export const upvoteAnswer = async (
   answer_id: string,
@@ -107,15 +101,12 @@ export const upvoteAnswer = async (
 }
 
 /**
- * Downvotes an answer, decreasing its score by 1.
- * If the user has already upvoted, the vote is switched to a downvote.
+ * @param {string} answer_id - The ID of the answer to downvote.
+ * @param {UUID} expert - The ID of the expert who created the answer.
  *
- * Args:
- *   answer_id: The ID of the answer to downvote.
- *
- * Returns:
- *   Promise<ApiResponse<{ new_score: number }>>: The updated score on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<{ new_score: number }>>} A promise that resolves with the updated score on success, or an error message on failure.
  */
+
 export const downvoteAnswer = async (
   answer_id: string,
   expert: UUID
@@ -160,13 +151,9 @@ export const downvoteAnswer = async (
 }
 
 /**
- * Fetches answers by question ID from the backend.
+ * @param {string} question_id - The ID of the question whose answers are to be retrieved.
  *
- * Args:
- *   question_id (string): The ID of the question whose answers to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<Answer[]>>: The list of answers on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<Answer[]>>} A promise that resolves with a list of answers on success, or an error message on failure.
  */
 export const getAnswersByQuestionId = async (
   question_id: string
