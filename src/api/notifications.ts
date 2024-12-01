@@ -11,8 +11,8 @@ import { getSupaUser } from '@/utils/supabase/server'
 /**
  * Fetches all the notifications associated with a user by their ID from the backend.
  *
- * @param user_id (string) - The ID of the user.
- * @returns The notifications data on success, or an error message on failure.
+ * @param {string} user_id - The ID of the user.
+ * @returns {Promise<ApiResponse<Notification[]>>} The notifications data on success, or an error message on failure.
  */
 export const getNotificationsByUserId = async (
   user_id: string
@@ -44,8 +44,8 @@ export const getNotificationsByUserId = async (
 /**
  * Fetches the number of unread notifications for a user.
  *
- * @param user_id - The ID of the user
- * @returns Promise with success message or error details
+ * @returns {Promise<ApiResponse<NotificatonsInfo>} Promise with success message or error details
+ * 
  */
 export const getUnreadNotificationsCountByUserId = async (): Promise<
   ApiResponse<NotificatonsInfo>
@@ -82,9 +82,9 @@ export const getUnreadNotificationsCountByUserId = async (): Promise<
 /**
  * Marks specified notification as read.
  *
- * @param user_id - The ID of the user
- * @param notification_id - The ID of the notification to mark as read
- * @returns Promise with success message or error details
+ * @param {string} user_id - The ID of the user
+ * @param {string} notification_id - The ID of the notification to mark as read
+ * @returns {Promise<ApiResponse<{ message: string }>>} Promise with success message or error details
  */
 export const markNotificationAsRead = async (
   user_id: string,
@@ -119,9 +119,9 @@ export const markNotificationAsRead = async (
 /**
  * Marks specified notification as unread.
  *
- * @param user_id - The ID of the user
- * @param notification_id - The ID of the notification to mark as read
- * @returns Promise with success message or error details
+ * @param {string} user_id - The ID of the user
+ * @param {string} notification_id - The ID of the notification to mark as read
+ * @returns {Promise<ApiResponse<{ message: string }>>} Promise with success message or error details
  */
 export const markNotificationAsUnread = async (
   user_id: string,
@@ -156,9 +156,9 @@ export const markNotificationAsUnread = async (
 /**
  * Deletes specified notification.
  *
- * @param user_id - The ID of the user
- * @param notification_id - The ID of the notification to delete
- * @returns Promise with success message or error details
+ * @param {string} user_id - The ID of the user
+ * @param {string} notification_id - The ID of the notification to delete
+ * @returns {Promise<ApiResponse<{ message: string }>>} Promise with success message or error details
  */
 export const deleteNotification = async (
   user_id: string,

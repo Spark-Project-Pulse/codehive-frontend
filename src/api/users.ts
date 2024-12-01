@@ -8,11 +8,9 @@ import { type UUID } from 'crypto'
 /**
  * Creates a new user by sending a POST request to the backend.
  *
- * Args:
- *   user (User): The user data to create.
+ * @param {User} user - The user data to create.
+ * @returns {Promise<ApiResponse<{ user_id: string}>>} The created user's ID on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ user_id: string}>>: The created user's ID on success, or an error message on failure.
  */
 export const createUser = async (
   user: User
@@ -45,12 +43,10 @@ export const createUser = async (
 /**
  * Changes the reputation of a user by a specified amount.
  *
- * Args:
- *   user_id (string): The ID of the user whose reputation should be changed.
- *   amount (number): The amount by which to change the reputation (positive or negative).
+ * @param {string} user_id - The ID of the user whose reputation should be changed.
+ * @param {string} amount The amount by which to change the reputation (positive or negative).
+ * @returns {Promise<ApiResponse<{ user_id: string; new_reputation: number }>>} The user's ID and new reputation on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ user_id: string; new_reputation: number }>>: The user's ID and new reputation on success, or an error message on failure.
  */
 export const changeReputationByAmount = async (
   user_id: UUID,
@@ -90,11 +86,9 @@ export const changeReputationByAmount = async (
 /**
  * Retrieves a user by their ID from the backend.
  *
- * Args:
- *   user_id (string): The ID of the user to retrieve.
+ * @param {string} user_id - The ID of the user to retrieve.
+ * @returns {Promise<ApiResponse<User>>} The user's data on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<User>>: The user's data on success, or an error message on failure.
  */
 export const getUserById = async (
   user_id: string
@@ -126,11 +120,9 @@ export const getUserById = async (
 /**
  * Retrieves a user by their username from the backend.
  *
- * Args:
- *   username (string): The username of the user to retrieve.
+ * @param {string} username - The username of the user to retrieve.
+ * @returns {Promise<ApiResponse<User>>} The user's data on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<User>>: The user's data on success, or an error message on failure.
  */
 export const getUserByUsername = async (
   username: string
@@ -159,11 +151,10 @@ export const getUserByUsername = async (
   }
 }
 
-/*
+/**
  * Retrieves the current user's role by their id from the backend.
- *
- * Returns:
- *   Promise<ApiResponse<UserRole>>: The user's role on success, or an error message on failure.
+ * 
+ * @returns {Promise<ApiResponse<UserRole>>} The user's role on success, or an error message on failure.
  */
 export const getCurrentUserRole = async (): Promise<ApiResponse<UserRole>> => {
   try {
@@ -199,11 +190,9 @@ export const getCurrentUserRole = async (): Promise<ApiResponse<UserRole>> => {
 /**
  * Checks if a user exists by their ID.
  *
- * Args:
- *   user_id (string): The ID of the user to check.
+ * @param {string} user_id - The ID of the user to check.
+ * @returns {Promise<ApiResponse<{ exists: boolean }>>} Whether the user exists on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ exists: boolean }>>: Whether the user exists on success, or an error message on failure.
  */
 export const userExists = async (
   user_id: string
@@ -236,12 +225,10 @@ export const userExists = async (
 /**
  * Uploads profile image for the user
  *
- * Args:
- *   user_id (string): The ID of the user to upload photo
- *   file (File): The file the user is uploading for photo
+ * @param {string} user_id - The ID of the user to upload photo
+ * @param {File} file -: The file the user is uploading for photo
+ * @returns {Promise<ApiResponse<{ user_id:string }>>} User's id on success, or error msg on failure
  *
- * Returns:
- *   Promise<ApiResponse<{ user_id:string }>>: User's id on success, or error msg on failure
  */
 export const uploadProfileImage = async (
   user_id: string,
