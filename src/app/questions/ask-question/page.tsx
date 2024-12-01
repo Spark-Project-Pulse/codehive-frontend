@@ -36,19 +36,12 @@ function AskQuestion() {
       if (!errorMessage && data?.question_id) {
         // Navigate to the new question page using question_id
         router.push(`/questions/${data.question_id}`)
-      } else if (errorMessage) {
-        // Show toxic content toast if there is toxic content
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: errorMessage,
-        })
       } else {
         // Show error toast if an error occurs
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'There was an error submitting your question.',
+          description: errorMessage ?? 'There was an error submitting your question.',
         })
       }
     } catch (error) {

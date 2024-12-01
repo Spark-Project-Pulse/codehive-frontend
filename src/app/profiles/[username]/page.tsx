@@ -19,12 +19,13 @@ import {
 } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
-import { getQuestionsByUserId } from '@/api/questions'
+import { getQuestionsByUserId, updateQuestion } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
 import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
+import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
 
 export default function ProfilePage({
   params,
@@ -36,7 +37,6 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
@@ -164,6 +164,23 @@ export default function ProfilePage({
   // Conditional rendering for loading state
   if (isUserLoading) {
     return <ProfileSkeleton />
+  }
+
+  // Function to update the question state when a question is updated
+  const handleQuestionUpdate = (updatedQuestion: Question) => {
+    const updatedQuestions = questions.map((question) =>
+      question.question_id === updatedQuestion.question_id
+        ? updatedQuestion
+        : question
+    )
+    setQuestions(updatedQuestions)
+  }
+
+  // Function to delete a question from the state when a question is deleted
+  const handleQuestionDelete = (questionId: string) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((question) => question.question_id !== questionId)
+    )
   }
 
   return (
@@ -302,18 +319,33 @@ export default function ProfilePage({
                     <QuestionsSkeleton />
                   ) : (
                     <ul className="space-y-4">
-                      {questions.map((question, index) => (
-                        <li
-                          key={index}
-                          className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
-                          onClick={() =>
-                            handleQuestionClick(question.question_id)
-                          }
-                        >
-                          <h3 className="text-lg font-semibold">
-                            {question.title}
-                          </h3>
-                        </li>
+                      {questions.map((question) => (
+                        <div key={question.question_id} className="relative">
+                          {/* The clickable card */}
+                          <li
+                            className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                            onClick={() =>
+                              handleQuestionClick(question.question_id)
+                            }
+                          >
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-lg font-semibold">
+                                {question.title}
+                              </h3>
+                            </div>
+                          </li>
+
+                          {/* The "Edit" button, which is outside the clickable card */}
+                          {isCurrentUser && (
+                            <div className="absolute right-4 top-4">
+                              <UpdateDeleteQuestionDialog
+                                question={question}
+                                onUpdate={handleQuestionUpdate}
+                                onDelete={handleQuestionDelete}
+                              />
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </ul>
                   )}

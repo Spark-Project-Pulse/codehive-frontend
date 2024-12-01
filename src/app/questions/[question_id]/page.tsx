@@ -30,8 +30,11 @@ export default function QuestionPage({ params }: QuestionPageProps) {
   const [answers, setAnswers] = useState<Answer[]>([])
   const [comments, setComments] = useState<Record<UUID, Comment[]>>({}) // Each answer_id is mapped to a list of comments
   const [isAnswered, setIsAnswered] = useState<boolean | null>(null)
-  const isOwner = question?.asker && currentUser?.user ? question.asker === currentUser.user : false; // ensures both asker and user are `non-null`
-  
+  const isOwner =
+    question?.asker && currentUser?.user
+      ? question.asker === currentUser.user
+      : false // ensures both asker and user are `non-null`
+
   const [isLoadingQuestion, setIsLoadingQuestion] = useState<boolean>(true)
   const [isLoadingAnswers, setIsLoadingAnswers] = useState<boolean>(true)
   const [isLoadingComments, setIsLoadingComments] = useState<
@@ -220,7 +223,12 @@ export default function QuestionPage({ params }: QuestionPageProps) {
                   )}
                 </div>
               )}
-              <QuestionCard question={question} />
+              <QuestionCard
+                question={question}
+                onUpdate={(updatedQuestion) => {
+                  setQuestion(updatedQuestion) // Update the question state
+                }}
+              />
             </>
           ) : (
             <div className="rounded-lg border border-red-400 bg-red-100 p-4 text-red-700">
