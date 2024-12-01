@@ -267,8 +267,13 @@ export const uploadProfileImage = async (
     }
 
     // Extract the JSON data from the response
-    const responseData = (await response.json()) as User
-    return { errorMessage: null, data: responseData }
+    const responseData = (await response.json()) as User | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return { errorMessage: null, data: responseData }
+    }
   } catch (error) {
     console.error('Error uploading photo image: ', error)
     return { errorMessage: 'Error uploading photo image' }
