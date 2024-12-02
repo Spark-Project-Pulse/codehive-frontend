@@ -35,7 +35,7 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-  const [badges, setBadges] = useState<Badge[]>([]);
+  const [badges, setBadges] = useState<UserBadge[]>([]);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjectsLoading, setIsProjectsLoading] = useState(true);
   const [isQuestionsLoading, setIsQuestionsLoading] = useState(true);
@@ -125,12 +125,8 @@ export default function ProfilePage({
           return;
         }
 
-        // Transform UserBadge[] into Badge[]
-        const badgesData: Badge[] = ((response.data as unknown) as UserBadge[])?.map(
-          (userBadge) => userBadge.badge_info
-        ) ?? [];
-        
-        setBadges(badgesData);
+        const userBadges: UserBadge[] = response.data!;
+        setBadges(userBadges);
       } catch (error) {
         console.error('Error fetching badges:', error);
       } finally {
@@ -241,7 +237,7 @@ export default function ProfilePage({
                         />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80">
+                    <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md">
                       <div className="grid gap-4">
                         <div className="space-y-2">
                           <h4 className="font-medium leading-none">
@@ -254,7 +250,7 @@ export default function ProfilePage({
                         </div>
                         <div className="grid gap-2">
                           <div className="grid grid-cols-3 items-center gap-4">
-                            <Button
+                          <Button
                               variant="outline"
                               onClick={() => handleShowEditProfileClick()}
                               id="width"
@@ -293,23 +289,44 @@ export default function ProfilePage({
               </BadgeComponent>
               {!isBadgesLoading && badges.length > 0 && (
                 <div className="mt-4 grid grid-cols-6 gap-x-4 gap-y-4 justify-items-center">
-                  {badges.map((badge) => (
-                    <Popover key={badge.badge_id}>
-                      <PopoverTrigger asChild>
-                        <div className="relative">
-                          <img
-                            src={badge.image_url ?? '/default-badge.png'}
-                            alt={badge.name}
-                            className="h-8 w-8 cursor-pointer"
-                          />
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent className="absolute top-full mt-2 w-48 bg-white shadow-lg rounded-md p-2 z-10">
-                        <h4 className="font-medium">{badge.name}</h4>
-                        <p className="text-sm text-gray-600">{badge.description}</p>
-                      </PopoverContent>
-                    </Popover>
-                  ))}
+                  {badges.map((userBadge) => {
+                    const { badge_info, badge_tier_info } = userBadge;
+
+                    // Determine which badge info to display
+                    const displayBadge = badge_tier_info ? badge_tier_info : badge_info;
+
+                    return (
+                      <Popover key={userBadge.id}>
+                        <PopoverTrigger asChild>
+                          <div className="relative">
+                            <img
+                              src={displayBadge.image_url ?? '/default-badge.png'}
+                              alt={displayBadge.name}
+                              className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
+                            />
+                            {badge_tier_info && (
+                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                                {badge_tier_info.tier_level}
+                              </span>
+                            )}
+                          </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md">
+                          <h4 className="font-medium text-base break-words">
+                            {displayBadge.name || 'Unnamed Badge'}
+                          </h4>
+                          <p className="text-sm text-gray-600 mt-2 break-words">
+                            {displayBadge.description || 'No description available.'}
+                          </p>
+                          {badge_tier_info && (
+                            <p className="text-sm text-gray-500 mt-1">
+                              Tier {badge_tier_info.tier_level} - Reputation Threshold: {badge_tier_info.reputation_threshold}
+                            </p>
+                          )}
+                        </PopoverContent>
+                      </Popover>
+                    )
+                  })}
                 </div>
               )}
             </CardContent>

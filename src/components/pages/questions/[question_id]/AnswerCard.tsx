@@ -38,8 +38,6 @@ export default function AnswerCard({
   isLoadingComments,
 }: AnswerCardProps) {
 
-  console.log('Expert Badges:', answer.expert_badges);
-
 
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
@@ -239,30 +237,58 @@ export default function AnswerCard({
               </div>
 
               {/* Expert Badges */}
-            {answer.expert_badges && answer.expert_badges.length > 0 && (
-              <div className="mt-4 flex items-center space-x-2">
-                {answer.expert_badges.map((badge) => (
-                  <Popover key={badge.badge_id}>
-                    <PopoverTrigger asChild>
-                      <div className="relative">
-                        <img
-                          src={badge.image_url || '/default-badge.png'}
-                          alt={badge.name || 'Badge'}
-                          className="h-8 w-8 cursor-pointer" style={{ marginLeft: '7px' }}
-                        />
-                      </div>
-                    </PopoverTrigger>
-                    <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-2 z-10 w-auto" >
-                      <h4 className="font-medium text-sm">{badge.name || 'Unnamed Badge'}</h4>
-                      <p className="text-xs text-gray-500 mt-1 whitespace-nowrap">
-                        {badge.description || 'No description available.'}
-                      </p>
-                    </PopoverContent>
-                  </Popover>
-                ))}
-              </div>
-            )}
-          </CardContent>
+              {answer.expert_badges && answer.expert_badges.length > 0 && (
+                <div className="mt-4 flex items-center space-x-2">
+                  {answer.expert_badges.map((userBadge) => (
+                    <Popover key={`${userBadge.badge_info?.badge_id}-${userBadge.badge_tier_info?.tier_level ?? 'base'}`}>
+                      <PopoverTrigger asChild>
+                        <div className="relative">
+                          <img
+                            src={
+                              userBadge.badge_tier_info?.image_url ??
+                              userBadge.badge_info?.image_url ??
+                              'https://cdn-icons-png.flaticon.com/512/20/20100.png' // Default image
+                            }
+                            alt={
+                              userBadge.badge_tier_info?.name ??
+                              userBadge.badge_info?.name ??
+                              'Badge' // Default alt text
+                            }
+                            className="h-8 w-8 cursor-pointer"
+                            style={{ marginLeft: '7px' }}
+                            loading="lazy" // Improves performance by deferring off-screen images
+                          />
+                          {/* Display tier level if available */}
+                          {userBadge.badge_tier_info && (
+                            <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                              {userBadge.badge_tier_info.tier_level}
+                            </span>
+                          )}
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-4 z-10 max-w-sm sm:max-w-md">
+                        <h4 className="font-medium text-base">
+                          {userBadge.badge_tier_info?.name ??
+                            userBadge.badge_info?.name ??
+                            'Unnamed Badge'}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {userBadge.badge_tier_info?.description ??
+                            userBadge.badge_info?.description ??
+                            'No description available.'}
+                        </p>
+                        {userBadge.badge_tier_info && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            Tier {userBadge.badge_tier_info.tier_level} - Reputation Threshold:{' '}
+                            {userBadge.badge_tier_info.reputation_threshold}
+                          </p>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                  ))}
+                </div>
+              )}
+            </CardContent>
 
             {/* Comments Section */}
             <CollapsibleComments

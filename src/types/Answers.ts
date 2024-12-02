@@ -1,6 +1,6 @@
 import { type UUID } from 'crypto'
 import { type User } from './Users'
-import { type Badge } from './Badges'
+import { type UserBadge } from './Badges'
 
 export interface Answer {
   answer_id: UUID
@@ -13,5 +13,5 @@ export interface Answer {
   curr_user_upvoted?: boolean
   curr_user_downvoted?: boolean
   toxic?: boolean
-  expert_badges?: Badge[]
+  expert_badges?: UserBadge[]
 }

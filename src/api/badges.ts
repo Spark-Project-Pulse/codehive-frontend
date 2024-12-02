@@ -1,7 +1,7 @@
 'use server'
 
-import { type ApiResponse, SuccessResponse } from '@/types/Api'
-import { type Badge, UserBadge, UserBadgeProgress } from '@/types/Badges'
+import { type ApiResponse, type SuccessResponse } from '@/types/Api'
+import { type Badge, type UserBadge, type UserBadgeProgress } from '@/types/Badges'
 import { type UUID } from 'crypto'
 
 /**
@@ -12,7 +12,7 @@ import { type UUID } from 'crypto'
  */
 export const getAllBadges = async (): Promise<ApiResponse<Badge[]>> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getAll/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getAll`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export const getAllBadges = async (): Promise<ApiResponse<Badge[]>> => {
  * Returns:
  *   Promise<ApiResponse<UserBadge[]>>: A list of earned badges on success, or an error message on failure.
  */
-export const getUserBadges = async (userId: string): Promise<ApiResponse<Badge[]>> => {
+export const getUserBadges = async (userId: string): Promise<ApiResponse<UserBadge[]>> => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getUserBadges/${userId}/`, {
         method: 'GET',
@@ -57,7 +57,7 @@ export const getUserBadges = async (userId: string): Promise<ApiResponse<Badge[]
         throw new Error('Network response was not ok');
       }
   
-      const badges = (await response.json()) as Badge[];
+      const badges = (await response.json()) as UserBadge[];
       return { errorMessage: null, data: badges };
     } catch (error) {
       console.error('Error getting user badges:', error);
