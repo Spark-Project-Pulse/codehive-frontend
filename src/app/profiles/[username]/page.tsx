@@ -341,7 +341,7 @@ export default function ProfilePage({
                           </p>
                           {badge_tier_info && (
                             <p className="text-sm text-gray-500 mt-1">
-                              Tier {badge_tier_info.tier_level} - Reputation Threshold: {badge_tier_info.reputation_threshold}
+                              Tier {badge_tier_info.tier_level} {/*- Reputation Threshold: {badge_tier_info.reputation_threshold} */}
                             </p>
                           )}
                           {progress_target ? (
