@@ -8,18 +8,18 @@ export default function Hero() {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-6 text-center">
           <div className="space-y-4">
-            <h2 className="text-h3 font-subHeading font-black">
+            <h2 className="text-h3 font-heading leading-tight">
               <span>Welcome to the </span>
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text pr-2 text-transparent">
+              <span className="bg-gradient-to-r from-primary to-tertiary bg-clip-text pr-2 text-transparent">
                 Hive
               </span>
               <br />
               <span>Where code comes to </span>
-              <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text pr-2 text-transparent">
+              <span className="bg-gradient-to-r from-primary to-tertiary bg-clip-text pr-2 text-transparent">
                 life
               </span>
             </h2>
-            <p className="text-p1 mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+            <p className="text-p1 mx-auto max-w-[700px] text-muted-foreground md:text-xl font-body">
               Join our thriving developer community where knowledge flows
               freely, projects bloom, and every line of code has a story. Get{' '}
               <strong>tailored feedback</strong>,{' '}
@@ -29,7 +29,7 @@ export default function Hero() {
           </div>
           <div className="space-x-4">
             <Link href="/questions/browse">
-              <Button variant="outline">Browse Questions</Button>
+              <Button variant="outline_main">Browse Questions</Button>
             </Link>
             <Link href="/login">
               <Button>Sign Up</Button>

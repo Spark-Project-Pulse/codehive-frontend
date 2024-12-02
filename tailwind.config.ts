@@ -35,6 +35,10 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
+				tertiary: {
+					DEFAULT: 'hsl(var(--tertiary))',
+					foreground: 'hsl(var(--tertiary))'
+				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
@@ -74,9 +78,9 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				heading: ['Luckiest Guy', 'Georgia'],
-				subHeading: ['Roboto', 'Ubuntu'],
-				body: ['Ubuntu', 'serif']
+				heading: ['Roboto-Black', 'Georgia'],
+				subHeading: ['Roboto-Bold', 'Georgia'],
+				body: ['Lato-Regular', 'Georgia'],
 			},
 			fontSize: {
 				navLogo: '2.5rem',
@@ -85,19 +89,6 @@ const config: Config = {
 				h2: '3.125rem',
 				h3: '4.167rem',
 				p1: '1.25rem',
-			},
-			fontWeight: {
-				thin: '100',
-				hairline: '100',
-				extralight: '200',
-				light: '300',
-				normal: '400',
-				medium: '500',
-				semibold: '600',
-				bold: '700',
-				extrabold: '800',
-				'extra-bold': '800',
-				black: '900',
 			},
 			keyframes: {
 				marquee: {

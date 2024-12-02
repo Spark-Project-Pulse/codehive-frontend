@@ -10,9 +10,9 @@
 
   .hexagonal-bg {
     background-image: url('/hive-bg.svg');
-    background-size: cover;
     background-repeat: no-repeat;
     background-size: contain;
+    background-attachment: scroll;
   }
 }
 
@@ -23,12 +23,15 @@
     /* Main colors from your palette */
     --background: 223 47% 97%;
     --foreground: 230 47% 7%;
-    --primary: 35 92% 33%;
+    --primary: 47, 100%, 73%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 36 64% 80%;
-    --secondary-foreground: 230 47% 7%;
+    --secondary: 52, 100%, 85%;
+    --secondary-foreground: 39, 22%, 69%;
+    --tertiary: 35, 92%, 33%;
+    --tertiary-foregrund: 0, 0%, 0%;
     --accent: 45 93% 47%;
     --accent-foreground: 230 47% 7%;
+    --black: 0, 0%, 0%;
 
     /* Maintaining existing system colors with adjusted values */
     --card: 223 47% 97%;
@@ -62,7 +65,7 @@
     --sidebar-foreground: 230 47% 7%;
     --sidebar-primary: 35 92% 33%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 36 64% 80%;
+    --sidebar-accent: 52, 100%, 85%;
     --sidebar-accent-foreground: 230 47% 7%;
     --sidebar-border: 223 47% 85%;
     --sidebar-ring: 35 92% 33%;
@@ -127,11 +130,18 @@
   }
 
   @font-face {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('./fonts/Roboto-Regular.ttf') format('truetype');
+    font-family: 'Roboto-Black';
+    src: url('./fonts/Roboto-Black.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Roboto-Bold';
+    src: url('./fonts/Roboto-Bold.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Lato-Regular';
+    src: url('./fonts/Lato-Regular.ttf') format('truetype');
   }
 }
 
