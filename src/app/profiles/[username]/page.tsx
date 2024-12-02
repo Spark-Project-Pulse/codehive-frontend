@@ -6,14 +6,14 @@ import QuestionsSkeleton from '@/components/pages/profiles/QuestionsSkeleton'
 import { type User } from '@/types/Users'
 import { type Question } from '@/types/Questions'
 import { type Project } from '@/types/Projects'
-import { type Badge, UserBadge } from '@/types/Badges'
+import { type Badge, UserBadge, UserBadgeProgress } from '@/types/Badges'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge as BadgeComponent } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { getUserBadges } from '@/api/badges'
+import { getUserBadges, getUserBadgeProgress } from '@/api/badges'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
@@ -114,25 +114,46 @@ export default function ProfilePage({
 
     const fetchBadges = async () => {
       if (!user?.user) {
-        console.error('User ID is undefined.')
+        console.error('User ID is undefined.');
         return;
       }
       setIsBadgesLoading(true);
+
       try {
+        // Fetch UserBadges and UserBadgeProgress
         const response = await getUserBadges(user.user);
-        if (response.errorMessage) {
-          console.error('Error fetching badges:', response.errorMessage);
+        const progressResponse = await getUserBadgeProgress(user.user);
+
+        if (response.errorMessage || progressResponse.errorMessage) {
+          console.error('Error fetching badges or progress:', response.errorMessage ?? progressResponse.errorMessage);
           return;
         }
 
         const userBadges: UserBadge[] = response.data!;
-        setBadges(userBadges);
+        const userBadgeProgress: UserBadgeProgress[] = progressResponse.data!;
+
+        // Merge progress data into badges
+        const badgesWithProgress = userBadges.map((badge) => {
+          const progress = userBadgeProgress.find(
+            (p) => p.badge_info.badge_id === badge.badge_info.badge_id
+          );
+
+          return {
+            ...badge,
+            progress_value: progress?.progress_value ?? 0,
+            progress_target: progress?.progress_target ?? 0,
+          };
+        });
+
+        setBadges(badgesWithProgress);
       } catch (error) {
-        console.error('Error fetching badges:', error);
+        console.error('Error fetching badges or progress:', error);
       } finally {
         setIsBadgesLoading(false);
       }
     };
+
+
 
     // Only fetch questions/projects/profileImage if user is set
     if (user) {
@@ -250,7 +271,7 @@ export default function ProfilePage({
                         </div>
                         <div className="grid gap-2">
                           <div className="grid grid-cols-3 items-center gap-4">
-                          <Button
+                            <Button
                               variant="outline"
                               onClick={() => handleShowEditProfileClick()}
                               id="width"
@@ -290,10 +311,10 @@ export default function ProfilePage({
               {!isBadgesLoading && badges.length > 0 && (
                 <div className="mt-4 grid grid-cols-6 gap-x-4 gap-y-4 justify-items-center">
                   {badges.map((userBadge) => {
-                    const { badge_info, badge_tier_info } = userBadge;
+                    const { badge_info, badge_tier_info, progress_value, progress_target } = userBadge;
 
                     // Determine which badge info to display
-                    const displayBadge = badge_tier_info ? badge_tier_info : badge_info;
+                    const displayBadge = badge_tier_info ?? badge_info;
 
                     return (
                       <Popover key={userBadge.id}>
@@ -323,13 +344,34 @@ export default function ProfilePage({
                               Tier {badge_tier_info.tier_level} - Reputation Threshold: {badge_tier_info.reputation_threshold}
                             </p>
                           )}
+                          {progress_target ? (
+                            <div className="mt-2 text-sm">
+                              <p className="text-gray-500">
+                                Progress: {progress_value}/{progress_target}
+                              </p>
+                              <div className="relative h-2 w-full bg-gray-200 rounded-full overflow-hidden mt-1">
+                                <div
+                                  className="absolute h-full bg-blue-500 rounded-full"
+                                  style={{
+                                    width: `${((progress_value ?? 0) / (progress_target ?? 1)) * 100}%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-green-600 mt-2">
+                              Congratulations! You&apos;ve reached the highest tier!
+                            </p>
+                          )}
                         </PopoverContent>
                       </Popover>
-                    )
+                    );
                   })}
                 </div>
               )}
             </CardContent>
+
+
           </Card>
         </div>
         <div className="md:w-2/3">

@@ -23,6 +23,8 @@ export interface UserBadge {
   badge_tier_info: BadgeTier | null;
   earned_at: Date
   user: UUID
+  progress_value?: number;
+  progress_target?: number;
 }
 
 export interface UserBadgeProgress {

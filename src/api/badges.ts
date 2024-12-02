@@ -75,7 +75,7 @@ export const getUserBadges = async (userId: string): Promise<ApiResponse<UserBad
  * Returns:
  *   Promise<ApiResponse<UserBadgeProgress[]>>: A list of badge progress entries on success, or an error message on failure.
  */
-export const getUserBadgeProgress = async (userId: UUID): Promise<ApiResponse<UserBadgeProgress[]>> => {
+export const getUserBadgeProgress = async (userId: string): Promise<ApiResponse<UserBadgeProgress[]>> => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/getUserProgress/${userId}/`, {
       method: 'GET',
