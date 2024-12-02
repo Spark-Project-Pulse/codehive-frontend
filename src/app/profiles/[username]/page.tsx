@@ -17,7 +17,7 @@ import { getUserBadges, getUserBadgeProgress } from '@/api/badges'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
-import { getQuestionsByUserId, updateQuestion } from '@/api/questions'
+import { getQuestionsByUserId } from '@/api/questions'
 import { getProjectsByUserId } from '@/api/projects'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/app/contexts/UserContext'
@@ -189,14 +189,14 @@ export default function ProfilePage({
       try {
         const formData = new FormData()
         formData.append('profile_image', file)
-        const { data } = await uploadProfileImage(user.user, formData)
+        const { errorMessage } = await uploadProfileImage(user.user, formData)
         setShowUploadFiles(false)
-        if (data?.profile_image_nsfw) {
-          // Show inappropriate content toast if there is inappropriate content
+        if (errorMessage) {
+          // Show innapropriate content toast if there is innapropriate content
           toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Inappropriate content detected in your image.',
+            description: errorMessage,
           })
         }
       } catch (error) {
