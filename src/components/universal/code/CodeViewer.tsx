@@ -78,11 +78,10 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         // Navigate to the new question page using question_id
         router.push(`/questions/${data.question_id}`)
       } else {
-        // Show error toast if an error occurs
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'There was an error submitting your question.',
+          description: errorMessage ?? 'There was an error submitting your question.',
         })
       }
     } catch (error) {

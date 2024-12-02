@@ -10,17 +10,14 @@ import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
 
 /**
- * Creates a new community request by sending a POST request to the backend.
+ * Creates a new community request.
  *
- * Args:
- *   values: An object containing `title`, `description`, optional `tags` array, and optional `avatar` file.
- *
- * Returns:
- *   Promise<ApiResponse<{ community_id: string, title: string }>>: The requested community's ID and title on success, or an error message on failure.
+ * @param {FormData} formData - Form data containing community details.
+ * @returns {Promise<ApiResponse<{ community_id: string; title: string }>>} The community's ID and title on success, or an error message on failure.
  */
 export const createCommunityRequest = async (
   formData: FormData
-): Promise<ApiResponse<{ community_id: string; title: string; toxic: boolean; avatar_image_nsfw: boolean }>> => {
+): Promise<ApiResponse<{ community_id: string; title: string }>> => {
   try {
     const user = await getSupaUser()
     if (!user) {
@@ -42,20 +39,23 @@ export const createCommunityRequest = async (
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as {
-      community_id: string
-      title: string
-      toxic: boolean
-      avatar_image_nsfw: boolean
-    }
-    return {
-      errorMessage: null,
-      data: {
-        community_id: responseData.community_id,
-        title: responseData.title,
-        toxic: responseData.toxic,
-        avatar_image_nsfw: responseData.avatar_image_nsfw,
-      },
+    const responseData = (await response.json()) as
+      | {
+          community_id: string
+          title: string
+        }
+      | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: {
+          community_id: responseData.community_id,
+          title: responseData.title,
+        },
+      }
     }
   } catch (error) {
     console.error('Error creating community request: ', error)
@@ -66,11 +66,8 @@ export const createCommunityRequest = async (
 /**
  * Approves a community request.
  *
- * Args:
- *   communityId (UUID): The ID of the community request to approve.
- *
- * Returns:
- *   Promise<ApiResponse<{ message: string }>>: A success message on approval or an error message on failure.
+ * @param {UUID} communityId - The ID of the community request to approve.
+ * @returns {Promise<ApiResponse<{ message: string }>>} A success message on approval or an error message on failure.
  */
 export const approveCommunityRequest = async (
   communityId: UUID
@@ -113,11 +110,8 @@ export const approveCommunityRequest = async (
 /**
  * Rejects a community request.
  *
- * Args:
- *   communityId (UUID): The ID of the community request to reject.
- *
- * Returns:
- *   Promise<ApiResponse<{ message: string }>>: A success message on rejection or an error message on failure.
+ * @param {UUID} communityId - The ID of the community request to reject.
+ * @returns {Promise<ApiResponse<{ message: string }>>} A success message on rejection or an error message on failure.
  */
 export const rejectCommunityRequest = async (
   communityId: UUID
@@ -158,14 +152,10 @@ export const rejectCommunityRequest = async (
 }
 
 /**
- * Adds a user to a community.
+ * Adds the current user to a community.
  *
- * Args:
- *   communityId (string): The ID of the community.
- *   userId (string): The ID of the user to add.
- *
- * Returns:
- *   Promise<ApiResponse<{ message: string }>>: The success message on success or an error message on failure.
+ * @param {UUID} communityId - The ID of the community to join.
+ * @returns {Promise<ApiResponse<{ message: string }>>} A success message on success or an error message on failure.
  */
 export const addUserToCommunity = async (
   communityId: UUID
@@ -204,14 +194,10 @@ export const addUserToCommunity = async (
 }
 
 /**
- * Removes a user from a community.
+ * Removes the current user from a community.
  *
- * Args:
- *   communityId (string): The ID of the community.
- *   userId (string): The ID of the user to remove.
- *
- * Returns:
- *   Promise<ApiResponse<{ message: string }>>: The success message on success or an error message on failure.
+ * @param {UUID} communityId - The ID of the community to leave.
+ * @returns {Promise<ApiResponse<{ message: string }>>} A success message on success or an error message on failure.
  */
 export const removeUserFromCommunity = async (
   communityId: UUID
@@ -250,16 +236,13 @@ export const removeUserFromCommunity = async (
 }
 
 /**
- * Fetches communities with pagination, optional tag filtering, and search functionality.
+ * Fetches communities with pagination, tag filtering, and search functionality.
  *
- * Args:
- *   pageNumber (number): The current page number.
- *   pageSize (number): The number of communities per page.
- *   selectedTags (string[]): An array of selected tag IDs.
- *   searchQuery (string): The search query string.
- *
- * Returns:
- *   Promise<ApiResponse<{ communities: Community[]; totalCommunities: number }>>: The communities data on success, or an error message on failure.
+ * @param {number} pageNumber - The current page number.
+ * @param {number} pageSize - The number of communities per page.
+ * @param {string[]} selectedTags - An array of selected tag IDs.
+ * @param {string} searchQuery - The search query string.
+ * @returns {Promise<ApiResponse<{ communities: Community[]; totalCommunities:
  */
 export const getAllCommunities = async (
   pageNumber: number,
@@ -319,10 +302,9 @@ export const getAllCommunities = async (
 }
 
 /**
- * Fetches communities from the backend.
+ * Fetches all community options from the backend.
  *
- * Returns:
- *   Promise<CommunityOption[]>: An array of community options on success, or an empty array on failure.
+ * @returns {Promise<CommunityOption[]>} An array of community options on success, or an empty array on failure.
  */
 export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
   try {
@@ -355,13 +337,10 @@ export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
 }
 
 /**
- * Fetches members by community ID from the backend.
+ * Fetches all members of a specific community by ID from the backend.
  *
- * Args:
- *   community_id (string): The ID of the community whose members to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<CommunityMember[]>>: The list of members on success, or an error message on failure.
+ * @param {string} community_id - The ID of the community whose members to retrieve.
+ * @returns {Promise<ApiResponse<CommunityMember[]>>} The list of members on success, or an error message on failure.
  */
 export const getAllCommunityMembers = async (
   community_id: string
@@ -392,11 +371,8 @@ export const getAllCommunityMembers = async (
 /**
  * Fetches a community by its ID from the backend.
  *
- * Args:
- *   community_id (string): The ID of the community to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<Community>>: The community data on success, or an error message on failure.
+ * @param {UUID} community_id - The ID of the community to retrieve.
+ * @returns {Promise<ApiResponse<Community>>} The community data on success, or an error message on failure.
  */
 export const getCommunityById = async (
   community_id: UUID
@@ -425,13 +401,10 @@ export const getCommunityById = async (
 }
 
 /**
- * Retrieves a community by their title from the backend.
+ * Retrieves a community by its title from the backend.
  *
- * Args:
- *   title (string): The title of the community to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<Community>>: The community's data on success, or an error message on failure.
+ * @param {string} title - The title of the community to retrieve.
+ * @returns {Promise<ApiResponse<Community>>} The community's data on success, or an error message on failure.
  */
 export const getCommunityByTitle = async (
   title: string
@@ -461,10 +434,9 @@ export const getCommunityByTitle = async (
 }
 
 /**
- * Fetches all the communities associated with the current user by their ID from the backend.
+ * Fetches all communities associated with the current user.
  *
- * Returns:
- *   Promise<ApiResponse<CommunityMember[]>>: The communities data on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<CommunityMember[]>>} The communities data on success, or an error message on failure.
  */
 export const getCurrentUserCommunities = async (): Promise<
   ApiResponse<CommunityMember[]>
@@ -501,8 +473,7 @@ export const getCurrentUserCommunities = async (): Promise<
 /**
  * Fetches all community requests from the backend.
  *
- * Returns:
- *   Promise<ApiResponse<Community[]>>: An array of communities on success, or an empty array on failure.
+ * @returns {Promise<ApiResponse<Community[]>>} An array of community requests on success, or an error message on failure.
  */
 export const getAllCommunityRequests = async (): Promise<
   ApiResponse<Community[]>
@@ -531,13 +502,10 @@ export const getAllCommunityRequests = async (): Promise<
 }
 
 /**
- * Checks if a user is part of a community exists by their IDs.
+ * Checks if a user is part of a specific community by title.
  *
- * Args:
- *   community_title (string): The title of the community to check.
- *
- * Returns:
- *   Promise<ApiResponse<{ is_member: boolean }>>: Whether the user is part of the community on success, or an error message on failure.
+ * @param {string} community_title - The title of the community to check.
+ * @returns {Promise<ApiResponse<{ is_member: boolean }>>} Whether the user is part of the community on success, or an error message on failure.
  */
 export const userIsPartOfCommunity = async (
   community_title: string

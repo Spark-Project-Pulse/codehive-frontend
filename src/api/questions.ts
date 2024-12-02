@@ -8,16 +8,17 @@ import { type UUID } from 'crypto'
 /**
  * Creates a new question by sending a POST request to the backend.
  *
- * Args:
- *   values: An object containing `title` and `description` for the question.
- *
- * Returns:
- *   Promise<ApiResponse<{ question_id: string, toxic: boolean }>>: The created question's ID on success, or an error message on failure.
+ * @param {Object} values - An object containing `title` and `description` for the question.
+ * @param {string} values.title - The title of the question.
+ * @param {string} values.description - The description of the question.
+ * @returns {Promise<ApiResponse<{ question_id: string }>>} The created question's ID on success, or an error message on failure.
+ * @throws {Error} Throws an error if the network request fails or returns a non-OK response.
+ * 
  */
 export const createQuestion = async (values: {
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string; toxic?: boolean }>> => {
+}): Promise<ApiResponse<{ question_id: string }>> => {
   try {
     const user = await getSupaUser()
 
@@ -37,13 +38,15 @@ export const createQuestion = async (values: {
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as Question
-    return {
-      errorMessage: null,
-      data: {
-        question_id: responseData.question_id,
-        toxic: responseData.toxic,
-      },
+    const responseData = (await response.json()) as Question | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: { question_id: responseData.question_id },
+      }
     }
   } catch (error) {
     console.error('Error creating question: ', error)
@@ -54,11 +57,9 @@ export const createQuestion = async (values: {
 /**
  * Fetches all the questions associated with a user by their ID from the backend.
  *
- * Args:
- *   user_id (string): The ID of the user.
- *
- * Returns:
- *   Promise<ApiResponse<Question[]>>: The questions data on success, or an error message on failure.
+ * @param {string} user_id - The ID of the user.
+ * @returns {Promise<ApiResponse<Question[]>>} The questions data on success, or an error message on failure.
+ * 
  */
 export const getQuestionsByUserId = async (
   user_id: string
@@ -89,11 +90,9 @@ export const getQuestionsByUserId = async (
 /**
  * Fetches a question by its ID from the backend.
  *
- * Args:
- *   question_id (string): The ID of the question to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<Question>>: The question data on success, or an error message on failure.
+ * @param {string} question_id - The ID of the question to retrieve.
+ * @returns {Promise<ApiResponse<Question>>} The question data on success, or an error message on failure.
+ * 
  */
 export const getQuestionById = async (
   question_id: string
@@ -124,14 +123,12 @@ export const getQuestionById = async (
 /**
  * Fetches questions with pagination, optional tag filtering, and search functionality.
  *
- * Args:
- *   pageNumber (number): The current page number.
- *   pageSize (number): The number of questions per page.
- *   selectedTags (string[]): An array of selected tag IDs.
- *   searchQuery (string): The search query string.
- *
- * Returns:
- *   Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>: The questions data on success, or an error message on failure.
+ * @param {number} pageNumber - The current page number.
+ * @param {number} pageSize - The number of questions per page.
+ * @param {string[]} selectedTags - An array of selected tag IDs.
+ * @param {string} searchQuery - The search query string.
+ * @returns {Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>} The questions data on success, or an error message on failure.
+ * 
  */
 
 export const getAllQuestions = async (
@@ -200,11 +197,8 @@ export const getAllQuestions = async (
 /**
  * Marks a question as answered or un-answered, depending on current state
  *
- * Args:
- *   None
+ * @returns {Promise<ApiResponse<Question>>} The question data on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<Question>>: The question data on success, or an error message on failure.
  */
 export const changeMark = async (
   question_id: string
@@ -235,18 +229,20 @@ export const changeMark = async (
 /**
  * Updates an existing question by sending a PUT request to the backend.
  *
- * Args:
- *   values: An object containing `question_id`, `asker`, `title` and `description` for the question.
+ * @param {Object} values - An object containing `question_id`, `asker`, `title` and `description` for the question.
+ * @param {string} values.questionId - The id of the question.
+ * @param {string} values.asker - The asker of the question.
+ * @param {string} values.title - The title of the question.
+ * @param {string} values.description - The description of the question.
+ * @returns {Promise<ApiResponse<{ question_id: string }>>} The updated question's ID on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ question_id: string, toxic: boolean }>>: The updated question's ID on success, or an error message on failure.
  */
 export const updateQuestion = async (values: {
   questionId: string
   asker: string
   title: string
   description: string
-}): Promise<ApiResponse<{ question_id: string; toxic?: boolean }>> => {
+}): Promise<ApiResponse<{ question_id: string }>> => {
   try {
     const user = await getSupaUser()
 
@@ -273,13 +269,17 @@ export const updateQuestion = async (values: {
       throw new Error('Network response was not ok')
     }
 
-    const responseData = (await response.json()) as Question
-    return {
-      errorMessage: null,
-      data: {
-        question_id: responseData.question_id,
-        toxic: responseData.toxic,
-      },
+    const responseData = (await response.json()) as Question | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return {
+        errorMessage: null,
+        data: {
+          question_id: responseData.question_id,
+        },
+      }
     }
   } catch (error) {
     console.error('Error updating question: ', error)
@@ -290,12 +290,10 @@ export const updateQuestion = async (values: {
 /**
  * Deletes an existing question by sending a DELETE request to the backend.
  *
- * Args:
- *   questionId: The question id for the question to be deleted.
- *   asker: The user id of the user who asked the question.
+ * @param {string} questionId - The question id for the question to be deleted.
+ * @param {string?} asker - The user id of the user who asked the question.
+ * @returns {Promise<ApiResponse<{ message: string }>>} A message if the question was deleted, otherwise an error message.
  *
- * Returns:
- *   Promise<ApiResponse<{ message: string }>>: A message if the question was deleted, otherwise an error message.
  */
 export const deleteQuestion = async (
   questionId: string,

@@ -1,10 +1,10 @@
 import type { Tag, TagOption } from '@/types/Tags';
 
 /**
- * Fetches tags from the backend.
+ * Fetches all tags from the backend.
  *
- * Returns:
- *   Promise<TagOption[]>: An array of tag options on success, or an empty array on failure.
+ * @returns {Promise<TagOption[]>} An array of tag options on success, or an empty array on failure.
+ * 
  */
 export const getAllTags = async (): Promise<TagOption[]> => {
   try {
