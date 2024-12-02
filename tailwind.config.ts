@@ -1,3 +1,4 @@
+import { Half1Icon } from "@radix-ui/react-icons";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
@@ -8,6 +9,9 @@ const config: Config = {
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+	],
+	safelist: [
+		'hexagonal-bg',
 	],
 	// For tailwind themes (colors, spacing, typography, etc)
 	theme: {
@@ -71,14 +75,29 @@ const config: Config = {
 			},
 			fontFamily: {
 				heading: ['Luckiest Guy', 'Georgia'],
-				subHeading: ['Ubuntu', 'serif'],
+				subHeading: ['Roboto', 'Ubuntu'],
 				body: ['Ubuntu', 'serif']
 			},
 			fontSize: {
 				navLogo: '2.5rem',
 				navText: '0.9375rem',
 				h1: '6.25rem',
-				h2: '3.125rem'
+				h2: '3.125rem',
+				h3: '4.167rem',
+				p1: '1.25rem',
+			},
+			fontWeight: {
+				thin: '100',
+				hairline: '100',
+				extralight: '200',
+				light: '300',
+				normal: '400',
+				medium: '500',
+				semibold: '600',
+				bold: '700',
+				extrabold: '800',
+				'extra-bold': '800',
+				black: '900',
 			},
 			keyframes: {
 				marquee: {
