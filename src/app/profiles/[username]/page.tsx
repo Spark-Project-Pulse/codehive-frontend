@@ -326,32 +326,32 @@ export default function ProfilePage({
                               className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
                             />
                             {badge_tier_info && (
-                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-primary-foreground bg-primary rounded-full">
                                 {badge_tier_info.tier_level}
                               </span>
                             )}
                           </div>
                         </PopoverTrigger>
-                        <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md">
+                        <PopoverContent className="absolute top-full mt-2 bg-card shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md text-card-foreground">
                           <h4 className="font-medium text-base break-words">
                             {displayBadge.name || 'Unnamed Badge'}
                           </h4>
-                          <p className="text-sm text-gray-600 mt-2 break-words">
+                          <p className="text-sm text-muted-foreground mt-2 break-words">
                             {displayBadge.description || 'No description available.'}
                           </p>
                           {badge_tier_info && (
-                            <p className="text-sm text-gray-500 mt-1">
-                              Tier {badge_tier_info.tier_level} {/*- Reputation Threshold: {badge_tier_info.reputation_threshold} */}
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Tier {badge_tier_info.tier_level}
                             </p>
                           )}
                           {progress_target ? (
                             <div className="mt-2 text-sm">
-                              <p className="text-gray-500">
+                              <p className="text-muted-foreground">
                                 Progress: {progress_value}/{progress_target}
                               </p>
-                              <div className="relative h-2 w-full bg-gray-200 rounded-full overflow-hidden mt-1">
+                              <div className="relative h-2 w-full bg-muted rounded-full overflow-hidden mt-1">
                                 <div
-                                  className="absolute h-full bg-blue-500 rounded-full"
+                                  className="absolute h-full bg-chart-1 rounded-full"
                                   style={{
                                     width: `${((progress_value ?? 0) / (progress_target ?? 1)) * 100}%`,
                                   }}
@@ -359,7 +359,7 @@ export default function ProfilePage({
                               </div>
                             </div>
                           ) : (
-                            <p className="text-sm text-green-600 mt-2">
+                            <p className="text-sm text-accent mt-2">
                               Congratulations! You&apos;ve reached the highest tier!
                             </p>
                           )}
@@ -370,8 +370,6 @@ export default function ProfilePage({
                 </div>
               )}
             </CardContent>
-
-
           </Card>
         </div>
         <div className="md:w-2/3">

@@ -256,33 +256,27 @@ export default function AnswerCard({
                                 userBadge.badge_info?.name ??
                                 'Badge' // Default alt text
                               }
-                              className="h-8 w-8 cursor-pointer"
-                              style={{ marginLeft: '7px' }}
+                              className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
                               loading="lazy" // Improves performance by deferring off-screen images
                             />
                             {/* Display tier level if available */}
                             {userBadge.badge_tier_info && (
-                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-primary-foreground bg-primary rounded-full">
                                 {userBadge.badge_tier_info.tier_level}
                               </span>
                             )}
                           </div>
                         </PopoverTrigger>
-                        <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-4 z-10 max-w-sm sm:max-w-md">
-                          <h4 className="font-medium text-base">
-                            {userBadge.badge_tier_info?.name ??
-                              userBadge.badge_info?.name ??
-                              'Unnamed Badge'}
+                        <PopoverContent className="absolute top-full mt-2 bg-card shadow-lg rounded-md p-3 z-10 max-w-sm sm:max-w-md text-card-foreground">
+                          <h4 className="font-medium text-base break-words">
+                            {userBadge.badge_tier_info?.name ?? userBadge.badge_info?.name ?? 'Unnamed Badge'}
                           </h4>
-                          <p className="text-sm text-gray-600 mt-2">
-                            {userBadge.badge_tier_info?.description ??
-                              userBadge.badge_info?.description ??
-                              'No description available.'}
+                          <p className="text-sm text-muted-foreground mt-2 break-words">
+                            {userBadge.badge_tier_info?.description ?? userBadge.badge_info?.description ?? 'No description available.'}
                           </p>
                           {userBadge.badge_tier_info && (
-                            <p className="text-sm text-gray-500 mt-1">
-                              Tier {userBadge.badge_tier_info.tier_level} - Reputation Threshold:{' '}
-                              {userBadge.badge_tier_info.reputation_threshold}
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Tier {userBadge.badge_tier_info.tier_level}
                             </p>
                           )}
                         </PopoverContent>

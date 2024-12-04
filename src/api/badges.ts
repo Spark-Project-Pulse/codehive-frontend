@@ -89,35 +89,3 @@ export const getUserBadgeProgress = async (userId: string): Promise<ApiResponse<
     return { errorMessage: 'Error fetching badge progress' };
   }
 }
-
-/**
- * Assigns a badge to a user.
- *
- * @param {number} badgeId - The ID of the badge to assign.
- * @param {UUID} userId - The UUID of the user to whom the badge is assigned.
- * @returns {Promise<ApiResponse<{ message: string }>>} Confirmation message on success, or an error message on failure.
- */
-export const assignBadge = async (
-  badgeId: number,
-  userId: UUID
-): Promise<ApiResponse<{ message: string }>> => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/badges/assignBadge/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ badge_id: badgeId, user_id: userId }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const result = (await response.json()) as SuccessResponse;
-    return { errorMessage: null, data: result };
-  } catch (error) {
-    console.error('Error assigning badge:', error);
-    return { errorMessage: 'Error assigning badge' };
-  }
-}
