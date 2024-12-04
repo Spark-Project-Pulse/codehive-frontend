@@ -8,6 +8,8 @@ import { type UUID } from 'crypto'
  * Fetches all badges from the backend.
  *
  * @returns {Promise<ApiResponse<Badge[]>>} A list of badges on success, or an error message on failure.
+ * 
+ * TODO: Use function to create badge directory for users to view all potential badges they can earn.
  */
 export const getAllBadges = async (): Promise<ApiResponse<Badge[]>> => {
   try {
