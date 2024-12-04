@@ -1,8 +1,7 @@
 'use server'
 
-import { type ApiResponse, type SuccessResponse } from '@/types/Api'
+import { type ApiResponse } from '@/types/Api'
 import { type Badge, type UserBadge, type UserBadgeProgress } from '@/types/Badges'
-import { type UUID } from 'crypto'
 
 /**
  * Fetches all badges from the backend.
