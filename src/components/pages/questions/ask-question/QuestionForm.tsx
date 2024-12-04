@@ -34,6 +34,7 @@ import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import CommunityCombobox from './CommunityCombobox'
 import { type UUID } from 'crypto'
+import MarkdownEditor from '@/components/universal/code/MarkdownEditor'
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -265,6 +266,8 @@ export default function QuestionForm({
             )}
           />
         )}
+
+        <MarkdownEditor />
 
         {/* Submit Button */}
         <ButtonWithLoading
