@@ -139,10 +139,10 @@
 
 /* apply our base font to editor */
 .w-md-editor-content .w-md-editor-area .w-md-editor-text-input {
-  font-family: 'Ubuntu', sans-serif !important;
-  font-size: 14px !important;
-  line-height: 1.25 !important;
-  color: hsl(var(--foreground)) !important;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
   font-weight:500;
   /* background-color: hsl(var(--background)); */
 }
@@ -151,5 +151,5 @@
 /* .w-md-editor-show-preview .w-md-editor-preview {
   background-color: hsl(var(--background));
 } */
- 
+
 /* *************************** END: MDEditor specific *************************** */

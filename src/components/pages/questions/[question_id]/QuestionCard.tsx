@@ -108,7 +108,7 @@ export default function QuestionCard({
         <CardDescription className="mt-2 text-base">
           <MDEditor
             value={question.description}
-            height={600}
+            height={200}
             preview="preview"
             hideToolbar
           />

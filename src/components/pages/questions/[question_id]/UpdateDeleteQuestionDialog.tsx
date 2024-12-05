@@ -36,9 +36,12 @@ export default function UpdateDeleteQuestionDialog({
   onDelete,
 }: UpdateDeleteQuestionDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
 
   const handleQuestionUpdate = async (form_data: FormValues) => {
     try {
+      setIsLoadingUpdate(true)
+
       const { errorMessage } = await updateQuestion({
         questionId: form_data.question_id,
         asker: form_data.asker,
@@ -55,6 +58,8 @@ export default function UpdateDeleteQuestionDialog({
         })
         throw new Error(errorMessage)
       }
+
+      setIsLoadingUpdate(false)
 
       const updatedQuestion = { ...question, ...form_data }
       onUpdate(updatedQuestion as Question)
@@ -125,6 +130,7 @@ export default function UpdateDeleteQuestionDialog({
         <UpdateQuestionForm
           question={question}
           onSubmit={handleQuestionUpdate}
+          isLoadingUpdate={isLoadingUpdate}
         />
 
         {/* Delete Button within the dialog */}
