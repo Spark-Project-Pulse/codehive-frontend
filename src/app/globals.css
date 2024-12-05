@@ -23,12 +23,23 @@
     /* Main colors from your palette */
     --background: 223 47% 97%;
     --foreground: 230 47% 7%;
-    --primary: 47, 100%, 73%;
+    /* yellow */
+    --primary: 47, 100%, 50%;
+
+    /* white */
     --primary-foreground: 0 0% 100%;
+
+    /* light yellow */
     --secondary: 52, 100%, 85%;
+    /* light brown */
     --secondary-foreground: 39, 22%, 69%;
+
+    /* brown */
     --tertiary: 35, 92%, 33%;
-    --tertiary-foregrund: 0, 0%, 0%;
+
+    /* black */
+    --tertiary-foreground: 0, 0%, 0%;
+
     --accent: 45 93% 47%;
     --accent-foreground: 230 47% 7%;
     --black: 0, 0%, 0%;
@@ -41,14 +52,14 @@
 
     /* Adjusted muted and system colors to complement your palette */
     --muted: 223 47% 90%;
-    --muted-foreground: 230 47% 30%;
+    --muted-foreground: 215, 20%, 65%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     /* Border and input colors adjusted to match theme */
     --border: 223 47% 85%;
     --input: 223 47% 85%;
-    --ring: 35 92% 33%;
+    --ring: 0 0% 0%;
 
     /* Chart colors maintained but slightly adjusted to complement palette */
     --chart-1: 35 92% 33%;

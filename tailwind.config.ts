@@ -89,6 +89,8 @@ const config: Config = {
 				h2: '3.125rem',
 				h3: '4.167rem',
 				p1: '1.25rem',
+				p13: '0.813rem',
+				p15: '0.938rem',
 			},
 			keyframes: {
 				marquee: {

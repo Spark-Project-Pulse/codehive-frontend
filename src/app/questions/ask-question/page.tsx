@@ -62,11 +62,18 @@ function AskQuestion() {
   }
 
   return (
-    <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="text-center text-h2 font-bold">
+    <div>
+      <h1 className="text-center text-h2 font-heading mt-20">
         Ask a Question
       </h1>
-      <QuestionForm onSubmit={handleFormSubmit} communityId={communityId} />
+      <div className="flex justify-center min-h-screen">
+
+        <div className="w-[604px] h-[754px] bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <div className="bg-white w-[600px] h-[750px] px-4 py-12 sm:px-6 lg:px-8 border rounded-md">
+            <QuestionForm onSubmit={handleFormSubmit} communityId={communityId} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

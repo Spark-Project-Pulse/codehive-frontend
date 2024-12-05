@@ -74,7 +74,7 @@ export function MultiSelector({
     // Function to calculate maxVisibleTags based on container width
     const calculateMaxVisibleTags = () => {
       const containerWidth = container.offsetWidth;
-      const tagWidth = 80; 
+      const tagWidth = 80;
       const chevronWidth = 24;
       const padding = 16;
 
@@ -129,16 +129,15 @@ export function MultiSelector({
                   </span>
                 ))}
                 {selected.length > maxVisibleTags && (
-                  <span className="text-xs text-gray-500 flex-shrink-0">
+                  <span className="font-body text-p13 flex-shrink-0">
                     +{selected.length - maxVisibleTags} more
                   </span>
                 )}
               </>
             ) : (
-              <span className="text-gray-500 truncate">{placeholder}</span>
+              <span className="font-body text-p13 text-muted-foreground truncate">{placeholder}</span>
             )}
           </div>
-          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
