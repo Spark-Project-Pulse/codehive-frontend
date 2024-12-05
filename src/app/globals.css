@@ -130,7 +130,26 @@
   }
 }
 
-/* MDEditor specific (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
+/* *************************** MDEditor specific *************************** */
+
+/* adjust editor height (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
 .w-md-editor-text {
   height: 100%;
 }
+
+/* apply our base font to editor */
+.w-md-editor-content .w-md-editor-area .w-md-editor-text-input {
+  font-family: 'Ubuntu', sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  /* TODO: colors not being applied) */
+  /* color: var(--sidebar-accent) !important;
+  -webkit-text-fill-color: var(--sidebar-accent) !important; */
+}
+
+/* apply our base font to preview (TODO: this is not being applied) */
+/* .w-md-editor-content .w-md-editor-preview {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 120px !important;
+  line-height: 1.6;
+} */

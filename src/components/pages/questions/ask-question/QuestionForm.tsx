@@ -166,10 +166,9 @@ export default function QuestionForm({
                 What would you like to know?
               </FormLabel>
               <FormControl>
-                <Textarea
-                  id="description"
-                  placeholder="Description"
-                  {...field}
+                <MarkdownEditor
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
                 />
               </FormControl>
               <FormMessage />
@@ -266,8 +265,6 @@ export default function QuestionForm({
             )}
           />
         )}
-
-        <MarkdownEditor />
 
         {/* Submit Button */}
         <ButtonWithLoading
