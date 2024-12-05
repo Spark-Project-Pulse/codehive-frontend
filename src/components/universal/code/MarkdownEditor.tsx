@@ -22,7 +22,7 @@ export default function MarkdownEditor({
   }
 
   return (
-    <Card>
+    <Card className='border-none shadow-none'>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="edit" className="flex items-center gap-2">
