@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { type Question } from '@/types/Questions'
 import {
   Card,
@@ -22,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 import MDEditor from '@uiw/react-md-editor'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
 interface QuestionCardProps {
   question: Question
@@ -132,13 +132,7 @@ export default function QuestionCard({
               >
                 <div className="flex items-center">
                   {/* GitHub Icon */}
-                  <Image
-                    src="/github-logo-black.svg"
-                    alt="Github logo"
-                    width={20}
-                    height={20}
-                    className="h-5 w-5"
-                  />
+                  <GitHubLogoIcon />
                   &nbsp;
                   <span>{question.related_project_info?.title}</span>
                 </div>
