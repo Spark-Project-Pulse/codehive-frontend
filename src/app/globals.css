@@ -130,7 +130,7 @@
   }
 }
 
-/* *************************** MDEditor specific *************************** */
+/* *************************** START: MDEditor specific *************************** */
 
 /* adjust editor height (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
 .w-md-editor-text {
@@ -144,11 +144,12 @@
   line-height: 1.25 !important;
   color: hsl(var(--foreground)) !important;
   font-weight:500;
+  /* background-color: hsl(var(--background)); */
 }
 
-/* apply our base font to preview (TODO: this is not being applied) */
-/* .w-md-editor-content .w-md-editor-preview {
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 120px !important;
-  line-height: 1.6;
+/* TODO: not sure if we should apply styles to the preview (causes some weird color conflicts) */
+/* .w-md-editor-show-preview .w-md-editor-preview {
+  background-color: hsl(var(--background));
 } */
+ 
+/* *************************** END: MDEditor specific *************************** */
