@@ -11,7 +11,7 @@ interface CommunityCardProps {
   community: Community
   tags: TagOption[]
   onCardClick: () => void
-  maxCharacters: number
+  maxCharacters?: number
 }
 
 export default function CommunityCard({
