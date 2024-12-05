@@ -253,26 +253,33 @@ export const getAllCommunities = async (
   ApiResponse<{ communities: Community[]; totalCommunities: number }>
 > => {
   try {
-    // Build the query parameters
+    let url = ''
     const params = new URLSearchParams()
-    params.append('page', pageNumber.toString())
-    params.append('page_size', pageSize.toString())
+
     if (searchQuery.trim()) {
-      params.append('search', searchQuery.trim())
+      // Use the search endpoint
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/search/`
+      params.append('q', searchQuery.trim())
+    } else {
+      // Use the general getAll endpoint
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAll/`
     }
+
+    // Append tags in both cases
     selectedTags.forEach((tagId) => {
       params.append('tags', tagId)
     })
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAll/?${params.toString()}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    // Always append pagination parameters
+    params.append('page', pageNumber.toString())
+    params.append('page_size', pageSize.toString())
+
+    const response = await fetch(`${url}?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -284,8 +291,6 @@ export const getAllCommunities = async (
     const responseData = (await response.json()) as {
       communities: Community[]
       totalCommunities: number
-      totalPages: number
-      currentPage: number
     }
 
     return {
@@ -296,10 +301,11 @@ export const getAllCommunities = async (
       },
     }
   } catch (error) {
-    console.error('Error fetching communities: ', error)
+    console.error('Error fetching communities:', error)
     return { errorMessage: 'Error fetching communities' }
   }
 }
+
 
 /**
  * Fetches all community options from the backend.
