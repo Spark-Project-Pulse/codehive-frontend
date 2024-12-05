@@ -129,3 +129,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* MDEditor specific (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
+.w-md-editor-text {
+  height: 100%;
+}
