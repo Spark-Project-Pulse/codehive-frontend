@@ -21,6 +21,7 @@ import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
+import MDEditor from '@uiw/react-md-editor'
 
 interface QuestionCardProps {
   question: Question
@@ -105,7 +106,12 @@ export default function QuestionCard({
         ) : null}
         <CardTitle className="text-2xl font-bold">{question.title}</CardTitle>
         <CardDescription className="mt-2 text-base">
-          {question.description}
+          <MDEditor
+            value={question.description}
+            height={600}
+            preview="preview"
+            hideToolbar
+          />
         </CardDescription>
       </CardHeader>
       <CardContent>
