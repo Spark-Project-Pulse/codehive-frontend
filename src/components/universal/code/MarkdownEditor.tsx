@@ -1,15 +1,7 @@
 import React, { useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
-import {
-  FileEdit,
-  Eye,
-  Bold,
-  Italic,
-  Code,
-  List,
-  ListOrdered,
-} from 'lucide-react'
+import { FileEdit, Eye } from 'lucide-react'
 import MDEditor, {
   bold,
   code,
@@ -24,7 +16,6 @@ import MDEditor, {
   type ICommand,
   hr,
 } from '@uiw/react-md-editor'
-import { Button } from '@/components/ui/button'
 
 interface MarkdownEditorProps {
   value: string
@@ -81,27 +72,7 @@ export default function MarkdownEditor({
             highlightEnable={false}
             fullscreen={false}
             commands={valid}
-            // components={{
-            //   // Fully override the toolbar rendering
-            //   toolbar: (command, disabled, executeCommand) => {
-            //     return (
-            //       <Button
-            //         key={command.keyCommand}
-            //         aria-label={command.name ?? command.keyCommand}
-            //         disabled={disabled}
-            //         onClick={(event) => {
-            //           event.stopPropagation()
-            //           executeCommand(command, command.groupName)
-            //         }}
-            //         variant="outline"
-            //         size="icon"
-            //         type="button"
-            //       >
-            //         {getCustomIcon(command)}
-            //       </Button>
-            //     )
-            //   },
-            // }}
+            // TODO: maybe give this a shot https://github.com/uiwjs/react-md-editor/issues/419
           />
         </TabsContent>
 
@@ -113,13 +84,3 @@ export default function MarkdownEditor({
     </Card>
   )
 }
-
-// function getCustomIcon(command: ICommand) {
-//   switch (command) {
-//     // case bold:
-//     //   return <Bold />
-
-//     default:
-//       return command.keyCommand // Fallback to the key command name
-//   }
-// }
