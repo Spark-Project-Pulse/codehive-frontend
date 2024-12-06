@@ -152,4 +152,15 @@
   background-color: hsl(var(--background));
 } */
 
+/* preview should adapt to content height (cannot use absolute positioning...) */
+.w-md-editor-preview {
+  position: relative !important;
+  height: auto !important;
+}
+
+.w-md-editor-show-preview {
+  height: auto !important;
+}
+
 /* *************************** END: MDEditor specific *************************** */
+

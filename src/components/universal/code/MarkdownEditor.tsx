@@ -93,7 +93,13 @@ export default function MarkdownEditor({
 
         {/* Preview Tab */}
         <TabsContent value="preview" className="mt-0">
-          <MDEditor value={value} height={300} preview="preview" hideToolbar />
+          <MDEditor
+            value={value}
+            height={300}
+            preview="preview"
+            hideToolbar
+            visibleDragbar={false}
+          />
         </TabsContent>
       </Tabs>
     </Card>
