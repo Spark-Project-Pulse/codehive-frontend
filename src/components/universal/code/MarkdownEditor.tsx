@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { FileEdit, Eye } from 'lucide-react'
 import MDEditor, {
+  type ICommand,
   bold,
   code,
   help,
@@ -13,8 +14,12 @@ import MDEditor, {
   table,
   unorderedListCommand,
   orderedListCommand,
-  type ICommand,
   hr,
+  codeLive,
+  codeEdit,
+  fullscreen,
+  codePreview,
+  divider,
 } from '@uiw/react-md-editor'
 
 interface MarkdownEditorProps {
@@ -72,6 +77,16 @@ export default function MarkdownEditor({
             highlightEnable={false}
             fullscreen={false}
             commands={valid}
+            commandsFilter={(cmd) => {
+              if (
+                [codeLive, codeEdit, fullscreen, codePreview, divider].includes(
+                  cmd
+                )
+              ) {
+                return false
+              }
+              return cmd
+            }}
             // TODO: maybe give this a shot https://github.com/uiwjs/react-md-editor/issues/419
           />
         </TabsContent>
