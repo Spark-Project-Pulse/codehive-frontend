@@ -7,6 +7,13 @@ import ProjectForm from '@/components/pages/projects/add-project/ProjectForm'
 import { createProject } from '@/api/projects'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/app/contexts/UserContext'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card'
 
 // Main page for adding a project
 export default function AddProject() {
@@ -16,24 +23,22 @@ export default function AddProject() {
 
   const [isLoadingRepos, setIsLoadingRepos] = useState(true)
   const [repos, setRepos] = useState<Repo[]>([])
-  
+
   useEffect(() => {
     const fetchUser = async () => {
       // safely return if user not loaded yet
       if (!user) return
 
       try {
-       
         // Fetch GitHub repositories using the user's GitHub username
         const githubUsername = user.username
         if (githubUsername) {
           const reposResponse = await fetch(
             `https://api.github.com/users/${githubUsername}/repos`
           )
-          const reposData = await reposResponse.json() as Repo[]
+          const reposData = (await reposResponse.json()) as Repo[]
           setRepos(reposData)
         }
-
       } catch (error) {
         console.error('Error fetching user:', error)
       } finally {
@@ -44,13 +49,12 @@ export default function AddProject() {
     void fetchUser()
   }, [user, loading])
 
-  
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
     public: boolean
     title: string
-    description: string,
-    repoFullName: string,
+    description: string
+    repoFullName: string
   }) {
     try {
       // Map the form values to the expected backend names (in models.py)
@@ -81,15 +85,20 @@ export default function AddProject() {
   }
 
   return (
-    <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-       <h1 className="text-center text-h2 font-bold">
-        Add a Project
-      </h1>
-      <ProjectForm 
-        repos={repos} 
-        onSubmit={handleFormSubmit} 
-        isLoading={isLoadingRepos}
-      />
-    </div>
+    <Card className="mx-auto w-full max-w-4xl">
+      <CardHeader>
+        <CardTitle>Add a Project</CardTitle>
+        <CardDescription>
+          Fill out the form below to add a project. You must be logged in (with GitHub) to link a project to one of your repositories.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <ProjectForm
+          repos={repos}
+          onSubmit={handleFormSubmit}
+          isLoading={isLoadingRepos}
+        />
+      </CardContent>
+    </Card>
   )
 }

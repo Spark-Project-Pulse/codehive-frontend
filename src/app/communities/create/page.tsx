@@ -88,7 +88,7 @@ export default function CreateCommunityPage() {
       />
 
       {/* Main Community Creation Card */}
-      <Card className="mx-auto w-full max-w-2xl">
+      <Card className="mx-auto w-full max-w-4xl">
         <CardHeader>
           <CardTitle>Create a New Community</CardTitle>
           <CardDescription>
