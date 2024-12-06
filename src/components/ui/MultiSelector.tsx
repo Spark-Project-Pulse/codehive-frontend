@@ -112,7 +112,7 @@ export function MultiSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full max-w-full justify-between gap-1 overflow-hidden"
+          className="w-full max-w-full justify-between gap-1 overflow-hidden border"
         >
           <div
             ref={containerRef}

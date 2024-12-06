@@ -16,14 +16,14 @@ export default function AddProject() {
 
   const [isLoadingRepos, setIsLoadingRepos] = useState(true)
   const [repos, setRepos] = useState<Repo[]>([])
-  
+
   useEffect(() => {
     const fetchUser = async () => {
       // safely return if user not loaded yet
       if (!user) return
 
       try {
-       
+
         // Fetch GitHub repositories using the user's GitHub username
         const githubUsername = user.username
         if (githubUsername) {
@@ -44,7 +44,7 @@ export default function AddProject() {
     void fetchUser()
   }, [user, loading])
 
-  
+
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
     public: boolean
@@ -81,15 +81,22 @@ export default function AddProject() {
   }
 
   return (
-    <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-       <h1 className="text-center text-h2 font-bold">
+
+    <div className="mb-10 relative -top-20">
+      <h1 className="text-center text-h4 font-heading -mb-20 relative top-28">
         Add a Project
       </h1>
-      <ProjectForm 
-        repos={repos} 
-        onSubmit={handleFormSubmit} 
-        isLoading={isLoadingRepos}
-      />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <div className="bg-background w-[600px] px-4 py-12 sm:px-6 lg:px-8 border rounded-md">
+            <ProjectForm
+              repos={repos}
+              onSubmit={handleFormSubmit}
+              isLoading={isLoadingRepos}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

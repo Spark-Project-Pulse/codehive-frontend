@@ -95,18 +95,25 @@ export default function CreateCommunityPage() {
       />
 
       {/* Main Community Creation Card */}
-      <Card className="mx-auto w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle>Create a New Community</CardTitle>
-          <CardDescription>
-            Fill out the form below to request a new community. Your request
-            will be reviewed by a moderator before being approved.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <CommunityForm onSubmit={handleFormSubmit} />
-        </CardContent>
-      </Card>
+      <h1 className="text-center text-h4 font-heading -mb-20 relative top-16">
+        Create a New Community
+      </h1>
+      <div className="flex items-center justify-center min-h-screen relative -top-12">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <Card className="mx-auto w-full max-w-2xl">
+            <CardHeader>
+              <CardDescription>
+                Fill out the form below to request a new community. Your request
+                will be reviewed by a moderator before being approved.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <CommunityForm onSubmit={handleFormSubmit} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </>
+
   )
 }

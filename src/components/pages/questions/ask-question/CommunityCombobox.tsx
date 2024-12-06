@@ -75,7 +75,7 @@ export default function CommunityCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={communitySelectOpen}
-          className="w-full justify-start !text-p13 text-muted-foreground"
+          className="w-full justify-start !text-p13 text-muted-foreground border"
         >
           {communityLabel || 'Select community (optional)'}
         </Button>
