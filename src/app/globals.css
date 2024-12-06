@@ -152,13 +152,15 @@
   background-color: hsl(var(--background));
 } */
 
-/* preview should adapt to content height (cannot use absolute positioning...) */
-.w-md-editor-preview {
+/* NOTE: `dynamic-md-preview` only applies to the `DynamicMarkdownPreview.tsx` component
+  preview should adapt to content height (cannot use absolute positioning...) */
+.dynamic-md-preview .w-md-editor-preview {
   position: relative !important;
   height: auto !important;
+  width: 100% !important; /* Optional: Ensure it fits parent width */
 }
 
-.w-md-editor-show-preview {
+.dynamic-md-preview .w-md-editor-show-preview {
   height: auto !important;
 }
 

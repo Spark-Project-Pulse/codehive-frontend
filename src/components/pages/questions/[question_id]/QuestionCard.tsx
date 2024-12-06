@@ -20,8 +20,8 @@ import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
-import MDEditor from '@uiw/react-md-editor'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
 
 interface QuestionCardProps {
   question: Question
@@ -106,12 +106,7 @@ export default function QuestionCard({
         ) : null}
         <CardTitle className="text-2xl font-bold">{question.title}</CardTitle>
         <CardDescription className="mt-2 text-base">
-          <MDEditor
-            value={question.description}
-            preview="preview"
-            hideToolbar
-            visibleDragbar={false}
-          />
+          <DynamicMarkdownPreview value={question.description} />
         </CardDescription>
       </CardHeader>
       <CardContent>
