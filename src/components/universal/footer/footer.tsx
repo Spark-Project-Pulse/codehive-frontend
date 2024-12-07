@@ -13,6 +13,7 @@ export default function SiteFooter() {
             className="font-medium underline underline-offset-4 hover:text-black dark:hover:text-white"
             target="_blank"
             rel="noreferrer"
+            aria-label="Visit GitHub (opens in a new tab)"
           >
             GitHub
           </Link>
@@ -48,12 +49,20 @@ export default function SiteFooter() {
           Contact
         </Link>
         {/* Social Links */}
-        <div className="flex space-x-4"> {
-          [Linkedin, Instagram, Facebook, Twitter].map((Icon, index) =>
-          (<a key={index} href="#" className="text-muted-foreground hover:text-black dark:hover:text-white transition-colors duration-300">
-            <Icon size={24} /> <span className="sr-only">Social Media Link</span> </a>))
-        }
+        <div className="flex space-x-4">
+          {[Linkedin, Instagram, Facebook, Twitter].map((Icon, index) => (
+            <a
+              key={index}
+              href="#"
+              aria-label={`Visit ${Icon.name} (link currently unavailable)`}
+              className="text-muted-foreground hover:text-black dark:hover:text-white transition-colors duration-300"
+            >
+              <Icon size={24} aria-hidden="true" />
+              <span className="sr-only">Visit {Icon.name}</span>
+            </a>
+          ))}
         </div>
+
       </div>
     </footer>
   )
