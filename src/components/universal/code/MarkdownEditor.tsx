@@ -21,6 +21,7 @@ import MDEditor, {
   codePreview,
   divider,
 } from '@uiw/react-md-editor'
+import { useTheme } from 'next-themes'
 
 interface MarkdownEditorProps {
   value: string
@@ -32,6 +33,13 @@ export default function MarkdownEditor({
   onChange,
 }: MarkdownEditorProps) {
   const [activeTab, setActiveTab] = useState('edit')
+  const { resolvedTheme } = useTheme()
+
+  const getTheme = () => {
+    if (resolvedTheme && ['dark', 'light'].includes(resolvedTheme)) {
+      return resolvedTheme
+    }
+  }
 
   const handleEditorChange = (value?: string) => {
     if (value !== undefined) {
@@ -69,37 +77,45 @@ export default function MarkdownEditor({
 
         {/* Edit Tab */}
         <TabsContent value="edit" className="mt-0">
-          <MDEditor
-            value={value}
-            onChange={handleEditorChange}
-            height={300}
-            preview="edit"
-            highlightEnable={false}
-            fullscreen={false}
-            commands={valid}
-            commandsFilter={(cmd) => {
-              if (
-                [codeLive, codeEdit, fullscreen, codePreview, divider].includes(
-                  cmd
-                )
-              ) {
-                return false
-              }
-              return cmd
-            }}
-            // TODO: maybe give this a shot https://github.com/uiwjs/react-md-editor/issues/419
-          />
+          <div data-color-mode={getTheme()}>
+            <MDEditor
+              value={value}
+              onChange={handleEditorChange}
+              height={300}
+              preview="edit"
+              highlightEnable={false}
+              fullscreen={false}
+              commands={valid}
+              commandsFilter={(cmd) => {
+                if (
+                  [
+                    codeLive,
+                    codeEdit,
+                    fullscreen,
+                    codePreview,
+                    divider,
+                  ].includes(cmd)
+                ) {
+                  return false
+                }
+                return cmd
+              }}
+              // TODO: maybe give this a shot https://github.com/uiwjs/react-md-editor/issues/419
+            />
+          </div>
         </TabsContent>
 
         {/* Preview Tab */}
         <TabsContent value="preview" className="mt-0">
-          <MDEditor
-            value={value}
-            height={300}
-            preview="preview"
-            hideToolbar
-            visibleDragbar={false}
-          />
+          <div data-color-mode={getTheme()}>
+            <MDEditor
+              value={value}
+              height={300}
+              preview="preview"
+              hideToolbar
+              visibleDragbar={false}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </Card>
