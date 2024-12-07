@@ -20,12 +20,12 @@ export default function Hero() {
               </span>
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-              Join our thriving developer community where knowledge flows
-              freely, projects bloom, and every line of code has a story. Get{' '}
-              <strong>tailored feedback</strong>,{' '}
-              <strong>share insights</strong>, and <strong>build</strong>{' '}
-              something extraordinary.
+              Join our thriving developer community where knowledge flows freely, projects bloom, and every line of code has a story. Get{' '}
+              <strong aria-label="Receive tailored feedback">tailored feedback</strong>,{' '}
+              <strong aria-label="Share your insights">share insights</strong>, and{' '}
+              <strong aria-label="Build amazing things">build</strong> something extraordinary.
             </p>
+
           </div>
           <div className="space-x-4">
             <Link href="/questions/browse">

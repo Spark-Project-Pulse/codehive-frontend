@@ -133,6 +133,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         className,
       )}
       viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
+      role="presentation" // Declares this SVG as decorative
+      aria-hidden="true" // Ensures assistive technologies skip this element
     >
       <path
         d={pathD}
@@ -140,6 +142,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         strokeWidth={pathWidth}
         strokeOpacity={pathOpacity}
         strokeLinecap="round"
+        role="presentation" // Declares this path as decorative
       />
       <path
         d={pathD}
@@ -147,6 +150,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         stroke={`url(#${id})`}
         strokeOpacity="1"
         strokeLinecap="round"
+        role="presentation" // Declares this path as decorative
       />
       <defs>
         <motion.linearGradient
@@ -172,6 +176,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
             repeat: Infinity,
             repeatDelay: 0,
           }}
+          role="presentation" // Declares the gradient as decorative
         >
           <stop stopColor={gradientStartColor} stopOpacity="0"></stop>
           <stop stopColor={gradientStartColor}></stop>
