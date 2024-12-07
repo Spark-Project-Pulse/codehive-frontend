@@ -15,7 +15,7 @@ import {
 } from '@radix-ui/react-tooltip'
 
 export const metadata: Metadata = {
-  title: 'CodeHive',
+  title: 'Welcome to CodeHive | Your developer hivemind',
   description: 'Keep on buzzing!',
 }
 import { ThemeProvider } from "@/components/universal/theme-provider"
