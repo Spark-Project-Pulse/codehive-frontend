@@ -13,9 +13,7 @@ export default function Home() {
 
         <main className="flex-grow max-w-screen-lg mx-auto px-6">
           <Hero />
-
           <Features />
-
           <Testimonials />
           <FAQ />
         </main>

@@ -88,8 +88,9 @@ const config: Config = {
 				h1: '6.25rem',
 				h2: '3.125rem',
 				h3: '4.167rem',
-				h4: '2.5rem',
-				p1: '1.25rem',
+				h4: '2.5rem', /* 40px */
+				h5: '1.875rem',
+				p1: '1.25rem', /* 20px */
 				p13: '0.813rem',
 				p15: '0.938rem',
 			},

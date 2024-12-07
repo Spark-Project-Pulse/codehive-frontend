@@ -118,9 +118,9 @@ export default function BrowseCommunities() {
   const handleClearSearchQuery = () => setSearchQuery('')
 
   return (
-    <div className="max-w-7xl p-6">
+    <div className="max-w-7xl p-6 mb-96">
       {/* Main title for the communities page */}
-      <h1 className="text-center text-h2 font-bold text-secondary-foreground">
+      <h1 className="text-center text-h4 font-subHeading text-black mb-10">
         Communities
       </h1>
 
