@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { FileEdit, Eye } from 'lucide-react'
@@ -35,11 +35,13 @@ export default function MarkdownEditor({
   const [activeTab, setActiveTab] = useState('edit')
   const { resolvedTheme } = useTheme()
 
-  const getTheme = () => {
-    if (resolvedTheme && ['dark', 'light'].includes(resolvedTheme)) {
-      return resolvedTheme
+  const editorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (editorRef.current && resolvedTheme) {
+      editorRef.current.setAttribute('data-color-mode', resolvedTheme)
     }
-  }
+  }, [resolvedTheme])
 
   const handleEditorChange = (value?: string) => {
     if (value !== undefined) {
@@ -77,7 +79,7 @@ export default function MarkdownEditor({
 
         {/* Edit Tab */}
         <TabsContent value="edit" className="mt-0">
-          <div data-color-mode={getTheme()}>
+          <div ref={editorRef}>
             <MDEditor
               value={value}
               onChange={handleEditorChange}
@@ -107,7 +109,7 @@ export default function MarkdownEditor({
 
         {/* Preview Tab */}
         <TabsContent value="preview" className="mt-0">
-          <div data-color-mode={getTheme()}>
+          <div ref={editorRef}>
             <MDEditor
               value={value}
               height={300}
