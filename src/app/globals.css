@@ -129,3 +129,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* *************************** START: MDEditor specific *************************** */
+
+/* adjust editor height (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
+.w-md-editor-text {
+  height: 100%;
+}
+
+/* apply our base font to editor */
+.w-md-editor-content .w-md-editor-area .w-md-editor-text-input {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
+  font-weight:500;
+  /* background-color: hsl(var(--background)); */
+}
+
+/* TODO: not sure if we should apply styles to the preview (causes some weird color conflicts) */
+/* .w-md-editor-show-preview .w-md-editor-preview {
+  background-color: hsl(var(--background));
+} */
+
+/* NOTE: `dynamic-md-preview` only applies to the `DynamicMarkdownPreview.tsx` component
+  preview should adapt to content height (cannot use absolute positioning...) */
+.dynamic-md-preview .w-md-editor-preview {
+  position: relative !important;
+  height: auto !important;
+  width: 100% !important; /* Optional: Ensure it fits parent width */
+}
+
+.dynamic-md-preview .w-md-editor-show-preview {
+  height: auto !important;
+}
+
+/* *************************** END: MDEditor specific *************************** */
+

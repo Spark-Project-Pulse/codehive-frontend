@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { type Question } from '@/types/Questions'
 import {
   Card,
@@ -21,6 +20,8 @@ import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
 
 interface QuestionCardProps {
   question: Question
@@ -105,7 +106,7 @@ export default function QuestionCard({
         ) : null}
         <CardTitle className="text-2xl font-bold">{question.title}</CardTitle>
         <CardDescription className="mt-2 text-base">
-          {question.description}
+          <DynamicMarkdownPreview value={question.description} />
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -126,13 +127,7 @@ export default function QuestionCard({
               >
                 <div className="flex items-center">
                   {/* GitHub Icon */}
-                  <Image
-                    src="/github-logo-black.svg"
-                    alt="Github logo"
-                    width={20}
-                    height={20}
-                    className="h-5 w-5"
-                  />
+                  <GitHubLogoIcon />
                   &nbsp;
                   <span>{question.related_project_info?.title}</span>
                 </div>
