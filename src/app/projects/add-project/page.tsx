@@ -30,6 +30,7 @@ export default function AddProject() {
       if (!user) return
 
       try {
+
         // Fetch GitHub repositories using the user's GitHub username
         const githubUsername = user.username
         if (githubUsername) {
@@ -48,6 +49,7 @@ export default function AddProject() {
 
     void fetchUser()
   }, [user, loading])
+
 
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
@@ -85,20 +87,28 @@ export default function AddProject() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle>Add a Project</CardTitle>
-        <CardDescription>
-          Fill out the form below to add a project. You must be logged in (with GitHub) to link a project to one of your repositories.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <ProjectForm
-          repos={repos}
-          onSubmit={handleFormSubmit}
-          isLoading={isLoadingRepos}
-        />
-      </CardContent>
-    </Card>
+    <>
+      <h1 className="text-center text-h4 font-heading relative mb-6">
+        Add a Project
+      </h1>
+      <div className="flex items-center justify-center relative">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <Card className="mx-auto w-full max-w-4xl">
+            <CardHeader>
+              <CardDescription>
+                Fill out the form below to add a project. You must be logged in (with GitHub) to link a project to one of your repositories.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ProjectForm
+                repos={repos}
+                onSubmit={handleFormSubmit}
+                isLoading={isLoadingRepos}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
   )
 }

@@ -22,46 +22,51 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
   }
 
   return (
-    <Card
-      onClick={handleCardClick}
-      className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg"
-    >
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <Avatar className="h-16 w-16">
-            <AvatarImage
-              src={contributor.user_info.profile_image_url}
-              alt="Profile photo"
-            />
-            <AvatarFallback>
-              {contributor.user_info.username.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          {index < 3 && (
-            <div className="text-yellow-500">
-              {index === 0 && <Trophy size={32} aria-label="First" />}
-              {index === 1 && <Medal size={32} aria-label="Second" />}
-              {index === 2 && <Award size={32} aria-label="Third" />}
+    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg hover:md:px-[3%] hover:md:py-[3%] hover:lg:px-[3%] hover:lg:py-[2%] duration-200 hover:from-primary hover:to-tertiary">
+      <Card
+        onClick={handleCardClick}
+        className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+      >
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-start">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={contributor.user_info.profile_image_url}
+                alt="Profile photo"
+              />
+              <AvatarFallback>
+                {contributor.user_info.username.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <CardTitle className="-mt-6 pl-2 pr-2">{contributor.user_info.username}</CardTitle>
+            {index < 3 && (
+              <div className="text-yellow-500">
+                {index === 0 && <Trophy size={32} aria-label="First" />}
+                {index === 1 && <Medal size={32} aria-label="Second" />}
+                {index === 2 && <Award size={32} aria-label="Third" />}
+              </div>
+            )}
+          </div>
+
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-around">
+            <div className="flex flex-col items-center">
+              <span className="text-p15 font-body">Reputation</span>
+              <Badge variant="secondary">
+                {contributor.community_reputation.toLocaleString()}
+              </Badge>
             </div>
-          )}
-        </div>
-        <CardTitle className="mt-2">{contributor.user_info.username}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Reputation:</span>
-            <Badge variant="secondary">
-              {contributor.community_reputation.toLocaleString()}
-            </Badge>
+            <div className="flex flex-col items-center">
+              <span className="text-p15 font-body">Contributions</span>
+              <Badge variant="secondary">
+                {contributor.contributions.toLocaleString()}
+              </Badge>
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Contributions:</span>
-            <span>{contributor.contributions}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 

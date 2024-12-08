@@ -118,9 +118,9 @@ export default function BrowseCommunities() {
   const handleClearSearchQuery = () => setSearchQuery('')
 
   return (
-    <div className="max-w-7xl p-6">
+    <div className="max-w-7xl p-6 mb-96">
       {/* Main title for the communities page */}
-      <h1 className="text-center text-h2 font-bold text-secondary-foreground">
+      <h1 className="text-center text-h4 font-subHeading text-black mb-10">
         Communities
       </h1>
 
@@ -171,12 +171,14 @@ export default function BrowseCommunities() {
               {communities.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {communities.map((community) => (
-                    <CommunityCard
-                      key={community.community_id}
-                      community={community}
-                      tags={tags}
-                      onCardClick={() => handleCommunityClick(community.title)}
-                    />
+                    <div key={community.community_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
+                      <CommunityCard
+                        key={community.community_id}
+                        community={community}
+                        tags={tags}
+                        onCardClick={() => handleCommunityClick(community.title)}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (

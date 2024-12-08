@@ -34,7 +34,7 @@ export const ButtonWithLoading: React.FC<ButtonWithLoadingProps> = ({
       type={buttonType}
       onClick={handleClick}
       disabled={loadingState}
-      className={`flex items-center space-x-2`}
+      className={`flex items-center space-x-2 ml-auto`}
     >
       {loadingState ? (
         <>

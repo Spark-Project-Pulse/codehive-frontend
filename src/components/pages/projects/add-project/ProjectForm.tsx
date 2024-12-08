@@ -72,7 +72,7 @@ export default function ProjectForm({
           name="public"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Project privacy</FormLabel>
+              <FormLabel>Project Privacy</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={(value) => field.onChange(value === 'public')} // Convert string to boolean

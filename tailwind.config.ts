@@ -9,6 +9,9 @@ const config: Config = {
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
+	safelist: [
+		'hexagonal-bg',
+	],
 	// For tailwind themes (colors, spacing, typography, etc)
 	theme: {
 		extend: {
@@ -30,6 +33,10 @@ const config: Config = {
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
+				},
+				tertiary: {
+					DEFAULT: 'hsl(var(--tertiary))',
+					foreground: 'hsl(var(--tertiary))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
@@ -70,15 +77,22 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				heading: ['Luckiest Guy', 'Georgia'],
-				subHeading: ['Ubuntu', 'serif'],
-				body: ['Ubuntu', 'serif']
+				heading: ['Roboto-Black', 'Georgia'],
+				subHeading: ['Roboto-Bold', 'Georgia'],
+				body: ['Lato-Regular', 'Georgia'],
 			},
 			fontSize: {
 				navLogo: '2.5rem',
 				navText: '0.9375rem',
 				h1: '6.25rem',
-				h2: '3.125rem'
+				h2: '3.125rem',
+				h3: '4.167rem',
+				h4: '2.5rem', /* 40px */
+				h5: '1.875rem', /* 30px */
+				h6: '1.5625rem', /* 25px */
+				p1: '1.25rem', /* 20px */
+				p13: '0.813rem',
+				p15: '0.938rem',
 			},
 			keyframes: {
 				marquee: {
