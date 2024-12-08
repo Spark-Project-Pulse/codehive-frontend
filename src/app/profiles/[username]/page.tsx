@@ -29,6 +29,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
 import { Pencil } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
 export default function ProfilePage({
   params,
@@ -49,6 +50,12 @@ export default function ProfilePage({
 
   const { toast } = useToast()
   const router = useRouter()
+
+  const { theme } = useTheme() // Get the current theme (light or dark)
+  const getHoverClass = () =>
+    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+  const getSelectedClass = () =>
+    theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -403,18 +410,20 @@ export default function ProfilePage({
                     </div>
                   ) : (
                     <ul className="space-y-4">
-                      {projects.map((project, index) => (
+                      {projects.map((project) => (
                         <li
-                          key={index}
-                          className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                          key={project.project_id}
+                          className={`cursor-pointer rounded-md p-4 transition-colors duration-300 ${getHoverClass()} ${
+                            project.project_id === currentUser?.user
+                              ? getSelectedClass()
+                              : ''
+                          }`}
                           onClick={() => handleProjectClick(project.project_id)}
                         >
                           <h3 className="text-lg font-semibold">
                             {project.title}
                           </h3>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {project.description}
-                          </p>
+                          <p className="text-sm">{project.description}</p>
                         </li>
                       ))}
                     </ul>
@@ -434,18 +443,20 @@ export default function ProfilePage({
                     <ul className="space-y-4">
                       {questions.map((question) => (
                         <div key={question.question_id} className="relative">
-                          {/* The clickable card */}
                           <li
-                            className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
+                            key={question.question_id}
+                            className={`cursor-pointer rounded-md p-4 transition-colors duration-300 ${getHoverClass()} ${
+                              question.question_id === currentUser?.user
+                                ? getSelectedClass()
+                                : ''
+                            }`}
                             onClick={() =>
                               handleQuestionClick(question.question_id)
                             }
                           >
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-semibold">
-                                {question.title}
-                              </h3>
-                            </div>
+                            <h3 className="text-lg font-semibold">
+                              {question.title}
+                            </h3>
                           </li>
 
                           {/* The "Edit" button, which is outside the clickable card */}
