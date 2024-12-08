@@ -123,7 +123,7 @@ const QuestionsPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="max-w-7xl">
       <h1 className="text-center text-h4 font-subHeading pb-6">
         Questions
       </h1>
