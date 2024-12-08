@@ -77,104 +77,6 @@ export default function QuestionCard({
   }
 
   const QuestionCardContent = (
-    // <Card
-    //   className={`relative w-full ${
-    //     href &&
-    //     'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'
-    //   }`}
-    // >
-    //   <CardHeader>
-    //     {question.related_community_info ? (
-    //       <div
-    //         className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
-    //           !href &&
-    //           `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
-    //         }`}
-    //         onClick={handleCommunityClick}
-    //       >
-    //         <Avatar className="h-10 w-10">
-    //           <AvatarImage
-    //             src={question.related_community_info.avatar_url}
-    //             alt="Community avatar"
-    //           />
-    //           <AvatarFallback>
-    //             {question.related_community_info.title[0]}
-    //           </AvatarFallback>
-    //         </Avatar>
-    //         <span className="text-sm font-normal">
-    //           {question.related_community_info.title}
-    //         </span>
-    //       </div>
-    //     ) : null}
-    //     <CardTitle className="text-2xl font-bold">{question.title}</CardTitle>
-    //     <CardDescription className="mt-2 text-base">
-    //       <DynamicMarkdownPreview value={question.description} />
-    //     </CardDescription>
-    //   </CardHeader>
-    //   <CardContent>
-    //     {/* Display the specific line of code if available */}
-    //     {question.related_project_info?.project_id &&
-    //       question.code_context_full_pathname &&
-    //       typeof question.code_context_line_number === 'number' &&
-    //       question.code_context && (
-    //         <div className="rounded-lg p-4 shadow">
-    //           <h2 className="mb-2 flex items-center">Code Context:</h2>
-    //           <h3
-    //             className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
-    //             onClick={() =>
-    //               router.push(
-    //                 `/projects/${question.related_project_info?.project_id}`
-    //               )
-    //             }
-    //           >
-    //             <div className="flex items-center">
-    //               {/* GitHub Icon */}
-    //               <GitHubLogoIcon />
-    //               &nbsp;
-    //               <span>{question.related_project_info?.title}</span>
-    //             </div>
-    //           </h3>
-    //           <Editor
-    //             loading={<Skeleton className="h-full w-full" />}
-    //             height="20px"
-    //             language={getLanguageFromFilename(
-    //               question.code_context_full_pathname
-    //             )}
-    //             value={question.code_context}
-    //             theme={theme === 'dark' ? 'vs-dark' : 'light'}
-    //             options={{
-    //               lineNumbers: (num) =>
-    //                 (num + question.code_context_line_number).toString(),
-    //               automaticLayout: true,
-    //               selectOnLineNumbers: true,
-    //               readOnly: true,
-    //               minimap: { enabled: false },
-    //               renderLineHighlight: 'all',
-    //               scrollBeyondLastLine: false,
-    //               cursorStyle: 'block',
-    //             }}
-    //           />
-    //         </div>
-    //       )}
-    //     {question.tags && question.tags.length > 0 && (
-    //       <div className="mt-4 flex flex-wrap items-center gap-2">
-    //         <TagIcon className="mr-2 h-4 w-4 text-gray-500" />
-    //         {question.tags.map((tagId, index) => {
-    //           const tag = tags.find((t) => t.value === tagId)
-    //           return tag ? (
-    //             <Badge key={index} variant="secondary">
-    //               {tag.label}
-    //             </Badge>
-    //           ) : null
-    //         })}
-    //       </div>
-    //     )}
-    //   </CardContent>
-    //   <CardFooter className="flex items-center justify-between">
-    //     <div
-    //       className={`flex items-center space-x-4 ${
-    //         question.asker_info && !href
-    //           ? `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
     <div className="to-tertiary rounded-lg bg-gradient-to-b from-primary p-[2px]">
       <Card
         className={`relative w-full ${
@@ -187,7 +89,7 @@ export default function QuestionCard({
             <div
               className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
                 !href &&
-                'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
+                `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
               }`}
               onClick={handleCommunityClick}
             >
@@ -218,12 +120,10 @@ export default function QuestionCard({
             question.code_context_full_pathname &&
             typeof question.code_context_line_number === 'number' &&
             question.code_context && (
-              <div className="rounded-lg bg-gray-50 p-4 shadow">
-                <h2 className="mb-2 flex items-center font-body">
-                  Code Context:
-                </h2>
+              <div className="rounded-lg p-4 shadow">
+                <h2 className="mb-2 flex items-center">Code Context:</h2>
                 <h3
-                  className="inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 hover:bg-gray-100"
+                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
                   onClick={() =>
                     router.push(
                       `/projects/${question.related_project_info?.project_id}`
@@ -264,7 +164,7 @@ export default function QuestionCard({
           <div
             className={`flex items-center space-x-4 ${
               question.asker_info && !href
-                ? 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
+                ? `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
                 : ''
             }`}
             onClick={handleProfileClick}
