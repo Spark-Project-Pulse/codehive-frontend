@@ -25,11 +25,13 @@ import { useTheme } from 'next-themes'
 
 interface MarkdownEditorProps {
   value: string
+  height?: number
   onChange: (value: string) => void
 }
 
 export default function MarkdownEditor({
   value,
+  height,
   onChange,
 }: MarkdownEditorProps) {
   const [activeTab, setActiveTab] = useState('edit')
@@ -83,7 +85,7 @@ export default function MarkdownEditor({
             <MDEditor
               value={value}
               onChange={handleEditorChange}
-              height={300}
+              height={height ?? 300}
               preview="edit"
               highlightEnable={false}
               fullscreen={false}

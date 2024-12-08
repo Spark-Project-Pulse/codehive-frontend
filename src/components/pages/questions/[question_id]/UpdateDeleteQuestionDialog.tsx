@@ -22,7 +22,7 @@ import UpdateQuestionForm, { type FormValues } from './UpdateQuestionForm'
 import { type Question } from '@/types/Questions'
 import { toast } from '@/components/ui/use-toast'
 import { updateQuestion, deleteQuestion } from '@/api/questions'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface UpdateDeleteQuestionDialogProps {
   question: Question
@@ -37,6 +37,18 @@ export default function UpdateDeleteQuestionDialog({
 }: UpdateDeleteQuestionDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
+
+  // Lock and unlock scrolling when the sheet opens or closes
+  useEffect(() => {
+    if (isDialogOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = '' // Clean up in case of unmount
+    }
+  }, [isDialogOpen])
 
   const handleQuestionUpdate = async (form_data: FormValues) => {
     try {

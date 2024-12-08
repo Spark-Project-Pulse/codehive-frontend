@@ -76,6 +76,7 @@ export default function UpdateQuestionForm({
               <FormControl>
                 <MarkdownEditor
                   value={field.value}
+                  height={200}
                   onChange={(value) => field.onChange(value)}
                 />
               </FormControl>
