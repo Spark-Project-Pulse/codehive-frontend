@@ -1,4 +1,3 @@
-import { Half1Icon } from "@radix-ui/react-icons";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 

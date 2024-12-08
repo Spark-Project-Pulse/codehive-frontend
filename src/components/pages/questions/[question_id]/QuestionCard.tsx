@@ -9,8 +9,7 @@ import {
   CardContent,
 } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { CalendarIcon, TagIcon, UserIcon } from 'lucide-react'
+import { CalendarIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { type TagOption } from '@/types/Tags'
