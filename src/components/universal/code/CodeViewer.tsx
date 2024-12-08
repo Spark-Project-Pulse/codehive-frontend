@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { type editor as monacoEditor } from 'monaco-editor'
 import {
@@ -40,10 +40,25 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const { toast } = useToast()
   const router = useRouter()
   const editorLanguage = getLanguageFromFilename(filename) // Get the language from the filename, defaults to plaintext if filename is null
-
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedLine, setSelectedLine] = useState<number | null>(null)
   const codeContext =
     selectedLine !== null ? fileContent?.split('\n')[selectedLine - 1] : ''
+
+  // useEffect to handle body overflow when the sheet is open/closed
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow
+    if (isSheetOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = originalOverflow
+    }
+
+    return () => {
+      // Reset overflow on cleanup
+      document.body.style.overflow = originalOverflow
+    }
+  }, [isSheetOpen])
 
   const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
     // Add click event listener
@@ -132,11 +147,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
       />
       {selectedLine !== null && (
         <div className="fixed bottom-4 right-6 z-50 rounded shadow-lg">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger>
               <Button>Ask on line {selectedLine}</Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="overflow-auto">
               <SheetHeader>
                 <SheetTitle>Ask a Question</SheetTitle>
                 <SheetDescription>

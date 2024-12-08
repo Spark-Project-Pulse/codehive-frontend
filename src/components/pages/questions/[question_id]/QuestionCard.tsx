@@ -43,6 +43,8 @@ export default function QuestionCard({
   const [tags, setTags] = useState<TagOption[]>([])
   const router = useRouter()
 
+  c
+
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -137,6 +139,7 @@ export default function QuestionCard({
                 height="20px"
                 language="javascript" // TODO: Change to actual language
                 value={question.code_context}
+                theme=''
                 options={{
                   lineNumbers: (num) =>
                     (num + question.code_context_line_number).toString(),
