@@ -29,7 +29,6 @@ import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
 import { Pencil } from 'lucide-react'
-import { useTheme } from 'next-themes'
 
 export default function ProfilePage({
   params,
@@ -50,12 +49,6 @@ export default function ProfilePage({
 
   const { toast } = useToast()
   const router = useRouter()
-
-  const { theme } = useTheme() // Get the current theme (light or dark)
-  const getHoverClass = () =>
-    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
-  const getSelectedClass = () =>
-    theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -245,51 +238,6 @@ export default function ProfilePage({
     <div className="container mx-auto">
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">
-          {/* <Card>
-            <CardHeader className="flex flex-col items-center">
-              <div className="relative h-32 w-32">
-                <Avatar className="h-32 w-32 rounded-full bg-muted">
-                  <AvatarImage
-                    src={`${user?.profile_image_url}?t=${Date.now()}`}
-                    alt="User profile picture"
-                  />
-                  <AvatarFallback className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground">
-                    {user?.username?.charAt(0).toUpperCase() ?? 'G'}
-                  </AvatarFallback>
-                </Avatar>
-                {isCurrentUser && (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        className="edit-icon absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center border-none p-0"
-                        aria-label="Edit Profile"
-                      >
-                        <Pencil className="h-5 w-5" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="absolute top-full z-10 mt-2 max-w-xs rounded-md p-3 shadow-lg sm:max-w-sm md:max-w-md">
-                      <div className="grid gap-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium leading-none">
-                            Profile Picture
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            A picture helps people recognize you and lets you
-                            know when you signed in to your account
-                          </p>
-                        </div>
-                        <div className="grid gap-2">
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Button
-                              variant="outline"
-                              onClick={() => handleShowEditProfileClick()}
-                              id="width"
-                              className="col-span-2 h-10"
-                            >
-                              {' '}
-                              Change Image
-                              <Pencil />
-                            </Button> */}
           <div className="to-tertiary rounded-md bg-gradient-to-b from-primary p-[2px]">
             <Card>
               <CardHeader className="flex flex-col items-center">
@@ -306,16 +254,12 @@ export default function ProfilePage({
                   {isCurrentUser && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button
-                          className="edit-icon absolute bottom-2 right-2 h-6 w-6 cursor-pointer border-none bg-transparent p-0"
+                        <Button
+                          className="edit-icon absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center border-none p-0"
                           aria-label="Edit Profile"
                         >
-                          <img
-                            src="/edit_pencil.svg"
-                            alt="Edit Profile"
-                            className="h-full w-full"
-                          />
-                        </button>
+                          <Pencil className="h-5 w-5" />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-80">
                         <div className="grid gap-4">
@@ -338,94 +282,9 @@ export default function ProfilePage({
                               >
                                 {' '}
                                 Change Image
-                                <img
-                                  src="/edit_pencil.svg"
-                                  alt="Edit Profile"
-                                  className="h-full w-full"
-                                />
+                                <Pencil />
                               </Button>
                             </div>
-                            {/* )}
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </div>
-              <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <BadgeComponent variant="secondary" className="px-3 py-1 text-lg">
-                Reputation: {user?.reputation}
-              </BadgeComponent>
-              {!isBadgesLoading && badges.length > 0 && (
-                <div className="mt-4 grid grid-cols-6 justify-items-center gap-x-4 gap-y-4">
-                  {badges.map((userBadge) => {
-                    const {
-                      badge_info,
-                      badge_tier_info,
-                      progress_value,
-                      progress_target,
-                    } = userBadge
-
-                    // Determine which badge info to display
-                    const displayBadge = badge_tier_info ?? badge_info
-
-                    return (
-                      <Popover key={userBadge.id}>
-                        <PopoverTrigger asChild>
-                          <div className="relative">
-                            <img
-                              src={
-                                displayBadge.image_url ?? '/default-badge.png'
-                              }
-                              alt={displayBadge.name}
-                              className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
-                            />
-                            {badge_tier_info && (
-                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-full bg-primary px-1 text-xs font-bold leading-none text-primary-foreground">
-                                {badge_tier_info.tier_level}
-                              </span>
-                            )}
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="absolute top-full z-10 mt-2 max-w-xs rounded-md bg-card p-3 text-card-foreground shadow-lg sm:max-w-sm md:max-w-md">
-                          <h4 className="break-words text-base font-medium">
-                            {displayBadge.name || 'Unnamed Badge'}
-                          </h4>
-                          <p className="mt-2 break-words text-sm text-muted-foreground">
-                            {displayBadge.description ||
-                              'No description available.'}
-                          </p>
-                          {badge_tier_info && (
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              Tier {badge_tier_info.tier_level}
-                            </p>
-                          )}
-                          {progress_target ? (
-                            <div className="mt-2 text-sm">
-                              <p className="text-muted-foreground">
-                                Progress: {progress_value}/{progress_target}
-                              </p>
-                              <div className="relative mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
-                                <div
-                                  className="absolute h-full rounded-full bg-chart-1"
-                                  style={{
-                                    width: `${((progress_value ?? 0) / (progress_target ?? 1)) * 100}%`,
-                                  }}
-                                ></div>
-                              </div>
-                            </div>
-                          ) : (
-                            <p className="mt-2 text-sm text-accent">
-                              Congratulations! You&apos;ve reached the highest
-                              tier!
-                            </p>
-                          )}
-                        </PopoverContent>
-                      </Popover>
-                    )
-                  })} */}
                             {showUploadFiles && (
                               <div className="grid grid-cols-3 items-center gap-4">
                                 <Input
@@ -553,12 +412,6 @@ export default function ProfilePage({
                     <ul className="space-y-4">
                       {projects.map((project, index) => (
                         <li
-                          // key={project.project_id}
-                          // className={`cursor-pointer rounded-md p-4 transition-colors duration-300 ${getHoverClass()} ${
-                          //   project.project_id === currentUser?.user
-                          //     ? getSelectedClass()
-                          //     : ''
-                          // }`}
                           key={index}
                           className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-secondary"
                           onClick={() => handleProjectClick(project.project_id)}
