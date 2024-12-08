@@ -14,6 +14,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from '@/components/ui/resizable'
+import { useTheme } from 'next-themes'
 
 interface FileBrowserProps {
   project: Project
@@ -36,18 +37,21 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
   isLoadingFileContent,
   fileContent,
 }) => {
+  const { theme } = useTheme() // Get the current theme (light or dark)
+
   const renderItem = (item: FileSystemItem) => {
     const isExpanded = item.isExpanded
     const isSelected = item.path === currentFilePath
     const isLoading =
       item.path === (isLoadingDirectory ? currentFilePath : null)
 
+    const selectedBg = theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
+    const hoverBg = theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+
     return (
       <div key={item.path}>
         <div
-          className={`flex cursor-pointer items-center px-2 py-1 hover:bg-gray-100 ${
-            isSelected ? 'bg-blue-100' : ''
-          }`}
+          className={`flex cursor-pointer items-center px-2 py-1 ${isSelected ? selectedBg : ''} ${hoverBg} transition-colors duration-150`}
           onClick={() =>
             item.type === 'folder'
               ? handleFolderClick(item.path)

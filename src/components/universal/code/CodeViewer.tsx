@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 import { type Project } from '@/types/Projects'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { useTheme } from 'next-themes'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -35,6 +36,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   language = 'javascript', // TODO: dynamically pass this from parent component
   loading = true,
 }) => {
+  const { theme } = useTheme() // Get the current theme (light or dark)
   const { toast } = useToast()
   const router = useRouter()
 
@@ -81,7 +83,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: errorMessage ?? 'There was an error submitting your question.',
+          description:
+            errorMessage ?? 'There was an error submitting your question.',
         })
       }
     } catch (error) {
@@ -123,6 +126,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           scrollBeyondLastLine: false,
           cursorStyle: 'block',
         }}
+        theme={theme === 'dark' ? 'vs-dark' : 'light'}
         onMount={handleEditorMount}
       />
       {selectedLine !== null && (
