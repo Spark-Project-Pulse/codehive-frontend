@@ -95,10 +95,10 @@ export default function CreateCommunityPage() {
       />
 
       {/* Main Community Creation Card */}
-      <h1 className="text-center text-h4 font-heading -mb-20 relative top-16">
+      <h1 className="text-center text-h4 font-heading relative">
         Create a New Community
       </h1>
-      <div className="flex items-center justify-center min-h-screen relative -top-12">
+      <div className="flex items-center justify-center min-h-screen relative">
         <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
           <Card className="mx-auto w-full max-w-2xl">
             <CardHeader>

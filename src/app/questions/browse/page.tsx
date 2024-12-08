@@ -11,6 +11,8 @@ import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import QuestionCard from '@/components/pages/questions/[question_id]/QuestionCard'
 import SkeletonQuestionCard from '@/components/pages/questions/[question_id]/SkeletonQuestionCard'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 const QuestionsPage: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -27,6 +29,8 @@ const QuestionsPage: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
+  const router = useRouter()
 
   // Fetch Questions with Pagination, Filtering, and Search
   useEffect(() => {
@@ -113,79 +117,95 @@ const QuestionsPage: React.FC = () => {
 
   const handleClearSearchQuery = () => setSearchQuery('')
 
+  // Naviage to ask questions page, include community id as a query parameter
+  const handleAskQuestionClick = () => {
+    router.push(`/questions/ask-question`)
+  }
+
   return (
-    <div className="max-w-7xl p-6">
-      <h1 className="text-center text-h2 font-bold">
+    <div>
+      <h1 className="text-center text-h4 font-subHeading">
         Questions
       </h1>
 
-      <div className="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0">
-        <SearchAndTagComponent
-          tags={tags}
-          selectedTags={selectedTags}
-          onSearchChange={handleSearchChange}
-          onTagChange={setSelectedTags}
-          onClearFilters={clearFilters}
-          searchQuery={searchQuery}
-        />
+      <div className="p-6">
 
-        <main className="md:w-3/4">
-          {isLoading && (
-            <ul className="space-y-6">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <SkeletonQuestionCard href key={index} />
-              ))}
-            </ul>
-          )}
 
-          {hasError && (
-            <div className="my-10 text-center text-destructive">
-              <p>
-                Something went wrong while fetching the questions. Please try
-                again later.
-              </p>
+        <div className="flex pt-12 pl-36 pr-36">
+          <div className="space-y-6 pr-12">
+            <div className="mb-2">
+              <Button onClick={handleAskQuestionClick} className="rounded-lg px-4 py-2 w-full">
+                Ask Question
+              </Button>
             </div>
-          )}
+            <SearchAndTagComponent
+              tags={tags}
+              selectedTags={selectedTags}
+              onSearchChange={handleSearchChange}
+              onTagChange={setSelectedTags}
+              onClearFilters={clearFilters}
+              searchQuery={searchQuery}
+            />
+          </div>
 
-          {!isLoading && !hasError && (
-            <>
-              {(selectedTags.length > 0 || searchQuery.trim()) && (
-                <ActiveFilters
-                  selectedTags={selectedTags}
-                  searchQuery={searchQuery}
-                  onRemoveTag={handleRemoveTag}
-                  onClearSearchQuery={handleClearSearchQuery}
-                />
-              )}
-
+          <main className="md:w-3/4">
+            {isLoading && (
               <ul className="space-y-6">
-                {questions.length > 0 ? (
-                  questions.map((question) => (
-                    <li key={question.question_id.toString()}>
-                      <QuestionCard
-                        question={question}
-                        href={`/questions/${question.question_id}`}
-                      />
-                    </li>
-                  ))
-                ) : (
-                  <p className="text-center text-lg text-gray-700">
-                    No questions match your search criteria.
-                  </p>
-                )}
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <SkeletonQuestionCard href key={index} />
+                ))}
               </ul>
+            )}
 
-              {/* Use Pagination Component */}
-              {totalPages > 1 && (
-                <PaginationComponent
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage} // Pass setCurrentPage directly
-                />
-              )}
-            </>
-          )}
-        </main>
+            {hasError && (
+              <div className="my-10 text-center text-destructive">
+                <p>
+                  Something went wrong while fetching the questions. Please try
+                  again later.
+                </p>
+              </div>
+            )}
+
+            {!isLoading && !hasError && (
+              <>
+                {(selectedTags.length > 0 || searchQuery.trim()) && (
+                  <ActiveFilters
+                    selectedTags={selectedTags}
+                    searchQuery={searchQuery}
+                    onRemoveTag={handleRemoveTag}
+                    onClearSearchQuery={handleClearSearchQuery}
+                  />
+                )}
+
+                <ul className="space-y-12">
+                  {questions.length > 0 ? (
+                    questions.map((question) => (
+                      <li key={question.question_id.toString()}>
+                        <QuestionCard
+                          question={question}
+                          href={`/questions/${question.question_id}`}
+                        />
+                      </li>
+                    ))
+                  ) : (
+                    <p className="text-center text-lg text-gray-700">
+                      No questions match your search criteria.
+                    </p>
+                  )}
+                </ul>
+
+                {/* Use Pagination Component */}
+                {totalPages > 1 && (
+                  <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage} // Pass setCurrentPage directly
+                  />
+                )}
+              </>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   )

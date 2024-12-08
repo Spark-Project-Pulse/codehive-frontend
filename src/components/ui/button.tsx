@@ -9,13 +9,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-black text-primary-foreground hover:bg-primary hover:text-black",
+        default: "bg-black text-primary-foreground hover:bg-primary hover:text-black border-2 border-black",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
           "bg-background hover:bg-accent hover:text-accent-foreground",
         outline_main:
-          "bg-background hover:bg-accent hover:text-accent-foreground",
+          "bg-background hover:shadow-lg",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -55,8 +55,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (variant === "outline_main") {
       return (
-        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md inline-flex">
-          <div className="w-full h-full bg-background rounded-md">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg inline-flex">
+          <div className="w-full h-full rounded-md">
             {buttonContent}
           </div>
         </div>

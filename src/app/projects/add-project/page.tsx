@@ -82,8 +82,8 @@ export default function AddProject() {
 
   return (
 
-    <div className="mb-10 relative -top-20">
-      <h1 className="text-center text-h4 font-heading -mb-20 relative top-28">
+    <div className="mb-10 relative">
+      <h1 className="text-center text-h4 font-heading relative">
         Add a Project
       </h1>
       <div className="flex items-center justify-center min-h-screen">

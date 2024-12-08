@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import './globals.css'
+import './../../app/globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { UserProvider } from '@/app/contexts/UserContext'
 import {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 import { ThemeProvider } from "@/components/universal/theme-provider"
 import SiteFooter from '@/components/universal/footer/footer'
 
-export default function RootLayout({
+export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -52,7 +52,7 @@ export default function RootLayout({
                     </Tooltip>
                   </div>
                 </header>
-                <main className="flex-grow ml-28 mr-28 mt-28">{children}</main>
+                <main className="flex-grow">{children}</main>
                 <SiteFooter />
                 <Toaster />
               </SidebarInset>

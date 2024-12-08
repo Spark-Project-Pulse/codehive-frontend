@@ -184,7 +184,7 @@ export default function ProfilePage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto">
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">
           <Card>
@@ -257,11 +257,12 @@ export default function ProfilePage({
                   </Popover>
                 )}
               </div>
-              <CardTitle className="mt-4 text-2xl">{user?.username}</CardTitle>
+              <CardTitle className="mt-4 font-subHeading text-h5">{user?.username}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <Badge variant="secondary" className="px-3 py-1 text-lg">
-                Reputation: {user?.reputation}
+              Reputation
+              <Badge variant="tertiary" className="px-2.5 py-1 text-p20 font-body ml-2">
+                {user?.reputation}
               </Badge>
             </CardContent>
           </Card>
