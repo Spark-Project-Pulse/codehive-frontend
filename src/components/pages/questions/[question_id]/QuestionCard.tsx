@@ -23,6 +23,7 @@ import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
 import { useTheme } from 'next-themes'
+import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 
 interface QuestionCardProps {
   question: Question
@@ -137,7 +138,9 @@ export default function QuestionCard({
               <Editor
                 loading={<Skeleton className="h-full w-full" />}
                 height="20px"
-                language="javascript" // TODO: Change to actual language
+                language={getLanguageFromFilename(
+                  question.code_context_full_pathname
+                )}
                 value={question.code_context}
                 theme={theme === 'dark' ? 'vs-dark' : 'light'}
                 options={{
