@@ -14,7 +14,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { getUserBadges, getUserBadgeProgress } from '@/api/badges'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { useEffect, useState } from 'react'
 import { getUserByUsername, uploadProfileImage } from '@/api/users'
 import { getQuestionsByUserId } from '@/api/questions'
@@ -24,6 +28,7 @@ import { useUser } from '@/app/contexts/UserContext'
 import { useToast } from '@/components/ui/use-toast'
 import { AvatarFallback } from '@radix-ui/react-avatar'
 import UpdateDeleteQuestionDialog from '@/components/pages/questions/[question_id]/UpdateDeleteQuestionDialog'
+import { Pencil } from 'lucide-react'
 
 export default function ProfilePage({
   params,
@@ -35,12 +40,12 @@ export default function ProfilePage({
   const [questions, setQuestions] = useState<Question[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [showUploadFiles, setShowUploadFiles] = useState<boolean>(false)
-  const [badges, setBadges] = useState<UserBadge[]>([]);
-  const [isUserLoading, setIsUserLoading] = useState(true);
-  const [isProjectsLoading, setIsProjectsLoading] = useState(true);
-  const [isQuestionsLoading, setIsQuestionsLoading] = useState(true);
-  const [isBadgesLoading, setIsBadgesLoading] = useState(true);
-  const isCurrentUser = user?.user === currentUser?.user;
+  const [badges, setBadges] = useState<UserBadge[]>([])
+  const [isUserLoading, setIsUserLoading] = useState(true)
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true)
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(true)
+  const [isBadgesLoading, setIsBadgesLoading] = useState(true)
+  const isCurrentUser = user?.user === currentUser?.user
 
   const { toast } = useToast()
   const router = useRouter()
@@ -114,46 +119,47 @@ export default function ProfilePage({
 
     const fetchBadges = async () => {
       if (!user?.user) {
-        console.error('User ID is undefined.');
-        return;
+        console.error('User ID is undefined.')
+        return
       }
-      setIsBadgesLoading(true);
+      setIsBadgesLoading(true)
 
       try {
         // Fetch UserBadges and UserBadgeProgress
-        const response = await getUserBadges(user.user);
-        const progressResponse = await getUserBadgeProgress(user.user);
+        const response = await getUserBadges(user.user)
+        const progressResponse = await getUserBadgeProgress(user.user)
 
         if (response.errorMessage || progressResponse.errorMessage) {
-          console.error('Error fetching badges or progress:', response.errorMessage ?? progressResponse.errorMessage);
-          return;
+          console.error(
+            'Error fetching badges or progress:',
+            response.errorMessage ?? progressResponse.errorMessage
+          )
+          return
         }
 
-        const userBadges: UserBadge[] = response.data!;
-        const userBadgeProgress: UserBadgeProgress[] = progressResponse.data!;
+        const userBadges: UserBadge[] = response.data!
+        const userBadgeProgress: UserBadgeProgress[] = progressResponse.data!
 
         // Merge progress data into badges
         const badgesWithProgress = userBadges.map((badge) => {
           const progress = userBadgeProgress.find(
             (p) => p.badge_info.badge_id === badge.badge_info.badge_id
-          );
+          )
 
           return {
             ...badge,
             progress_value: progress?.progress_value ?? 0,
             progress_target: progress?.progress_target ?? 0,
-          };
-        });
+          }
+        })
 
-        setBadges(badgesWithProgress);
+        setBadges(badgesWithProgress)
       } catch (error) {
-        console.error('Error fetching badges or progress:', error);
+        console.error('Error fetching badges or progress:', error)
       } finally {
-        setIsBadgesLoading(false);
+        setIsBadgesLoading(false)
       }
-    };
-
-
+    }
 
     // Only fetch questions/projects/profileImage if user is set
     if (user) {
@@ -247,18 +253,14 @@ export default function ProfilePage({
                 {isCurrentUser && (
                   <Popover>
                     <PopoverTrigger asChild>
-                      <button
-                        className="edit-icon absolute bottom-2 right-2 h-6 w-6 cursor-pointer border-none bg-transparent p-0"
+                      <Button
+                        className="edit-icon absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center border-none p-0"
                         aria-label="Edit Profile"
                       >
-                        <img
-                          src="/edit_pencil.svg"
-                          alt="Edit Profile"
-                          className="h-full w-full"
-                        />
-                      </button>
+                        <Pencil className="h-5 w-5" />
+                      </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="absolute top-full mt-2 bg-white shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md">
+                    <PopoverContent className="absolute top-full z-10 mt-2 max-w-xs rounded-md p-3 shadow-lg sm:max-w-sm md:max-w-md">
                       <div className="grid gap-4">
                         <div className="space-y-2">
                           <h4 className="font-medium leading-none">
@@ -279,11 +281,7 @@ export default function ProfilePage({
                             >
                               {' '}
                               Change Image
-                              <img
-                                src="/edit_pencil.svg"
-                                alt="Edit Profile"
-                                className="h-full w-full"
-                              />
+                              <Pencil />
                             </Button>
                           </div>
                           {showUploadFiles && (
@@ -309,38 +307,46 @@ export default function ProfilePage({
                 Reputation: {user?.reputation}
               </BadgeComponent>
               {!isBadgesLoading && badges.length > 0 && (
-                <div className="mt-4 grid grid-cols-6 gap-x-4 gap-y-4 justify-items-center">
+                <div className="mt-4 grid grid-cols-6 justify-items-center gap-x-4 gap-y-4">
                   {badges.map((userBadge) => {
-                    const { badge_info, badge_tier_info, progress_value, progress_target } = userBadge;
+                    const {
+                      badge_info,
+                      badge_tier_info,
+                      progress_value,
+                      progress_target,
+                    } = userBadge
 
                     // Determine which badge info to display
-                    const displayBadge = badge_tier_info ?? badge_info;
+                    const displayBadge = badge_tier_info ?? badge_info
 
                     return (
                       <Popover key={userBadge.id}>
                         <PopoverTrigger asChild>
                           <div className="relative">
                             <img
-                              src={displayBadge.image_url ?? '/default-badge.png'}
+                              src={
+                                displayBadge.image_url ?? '/default-badge.png'
+                              }
                               alt={displayBadge.name}
                               className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
                             />
                             {badge_tier_info && (
-                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-primary-foreground bg-primary rounded-full">
+                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center rounded-full bg-primary px-1 text-xs font-bold leading-none text-primary-foreground">
                                 {badge_tier_info.tier_level}
                               </span>
                             )}
                           </div>
                         </PopoverTrigger>
-                        <PopoverContent className="absolute top-full mt-2 bg-card shadow-lg rounded-md p-3 z-10 max-w-xs sm:max-w-sm md:max-w-md text-card-foreground">
-                          <h4 className="font-medium text-base break-words">
+                        <PopoverContent className="absolute top-full z-10 mt-2 max-w-xs rounded-md bg-card p-3 text-card-foreground shadow-lg sm:max-w-sm md:max-w-md">
+                          <h4 className="break-words text-base font-medium">
                             {displayBadge.name || 'Unnamed Badge'}
                           </h4>
-                          <p className="text-sm text-muted-foreground mt-2 break-words">
-                            {displayBadge.description || 'No description available.'}
+                          <p className="mt-2 break-words text-sm text-muted-foreground">
+                            {displayBadge.description ||
+                              'No description available.'}
                           </p>
                           {badge_tier_info && (
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="mt-1 text-sm text-muted-foreground">
                               Tier {badge_tier_info.tier_level}
                             </p>
                           )}
@@ -349,9 +355,9 @@ export default function ProfilePage({
                               <p className="text-muted-foreground">
                                 Progress: {progress_value}/{progress_target}
                               </p>
-                              <div className="relative h-2 w-full bg-muted rounded-full overflow-hidden mt-1">
+                              <div className="relative mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
                                 <div
-                                  className="absolute h-full bg-chart-1 rounded-full"
+                                  className="absolute h-full rounded-full bg-chart-1"
                                   style={{
                                     width: `${((progress_value ?? 0) / (progress_target ?? 1)) * 100}%`,
                                   }}
@@ -359,13 +365,14 @@ export default function ProfilePage({
                               </div>
                             </div>
                           ) : (
-                            <p className="text-sm text-accent mt-2">
-                              Congratulations! You&apos;ve reached the highest tier!
+                            <p className="mt-2 text-sm text-accent">
+                              Congratulations! You&apos;ve reached the highest
+                              tier!
                             </p>
                           )}
                         </PopoverContent>
                       </Popover>
-                    );
+                    )
                   })}
                 </div>
               )}
