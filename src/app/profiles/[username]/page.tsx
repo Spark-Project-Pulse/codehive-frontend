@@ -288,35 +288,18 @@ export default function ProfilePage({
                                 />
                               </Button>
                             </div>
-                            <div className="grid gap-2">
+                            {showUploadFiles && (
                               <div className="grid grid-cols-3 items-center gap-4">
-                                <Button
-                                  variant="outline"
-                                  onClick={() => handleShowEditProfileClick()}
-                                  id="width"
+                                <Input
+                                  type="file"
+                                  id="height"
                                   className="col-span-2 h-10"
-                                >
-                                  {' '}
-                                  Change Image
-                                  <img
-                                    src="/edit_pencil.svg"
-                                    alt="Edit Profile"
-                                    className="h-full w-full"
-                                  />
-                                </Button>
+                                  onChange={handlePhotoUpload}
+                                />
                               </div>
-                              {showUploadFiles && (
-                                <div className="grid grid-cols-3 items-center gap-4">
-                                  <Input
-                                    type="file"
-                                    id="height"
-                                    className="col-span-2 h-10"
-                                    onChange={handlePhotoUpload}
-                                  />
-                                </div>
-                              )}
-                            </div>
+                            )}
                           </div>
+
                         </div>
                       </PopoverContent>
                     </Popover>
