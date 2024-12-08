@@ -4,12 +4,11 @@ import FAQ from "@/components/pages/home/FAQ";
 import Features from "@/components/pages/home/Features";
 import Hero from "@/components/pages/home/Hero";
 import Testimonials from "@/components/pages/home/Testimonials";
-import HomeLayout from "@/components/universal/home-layout";
 
 export default function Home() {
 
   return (
-    <HomeLayout>
+    <div className="-ml-28 -mr-28 -mt-28">
       <div className="hexagonal-bg">
         <div className="flex flex-col min-h-screen py-12 md:py-24 lg:py-32 xl:py-48">
 
@@ -21,6 +20,6 @@ export default function Home() {
           </main>
         </div>
       </div>
-    </HomeLayout>
+    </div>
   );
 }
