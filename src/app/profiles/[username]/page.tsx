@@ -187,96 +187,99 @@ export default function ProfilePage({
     <div className="container mx-auto">
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">
-          <Card>
-            <CardHeader className="flex flex-col items-center">
-              <div className="relative h-32 w-32">
-                <Avatar className="h-32 w-32 rounded-full bg-muted">
-                  <AvatarImage
-                    src={`${user?.profile_image_url}?t=${Date.now()}`}
-                    alt="User profile picture"
-                  />
-                  <AvatarFallback className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground">
-                    {user?.username?.charAt(0).toUpperCase() ?? 'G'}
-                  </AvatarFallback>
-                </Avatar>
-                {isCurrentUser && (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        className="edit-icon absolute bottom-2 right-2 h-6 w-6 cursor-pointer border-none bg-transparent p-0"
-                        aria-label="Edit Profile"
-                      >
-                        <img
-                          src="/edit_pencil.svg"
-                          alt="Edit Profile"
-                          className="h-full w-full"
-                        />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80">
-                      <div className="grid gap-4">
-                        <div className="space-y-2">
-                          <h4 className="font-medium leading-none">
-                            Profile Picture
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            A picture helps people recognize you and lets you
-                            know when you signed in to your account
-                          </p>
-                        </div>
-                        <div className="grid gap-2">
-                          <div className="grid grid-cols-3 items-center gap-4">
-                            <Button
-                              variant="outline"
-                              onClick={() => handleShowEditProfileClick()}
-                              id="width"
-                              className="col-span-2 h-10"
-                            >
-                              {' '}
-                              Change Image
-                              <img
-                                src="/edit_pencil.svg"
-                                alt="Edit Profile"
-                                className="h-full w-full"
-                              />
-                            </Button>
+          <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+            <Card>
+              <CardHeader className="flex flex-col items-center">
+                <div className="relative h-32 w-32">
+                  <Avatar className="h-32 w-32 rounded-full bg-muted">
+                    <AvatarImage
+                      src={`${user?.profile_image_url}?t=${Date.now()}`}
+                      alt="User profile picture"
+                    />
+                    <AvatarFallback className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground">
+                      {user?.username?.charAt(0).toUpperCase() ?? 'G'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isCurrentUser && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          className="edit-icon absolute bottom-2 right-2 h-6 w-6 cursor-pointer border-none bg-transparent p-0"
+                          aria-label="Edit Profile"
+                        >
+
+                          <img
+                            src="/edit_pencil.svg"
+                            alt="Edit Profile"
+                            className="h-full w-full"
+                          />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-medium leading-none">
+                              Profile Picture
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              A picture helps people recognize you and lets you
+                              know when you signed in to your account
+                            </p>
                           </div>
-                          {showUploadFiles && (
+                          <div className="grid gap-2">
                             <div className="grid grid-cols-3 items-center gap-4">
-                              <Input
-                                type="file"
-                                id="height"
+                              <Button
+                                variant="outline"
+                                onClick={() => handleShowEditProfileClick()}
+                                id="width"
                                 className="col-span-2 h-10"
-                                onChange={handlePhotoUpload}
-                              />
+                              >
+                                {' '}
+                                Change Image
+                                <img
+                                  src="/edit_pencil.svg"
+                                  alt="Edit Profile"
+                                  className="h-full w-full"
+                                />
+                              </Button>
                             </div>
-                          )}
+                            {showUploadFiles && (
+                              <div className="grid grid-cols-3 items-center gap-4">
+                                <Input
+                                  type="file"
+                                  id="height"
+                                  className="col-span-2 h-10"
+                                  onChange={handlePhotoUpload}
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </div>
-              <CardTitle className="mt-4 font-subHeading text-h5">{user?.username}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              Reputation
-              <Badge variant="tertiary" className="px-2.5 py-1 text-p20 font-body ml-2">
-                {user?.reputation}
-              </Badge>
-            </CardContent>
-          </Card>
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>
+                <CardTitle className="mt-4 font-subHeading text-h5">{user?.username}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                Reputation
+                <Badge variant="tertiary" className="px-2.5 py-1 text-p20 font-body ml-2">
+                  {user?.reputation}
+                </Badge>
+              </CardContent>
+            </Card>
+          </div>
         </div>
         <div className="md:w-2/3">
           <Tabs defaultValue="projects" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="projects">Projects</TabsTrigger>
               <TabsTrigger value="questions">Questions</TabsTrigger>
             </TabsList>
             <TabsContent value="projects">
               <Card>
                 <CardHeader>
-                  <CardTitle>Projects</CardTitle>
+                  <CardTitle className="text-h6">Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {isProjectsLoading ? (
@@ -313,32 +316,35 @@ export default function ProfilePage({
             <TabsContent value="questions">
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Questions</CardTitle>
+                  <CardTitle className="text-h6">Questions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {isQuestionsLoading ? (
                     <QuestionsSkeleton />
                   ) : (
-                    <ul className="space-y-4">
+                    <ul className="space-y-4 ml-4">
                       {questions.map((question) => (
-                        <div key={question.question_id} className="relative">
-                          {/* The clickable card */}
-                          <li
-                            className="cursor-pointer rounded-md border-b p-4 transition-colors duration-300 last:border-b-0 hover:bg-gray-200"
-                            onClick={() =>
-                              handleQuestionClick(question.question_id)
-                            }
-                          >
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-semibold">
+                        <div key={question.question_id} className="flex items-center justify-between">
+                          <div className="border-b border-primary flex-grow mr-4">
+                            {/* The clickable card */}
+                            <li
+                              className="cursor-pointer rounded-md p-4 transition-colors duration-300 last:border-b-0 hover:bg-secondary"
+                              onClick={() =>
+                                handleQuestionClick(question.question_id)
+                              }
+                            >
+
+                              <h3 className="text-p15 font-body font-semibold">
                                 {question.title}
                               </h3>
-                            </div>
-                          </li>
 
+                            </li>
+
+
+                          </div>
                           {/* The "Edit" button, which is outside the clickable card */}
                           {isCurrentUser && (
-                            <div className="absolute right-4 top-4">
+                            <div className="">
                               <UpdateDeleteQuestionDialog
                                 question={question}
                                 onUpdate={handleQuestionUpdate}
@@ -347,6 +353,7 @@ export default function ProfilePage({
                             </div>
                           )}
                         </div>
+
                       ))}
                     </ul>
                   )}
@@ -356,6 +363,6 @@ export default function ProfilePage({
           </Tabs>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
