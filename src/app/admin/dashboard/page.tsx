@@ -3,7 +3,7 @@
 import { getCurrentUserRole } from '@/api/users'
 import AccessDenied from '@/app/access-denied'
 import { useUser } from '@/app/contexts/UserContext'
-import CommunityRequestsTab from '@/components/pages/admin/dashboard/CommunityRequestsTab'
+import HiveRequestsTab from '@/components/pages/admin/dashboard/HiveRequestsTab'
 import AdminDashboardSkeleton from '@/components/skeletons/AdminDashboardSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type UserRole } from '@/types/Users'
@@ -63,11 +63,11 @@ export default function AdminDashboard() {
                 Dashboard
               </TabsTrigger>
               <TabsTrigger
-                value="community-requests"
+                value="hive-requests"
                 className="flex items-center"
               >
                 <CheckCircle className="mr-2 h-4 w-4" />
-                Community Requests
+                Hive Requests
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center">
                 <Users className="mr-2 h-4 w-4" />
@@ -89,8 +89,8 @@ export default function AdminDashboard() {
               </p>
             </TabsContent>
 
-            <TabsContent value="community-requests">
-              <CommunityRequestsTab />
+            <TabsContent value="hive-requests">
+              <HiveRequestsTab />
             </TabsContent>
 
             <TabsContent value="users">

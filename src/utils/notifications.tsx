@@ -52,23 +52,23 @@ export function generateNotificationContent(
       link = notification.comment ? `/comments/${notification.comment}` : link
       break
 
-    case 'community_accepted':
-      link = notification.community_info?.title
-        ? `/communities/${notification.community_info?.title}`
+    case 'hive_accepted':
+      link = notification.hive_info?.title
+        ? `/hives/${notification.hive_info?.title}`
         : link
       message = (
         <>
-          Your community request for{' '}
+          Your hive request for{' '}
           <a href={link}>
-            <Badge>{notification.community_info?.title ?? 'n/a'}</Badge>
+            <Badge>{notification.hive_info?.title ?? 'n/a'}</Badge>
           </a>{' '}
           was accepted!
         </>
       )
       break
 
-    case 'community_rejected':
-      message = `Your community request for "${notification.community_title ?? 'a community'}" was rejected.`
+    case 'hive_rejected':
+      message = `Your hive request for "${notification.hive_title ?? 'a hive'}" was rejected.`
       break
 
     default:

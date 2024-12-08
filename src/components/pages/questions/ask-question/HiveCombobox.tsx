@@ -17,89 +17,89 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { cn } from '@/lib/utils'
-import { type CommunityOption } from '@/types/Communities'
-import { getAllCommunityOptions } from '@/api/communities'
+import { type HiveOption } from '@/types/Hives'
+import { getAllHiveOptions } from '@/api/hives'
 
-interface CommunityComboboxProps {
+interface HiveComboboxProps {
   defaultValue: string
   onChange: (value: string) => void
 }
 
-export default function CommunityCombobox({
+export default function HiveCombobox({
   defaultValue,
   onChange,
-}: CommunityComboboxProps) {
-  const [communityOptions, setCommunityOptions] = useState<CommunityOption[]>(
+}: HiveComboboxProps) {
+  const [hiveOptions, setHiveOptions] = useState<HiveOption[]>(
     []
   )
-  const [filteredCommunityOptions, setFilteredCommunityOptions] = useState<
-    CommunityOption[]
+  const [filteredHiveOptions, setFilteredHiveOptions] = useState<
+    HiveOption[]
   >([])
-  const [communitySelectOpen, setCommunitySelectOpen] = useState<boolean>(false)
-  const [communityLabel, setCommunityLabel] = useState<string>('')
+  const [hiveSelectOpen, setHiveSelectOpen] = useState<boolean>(false)
+  const [hiveLabel, setHiveLabel] = useState<string>('')
 
   useEffect(() => {
-    const fetchCommunities = async () => {
-      const options = await getAllCommunityOptions()
-      setCommunityOptions(options)
-      setFilteredCommunityOptions(options)
+    const fetchHives = async () => {
+      const options = await getAllHiveOptions()
+      setHiveOptions(options)
+      setFilteredHiveOptions(options)
     }
-    void fetchCommunities()
+    void fetchHives()
   }, [])
 
   useEffect(() => {
-    const selectedOption = communityOptions.find(
+    const selectedOption = hiveOptions.find(
       (option) => option.value === defaultValue
     )
     if (selectedOption) {
-      setCommunityLabel(selectedOption.label)
+      setHiveLabel(selectedOption.label)
     }
-  }, [defaultValue, communityOptions])
+  }, [defaultValue, hiveOptions])
 
-  const handleSelectCommunity = (option: CommunityOption) => {
+  const handleSelectHive = (option: HiveOption) => {
     if (defaultValue === option.value) {
       onChange('')
-      setCommunityLabel('')
+      setHiveLabel('')
     } else {
       onChange(option.value)
-      setCommunityLabel(option.label)
+      setHiveLabel(option.label)
     }
-    setCommunitySelectOpen(false)
-    setFilteredCommunityOptions(communityOptions)
+    setHiveSelectOpen(false)
+    setFilteredHiveOptions(hiveOptions)
   }
 
   return (
-    <Popover open={communitySelectOpen} onOpenChange={setCommunitySelectOpen}>
+    <Popover open={hiveSelectOpen} onOpenChange={setHiveSelectOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-expanded={communitySelectOpen}
+          aria-expanded={hiveSelectOpen}
           className="w-full justify-start"
         >
           <ChevronsUpDown className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-          {communityLabel || 'Select community...'}
+          {hiveLabel || 'Select hive...'}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
         <Command>
           <CommandInput
-            placeholder="Search community..."
+            placeholder="Search hive..."
             onValueChange={(inputValue) => {
-              setFilteredCommunityOptions(
-                communityOptions.filter((option) =>
+              setFilteredHiveOptions(
+                hiveOptions.filter((option) =>
                   option.label.toLowerCase().includes(inputValue.toLowerCase())
                 )
               )
             }}
           />
           <CommandList>
-            <CommandEmpty>No community found.</CommandEmpty>
+            <CommandEmpty>No hive found.</CommandEmpty>
             <CommandGroup>
-              {filteredCommunityOptions.map((option) => (
+              {filteredHiveOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  onSelect={() => handleSelectCommunity(option)}
+                  onSelect={() => handleSelectHive(option)}
                 >
                   <Check
                     className={cn(

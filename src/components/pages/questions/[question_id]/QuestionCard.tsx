@@ -62,10 +62,10 @@ export default function QuestionCard({
     }
   }
 
-  // Function to handle community navigation
-  const handleCommunityClick = () => {
-    if (!href && question.related_community_info) {
-      router.push(`/communities/${question.related_community_info.title}`)
+  // Function to handle hive navigation
+  const handleHiveClick = () => {
+    if (!href && question.related_hive_info) {
+      router.push(`/hives/${question.related_hive_info.title}`)
     }
   }
 
@@ -82,25 +82,25 @@ export default function QuestionCard({
       }`}
     >
       <CardHeader>
-        {question.related_community_info ? (
+        {question.related_hive_info ? (
           <div
             className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
               !href &&
               'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
             }`}
-            onClick={handleCommunityClick}
+            onClick={handleHiveClick}
           >
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={question.related_community_info.avatar_url}
-                alt="Community avatar"
+                src={question.related_hive_info.avatar_url}
+                alt="Hive avatar"
               />
               <AvatarFallback>
-                {question.related_community_info.title[0]}
+                {question.related_hive_info.title[0]}
               </AvatarFallback>
             </Avatar>
             <span className="text-sm font-normal">
-              {question.related_community_info.title}
+              {question.related_hive_info.title}
             </span>
           </div>
         ) : null}

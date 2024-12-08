@@ -1,12 +1,12 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { type CommunityMember } from '@/types/Communities'
+import { type HiveMember } from '@/types/Hives'
 import { Award, Medal, Trophy } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface ContributorCardProps {
-  contributor: CommunityMember
+  contributor: HiveMember
   index: number
 }
 
@@ -52,7 +52,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Reputation:</span>
             <Badge variant="secondary">
-              {contributor.community_reputation.toLocaleString()}
+              {contributor.hive_reputation.toLocaleString()}
             </Badge>
           </div>
           <div className="flex items-center justify-between">

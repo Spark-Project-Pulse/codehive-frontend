@@ -13,7 +13,7 @@ import { type UUID } from 'crypto'
  * @param {string} values.description - The description of the question.
  * @returns {Promise<ApiResponse<{ question_id: string }>>} The created question's ID on success, or an error message on failure.
  * @throws {Error} Throws an error if the network request fails or returns a non-OK response.
- * 
+ *
  */
 export const createQuestion = async (values: {
   title: string
@@ -59,7 +59,7 @@ export const createQuestion = async (values: {
  *
  * @param {string} user_id - The ID of the user.
  * @returns {Promise<ApiResponse<Question[]>>} The questions data on success, or an error message on failure.
- * 
+ *
  */
 export const getQuestionsByUserId = async (
   user_id: string
@@ -92,7 +92,7 @@ export const getQuestionsByUserId = async (
  *
  * @param {string} question_id - The ID of the question to retrieve.
  * @returns {Promise<ApiResponse<Question>>} The question data on success, or an error message on failure.
- * 
+ *
  */
 export const getQuestionById = async (
   question_id: string
@@ -128,7 +128,7 @@ export const getQuestionById = async (
  * @param {string[]} selectedTags - An array of selected tag IDs.
  * @param {string} searchQuery - The search query string.
  * @returns {Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>} The questions data on success, or an error message on failure.
- * 
+ *
  */
 
 export const getAllQuestions = async (
@@ -136,7 +136,7 @@ export const getAllQuestions = async (
   pageSize: number,
   selectedTags: string[],
   searchQuery: string,
-  related_community_id: UUID | null
+  related_hive_id: UUID | null
 ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
     let url = ''
@@ -157,8 +157,8 @@ export const getAllQuestions = async (
     selectedTags.forEach((tagId) => {
       params.append('tags', tagId)
     })
-    if (related_community_id) {
-      params.append('related_community_id', related_community_id.toString())
+    if (related_hive_id) {
+      params.append('related_hive_id', related_hive_id.toString())
     }
 
     // Always append pagination parameters

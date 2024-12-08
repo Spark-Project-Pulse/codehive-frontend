@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
-export default function CommunitySkeleton() {
+export default function HiveSkeleton() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Only the header content needs loading state */}

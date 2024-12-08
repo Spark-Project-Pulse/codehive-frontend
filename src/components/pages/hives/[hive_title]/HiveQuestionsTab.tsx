@@ -15,12 +15,12 @@ import { type UUID } from 'crypto'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
-interface CommunityQuestionsTabProps {
-  communityId: UUID
+interface HiveQuestionsTabProps {
+  hiveId: UUID
 }
 
-const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
-  communityId,
+const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
+  hiveId,
 }) => {
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionsLoading, setQuestionsLoading] = useState<boolean>(true)
@@ -51,7 +51,7 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
     void fetchTags()
   }, [])
 
-  // Fetch questions specific to this community
+  // Fetch questions specific to this hive
   useEffect(() => {
     const fetchQuestions = async () => {
       setQuestionsLoading(true)
@@ -62,7 +62,7 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
           pageSize,
           selectedTagValues,
           debouncedSearchQuery,
-          communityId // Filter by community ID
+          hiveId // Filter by hive ID
         )
 
         if (response.errorMessage) {
@@ -85,7 +85,7 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
     }
 
     void fetchQuestions()
-  }, [communityId, currentPage, pageSize, selectedTags, debouncedSearchQuery])
+  }, [hiveId, currentPage, pageSize, selectedTags, debouncedSearchQuery])
 
   const clearFilters = () => {
     setSelectedTags([])
@@ -93,9 +93,9 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
     setCurrentPage(1)
   }
 
-  // Naviage to ask questions page, include community id as a query parameter
+  // Naviage to ask questions page, include hive id as a query parameter
   const handleAskQuestionClick = () => {
-    router.push(`/questions/ask-question?communityId=${communityId}`)
+    router.push(`/questions/ask-question?hiveId=${hiveId}`)
   }
 
   return (
@@ -186,4 +186,4 @@ const CommunityQuestionsTab: React.FC<CommunityQuestionsTabProps> = ({
   )
 }
 
-export default CommunityQuestionsTab
+export default HiveQuestionsTab
