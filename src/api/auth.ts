@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { type ApiResponse } from '@/types/Api'
 import { type Provider } from '@supabase/supabase-js'
 import {
-  clearCommunitiesCookie,
+  clearHivesCookie,
   clearNotificationsCookie,
   clearUserCookie,
   clearUserRoleCookie,
@@ -58,7 +58,7 @@ export const signOutAction = async (): Promise<ApiResponse<null>> => {
     // Clear cookies
     clearUserCookie()
     clearUserRoleCookie()
-    clearCommunitiesCookie()
+    clearHivesCookie()
     clearNotificationsCookie()
 
     return { errorMessage: null, data: null }

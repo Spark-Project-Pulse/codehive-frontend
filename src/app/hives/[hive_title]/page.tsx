@@ -1,31 +1,31 @@
 'use client'
 
 import {
-  addUserToCommunity,
-  getCommunityByTitle,
-  removeUserFromCommunity,
-  userIsPartOfCommunity,
-} from '@/api/communities'
+  addUserToHive,
+  getHiveByTitle,
+  removeUserFromHive,
+  userIsPartOfHive,
+} from '@/api/hives'
 import { getAllTags } from '@/api/tags'
 import NotFound from '@/app/not-found'
-import CommunityContributorsTab from '@/components/pages/communities/[community_title]/CommunityContributorsTab'
-import CommunityHeader from '@/components/pages/communities/[community_title]/CommunityHeader'
-import CommunityQuestionsTab from '@/components/pages/communities/[community_title]/CommunityQuestionsTab'
-import CommunitySkeleton from '@/components/pages/communities/[community_title]/CommunitySkeleton'
+import HiveContributorsTab from '@/components/pages/hives/[hive_title]/HiveContributorsTab'
+import HiveHeader from '@/components/pages/hives/[hive_title]/HiveHeader'
+import HiveQuestionsTab from '@/components/pages/hives/[hive_title]/HiveQuestionsTab'
+import HiveSkeleton from '@/components/pages/hives/[hive_title]/HiveSkeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/use-toast'
 import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
-import { type Community } from '@/types/Communities'
+import { type Hive } from '@/types/Hives'
 import { type TagOption } from '@/types/Tags'
 import { useEffect, useState } from 'react'
 
-export default function CommunityPage({
+export default function HivePage({
   params,
 }: {
-  params: { community_title: string }
+  params: { hive_title: string }
 }) {
-  const [community, setCommunity] = useState<Community | null>(null)
-  // State for user being a member of this community, null if user is not authenticated
+  const [hive, setHive] = useState<Hive | null>(null)
+  // State for user being a member of this hive, null if user is not authenticated
   const [userIsMember, setUserIsMember] = useState<true | false | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [authPopupOpen, setAuthPopupOpen] = useState(false) // State to control popup visibility
@@ -33,16 +33,16 @@ export default function CommunityPage({
   const [tags, setTags] = useState<TagOption[]>([])
 
   useEffect(() => {
-    const fetchCommunity = async () => {
+    const fetchHive = async () => {
       setIsLoading(true)
 
       try {
-        const { errorMessage, data } = await getCommunityByTitle(
-          params.community_title
+        const { errorMessage, data } = await getHiveByTitle(
+          params.hive_title
         )
 
         if (!errorMessage && data) {
-          setCommunity(data)
+          setHive(data)
         } else {
           console.error('Error:', errorMessage)
         }
@@ -55,8 +55,8 @@ export default function CommunityPage({
 
     const fetchUserIsMember = async () => {
       try {
-        const { errorMessage, data } = await userIsPartOfCommunity(
-          params.community_title
+        const { errorMessage, data } = await userIsPartOfHive(
+          params.hive_title
         )
 
         if (!errorMessage && data) {
@@ -80,27 +80,27 @@ export default function CommunityPage({
       }
     }
 
-    void fetchCommunity()
+    void fetchHive()
     void fetchUserIsMember()
     void fetchTags()
-  }, [params.community_title])
+  }, [params.hive_title])
 
-  const handleJoinCommunity = async () => {
+  const handleJoinHive = async () => {
     try {
-      if (!community) {
-        console.error('Community is null')
+      if (!hive) {
+        console.error('Hive is null')
         return
       }
 
-      const { errorMessage, data } = await addUserToCommunity(
-        community?.community_id
+      const { errorMessage, data } = await addUserToHive(
+        hive?.hive_id
       )
 
       if (!errorMessage && data) {
         setUserIsMember(true)
         toast({
           title: 'Success!',
-          description: `You are now a part of the ${community.title} community`,
+          description: `You are now a part of the ${hive.title} hive`,
         })
       } else if (errorMessage === 'User not authenticated') {
         // Open the authentication popup
@@ -113,22 +113,22 @@ export default function CommunityPage({
     }
   }
 
-  const handleLeaveCommunity = async () => {
+  const handleLeaveHive = async () => {
     try {
-      if (!community) {
-        console.error('Community is null')
+      if (!hive) {
+        console.error('Hive is null')
         return
       }
 
-      const { errorMessage, data } = await removeUserFromCommunity(
-        community?.community_id
+      const { errorMessage, data } = await removeUserFromHive(
+        hive?.hive_id
       )
 
       if (!errorMessage && data) {
         setUserIsMember(false)
         toast({
           title: 'Success!',
-          description: `You have left the ${community.title} community`,
+          description: `You have left the ${hive.title} hive`,
         })
       } else if (errorMessage === 'User not authenticated') {
         // Open the authentication popup
@@ -143,7 +143,7 @@ export default function CommunityPage({
 
   // Conditional rendering for loading state
   if (isLoading) {
-    return <CommunitySkeleton />
+    return <HiveSkeleton />
   }
 
   return (
@@ -156,15 +156,15 @@ export default function CommunityPage({
         }}
       />
 
-      {/* Community page content */}
-      {community !== null ? (
+      {/* Hive page content */}
+      {hive !== null ? (
         <div className="container mx-auto px-4 py-8">
-          <CommunityHeader
-            community={community}
+          <HiveHeader
+            hive={hive}
             tags={tags}
             userIsMember={userIsMember}
-            handleJoinCommunity={handleJoinCommunity}
-            handleLeaveCommunity={handleLeaveCommunity}
+            handleJoinHive={handleJoinHive}
+            handleLeaveHive={handleLeaveHive}
           />
 
           <Tabs defaultValue="questions" className="w-full">
@@ -175,14 +175,14 @@ export default function CommunityPage({
               </TabsTrigger>
             </TabsList>
             <TabsContent value="questions">
-              {community && (
-                <CommunityQuestionsTab communityId={community.community_id} />
+              {hive && (
+                <HiveQuestionsTab hiveId={hive.hive_id} />
               )}
             </TabsContent>
             <TabsContent value="top-contributors">
-              {community && (
-                <CommunityContributorsTab
-                  communityId={community.community_id}
+              {hive && (
+                <HiveContributorsTab
+                  hiveId={hive.hive_id}
                 />
               )}
             </TabsContent>

@@ -1,7 +1,7 @@
 import { type UUID } from 'crypto'
 import { type User } from '@/types/Users'
 import { type Project } from '@/types/Projects'
-import { type Community } from './Communities'
+import { type Hive } from './Hives'
 
 export interface Question {
   question_id: UUID
@@ -13,8 +13,8 @@ export interface Question {
   tags?: string[],
   related_project?: UUID
   related_project_info?: Project
-  related_community_id?: UUID
-  related_community_info?: Community
+  related_hive_id?: UUID
+  related_hive_info?: Hive
   code_context: string;
   code_context_full_pathname: string;
   code_context_line_number: number;

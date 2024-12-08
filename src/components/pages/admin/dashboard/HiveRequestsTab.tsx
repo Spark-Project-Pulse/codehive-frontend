@@ -11,31 +11,31 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import { type Community } from '@/types/Communities'
+import { type Hive } from '@/types/Hives'
 import {
-  approveCommunityRequest,
-  getAllCommunityRequests,
-  rejectCommunityRequest,
-} from '@/api/communities'
+  approveHiveRequest,
+  getAllHiveRequests,
+  rejectHiveRequest,
+} from '@/api/hives'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
 import Image from 'next/image'
 
-export default function CommunityRequestsTab() {
-  // State for community requests fetched from the API
-  const [communityRequests, setCommunityRequests] = useState<Community[]>([])
+export default function HiveRequestsTab() {
+  // State for hive requests fetched from the API
+  const [hiveRequests, setHiveRequests] = useState<Hive[]>([])
   // State for loading status
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // Fetch community requests data from the server
+  // Fetch hive requests data from the server
   useEffect(() => {
-    const fetchCommunities = async () => {
+    const fetchHives = async () => {
       try {
         setIsLoading(true) // Start loading
 
-        // Fetch communitiy requests
-        const response = await getAllCommunityRequests()
+        // Fetch hive requests
+        const response = await getAllHiveRequests()
 
         if (response.errorMessage) {
           throw new Error(response.errorMessage) // Handle error from response
@@ -43,77 +43,77 @@ export default function CommunityRequestsTab() {
 
         // Update state if data is received
         if (response.data) {
-          setCommunityRequests(response.data)
+          setHiveRequests(response.data)
         }
       } catch (error) {
-        console.error('Error fetching community requests:', error)
+        console.error('Error fetching hive requests:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    void fetchCommunities()
+    void fetchHives()
   }, [])
 
-  const handleApproveCommunityRequest = (communityId: UUID) => async () => {
+  const handleApproveHiveRequest = (hiveId: UUID) => async () => {
     try {
-      // Make API request to approve community request
-      const response = await approveCommunityRequest(communityId)
+      // Make API request to approve hive request
+      const response = await approveHiveRequest(hiveId)
 
       if (response.errorMessage) {
         throw new Error(response.errorMessage)
       }
 
-      // Update state to remove the approved community request
-      setCommunityRequests((prevRequests) =>
-        prevRequests.filter((request) => request.community_id !== communityId)
+      // Update state to remove the approved hive request
+      setHiveRequests((prevRequests) =>
+        prevRequests.filter((request) => request.hive_id !== hiveId)
       )
 
       toast({
         title: 'Success!',
-        description: 'The community request has been approved successfully.',
+        description: 'The hive request has been approved successfully.',
       })
     } catch (error) {
-      console.error('Error approving community request:', error)
+      console.error('Error approving hive request:', error)
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to approve the community request.',
+        description: 'Failed to approve the hive request.',
       })
     }
   }
 
-  const handleRejectCommunityRequest = (communityId: UUID) => async () => {
+  const handleRejectHiveRequest = (hiveId: UUID) => async () => {
     try {
-      // Make API request to approve community request
-      const response = await rejectCommunityRequest(communityId)
+      // Make API request to approve hive request
+      const response = await rejectHiveRequest(hiveId)
 
       if (response.errorMessage) {
         throw new Error(response.errorMessage)
       }
 
-      // Update state to remove the approved community request
-      setCommunityRequests((prevRequests) =>
-        prevRequests.filter((request) => request.community_id !== communityId)
+      // Update state to remove the approved hive request
+      setHiveRequests((prevRequests) =>
+        prevRequests.filter((request) => request.hive_id !== hiveId)
       )
 
       toast({
         title: 'Success!',
-        description: 'The community request has been rejected successfully.',
+        description: 'The hive request has been rejected successfully.',
       })
     } catch (error) {
-      console.error('Error approving community request:', error)
+      console.error('Error approving hive request:', error)
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to reject the community request.',
+        description: 'Failed to reject the hive request.',
       })
     }
   }
 
   return (
     <>
-      <h2 className="mb-4 text-2xl font-semibold">Community Requests</h2>
+      <h2 className="mb-4 text-2xl font-semibold">Hive Requests</h2>
       <Table>
         <TableHeader>
           <TableRow>
@@ -148,17 +148,17 @@ export default function CommunityRequestsTab() {
                   </TableCell>
                 </TableRow>
               ))
-            : communityRequests.map((request) => (
-                <TableRow key={request.community_id}>
+            : hiveRequests.map((request) => (
+                <TableRow key={request.hive_id}>
                   <TableCell className="max-w-md break-words">
                     {request.owner_info?.username}
                   </TableCell>
                   <TableCell>
                     <Image
                       src={
-                        request.avatar_url ?? '/default-community-avatar.png'
+                        request.avatar_url ?? '/default-hive-avatar.png'
                       }
-                      alt="Community avatar"
+                      alt="Hive avatar"
                       width={48}
                       height={48}
                     />
@@ -175,8 +175,8 @@ export default function CommunityRequestsTab() {
                         size="sm"
                         variant="outline"
                         className="text-green-600 hover:text-green-700"
-                        onClick={handleApproveCommunityRequest(
-                          request.community_id
+                        onClick={handleApproveHiveRequest(
+                          request.hive_id
                         )}
                       >
                         <CheckCircle className="mr-1" size={16} />
@@ -186,8 +186,8 @@ export default function CommunityRequestsTab() {
                         size="sm"
                         variant="outline"
                         className="text-red-600 hover:text-red-700"
-                        onClick={handleRejectCommunityRequest(
-                          request.community_id
+                        onClick={handleRejectHiveRequest(
+                          request.hive_id
                         )}
                       >
                         <XCircle className="mr-1" size={16} />

@@ -24,21 +24,21 @@ const faqData = [
     question: 'What kind of communities can I join?',
     answer: (
       <>
-        You can join communities based on your interests, such as AI, open
+        You can join hives(communities) based on your interests, such as AI, open
         source, frontend development, and many more. You can also create a{' '}
-        <Link href="/communities/create">
+        <Link href="/hives/create">
           <Button className="p-0" variant="link">
-            community request
+            hive request
           </Button>
         </Link>{' '}
-        if you want to see a new community on CodeHive!
+        if you want to see a new hive on CodeHive!
       </>
     ),
   },
   {
     question: 'How can I get help if I face an issue?',
     answer:
-      'You can reach out to our support team via the contact page or post your query in the community forums for assistance from other members.',
+      'You can reach out to our support team via the contact page or post your query in the hive forums for assistance from other members.',
   },
 ]
 

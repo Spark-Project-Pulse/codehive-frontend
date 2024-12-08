@@ -1,4 +1,4 @@
-// Create a new file for the Skeleton component, e.g., 'CommunityCardSkeleton.tsx'
+// Create a new file for the Skeleton component, e.g., 'HiveCardSkeleton.tsx'
 'use client'
 
 import { Avatar } from '@/components/ui/avatar'

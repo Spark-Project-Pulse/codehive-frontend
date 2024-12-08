@@ -26,14 +26,14 @@ function AskQuestion() {
   const { toast } = useToast()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const communityId = searchParams.get('communityId') as UUID | null // Get communityId from URL
+  const hiveId = searchParams.get('hiveId') as UUID | null // Get hiveId from URL
 
   // Function to handle form submission and perform API call
   async function handleFormSubmit(values: {
     title: string
     description: string
     related_project?: string
-    related_community?: string
+    related_hive?: string
     tags?: string[] // Accept tags from form values
   }) {
     try {
@@ -68,12 +68,12 @@ function AskQuestion() {
         <CardTitle>Ask a Question</CardTitle>
         <CardDescription>
           Fill out the form below to ask a question. You can add tags and/or
-          submit the question to a community. You can also link an existing
+          submit the question to a hive. You can also link an existing
           project or create one as needed.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <QuestionForm onSubmit={handleFormSubmit} communityId={communityId} />
+        <QuestionForm onSubmit={handleFormSubmit} hiveId={hiveId} />
       </CardContent>
     </Card>
   )

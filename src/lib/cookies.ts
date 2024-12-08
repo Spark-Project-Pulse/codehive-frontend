@@ -1,6 +1,6 @@
 'use server'
 
-import { type SidebarCommunity } from '@/types/Communities'
+import { type SidebarHive } from '@/types/Hives'
 import { type UserRole, type User } from '@/types/Users'
 import { cookies } from 'next/headers'
 import { Time } from '@/lib/constants/time'
@@ -62,32 +62,32 @@ export const clearUserRoleCookie = () => {
   cookies().delete('user_role_info')
 }
 
-// Community Cookie Functions
+// Hive Cookie Functions
 
-// Takes in an array of SidebarCommunity objects and sets cookies to store the community info
-export const setCommunitiesCookie = (communityData: SidebarCommunity[]) => {
-  cookies().set('communities_info', JSON.stringify(communityData), {
+// Takes in an array of SidebarHive objects and sets cookies to store the hive info
+export const setHivesCookie = (hiveData: SidebarHive[]) => {
+  cookies().set('hives_info', JSON.stringify(hiveData), {
     sameSite: 'lax',
     maxAge: Time.intervalToSeconds("INFREQUENT"), // 5 minutes
   })
 }
 
-// Gets the communities info cookie value
-export const getCommunitiesCookie = async (): Promise<SidebarCommunity[]> => {
-  const cookieValue = cookies().get('communities_info')?.value
+// Gets the hives info cookie value
+export const getHivesCookie = async (): Promise<SidebarHive[]> => {
+  const cookieValue = cookies().get('hives_info')?.value
   return Promise.resolve(
-    cookieValue ? (JSON.parse(cookieValue) as SidebarCommunity[]) : []
+    cookieValue ? (JSON.parse(cookieValue) as SidebarHive[]) : []
   )
 }
 
-// Checks if the communities cookie exists (returns true if the cookie exists)
-export const communitiesCookieExists = async (): Promise<boolean> => {
-  return Promise.resolve(cookies().has('communities_info'))
+// Checks if the hives cookie exists (returns true if the cookie exists)
+export const hivesCookieExists = async (): Promise<boolean> => {
+  return Promise.resolve(cookies().has('hives_info'))
 }
 
-// Clears the communities cookies, can be used when communities are updated or user logs out
-export const clearCommunitiesCookie = () => {
-  cookies().delete('communities_info')
+// Clears the hives cookies, can be used when hives are updated or user logs out
+export const clearHivesCookie = () => {
+  cookies().delete('hives_info')
 }
 
 
@@ -101,7 +101,7 @@ export const setNotificationsCookie = (notificationData: NotificatonsInfo) => {
   })
 }
 
-// Gets the communities info cookie value
+// Gets the hives info cookie value
 export const getNotificationsCookie = async (): Promise<NotificatonsInfo> => {
   const cookieValue = cookies().get('notifications_info')?.value
   return Promise.resolve(
@@ -109,12 +109,12 @@ export const getNotificationsCookie = async (): Promise<NotificatonsInfo> => {
   )
 }
 
-// Checks if the communities cookie exists (returns true if the cookie exists)
+// Checks if the hives cookie exists (returns true if the cookie exists)
 export const notificationsCookieExists = async (): Promise<boolean> => {
   return Promise.resolve(cookies().has('notifications_info'))
 }
 
-// Clears the communities cookies, can be used when communities are updated or user logs out
+// Clears the hives cookies, can be used when hives are updated or user logs out
 export const clearNotificationsCookie = () => {
   cookies().delete('notifications_info')
 }

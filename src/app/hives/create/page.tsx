@@ -1,7 +1,7 @@
 'use client'
 
-import { createCommunityRequest } from '@/api/communities'
-import CommunityForm from '@/components/pages/communities/create/CommunityForm'
+import { createHiveRequest } from '@/api/hives'
+import HiveForm from '@/components/pages/hives/create/HiveForm'
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function CreateCommunityPage() {
+export default function CreateHivePage() {
   const { toast } = useToast()
   const router = useRouter()
   const [authPopupOpen, setAuthPopupOpen] = useState(false) // State to control popup visibility
@@ -39,14 +39,14 @@ export default function CreateCommunityPage() {
         formData.append('avatar', values.avatar)
       }
 
-      const response = await createCommunityRequest(formData)
+      const response = await createHiveRequest(formData)
       const { errorMessage, data } = response
 
       if (!errorMessage && data?.title) {
         // Navigate to the home page
         router.push('/')
         toast({
-          title: 'Community Request Submitted!',
+          title: 'Hive Request Submitted!',
           description: 'We will review your request and get back to you soon.',
         })
       } else if (errorMessage === 'User not authenticated') {
@@ -64,7 +64,7 @@ export default function CreateCommunityPage() {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'There was an error submitting your community.',
+          description: 'There was an error submitting your hive.',
         })
       }
     } catch (error) {
@@ -72,7 +72,7 @@ export default function CreateCommunityPage() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'There was an unexpected error submitting your community.',
+        description: 'There was an unexpected error submitting your hive.',
       })
     }
   }
@@ -87,17 +87,17 @@ export default function CreateCommunityPage() {
         }}
       />
 
-      {/* Main Community Creation Card */}
+      {/* Main Hive Creation Card */}
       <Card className="mx-auto w-full max-w-4xl">
         <CardHeader>
-          <CardTitle>Create a New Community</CardTitle>
+          <CardTitle>Create a New Hive</CardTitle>
           <CardDescription>
-            Fill out the form below to request a new community. Your request
+            Fill out the form below to request a new hive. Your request
             will be reviewed by a moderator before being approved.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <CommunityForm onSubmit={handleFormSubmit} />
+          <HiveForm onSubmit={handleFormSubmit} />
         </CardContent>
       </Card>
     </>

@@ -1,8 +1,8 @@
 import { type UUID } from 'crypto'
 import { type User } from './Users'
 
-export interface Community {
-  community_id: UUID
+export interface Hive {
+  hive_id: UUID
   title: string
   description: string
   member_count: number
@@ -15,21 +15,21 @@ export interface Community {
   avatar_image_nsfw?: boolean
 }
 
-export interface CommunityMember {
-  community_id: UUID
+export interface HiveMember {
+  hive_id: UUID
   user_id: UUID
-  community_info: Community
+  hive_info: Hive
   user_info: User
-  community_reputation: number
+  hive_reputation: number
   contributions: number
 }
 
-export type CommunityOption = {
+export type HiveOption = {
   value: string
   label: string
 }
 
-export type SidebarCommunity = {
+export type SidebarHive = {
   title: string
   url: string
   avatar_url: string
