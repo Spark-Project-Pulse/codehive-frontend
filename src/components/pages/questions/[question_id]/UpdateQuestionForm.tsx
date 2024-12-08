@@ -11,10 +11,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Input } from '@/components/ui/input'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type Question } from '@/types/Questions'
 import MarkdownEditor from '@/components/universal/code/MarkdownEditor'
+import { Button } from '@/components/ui/button'
 
 // Define the schema for validation using zod
 const formSchema = z.object({
@@ -30,12 +42,14 @@ interface UpdateQuestionFormProps {
   question: Question
   onSubmit: (values: FormValues) => Promise<void>
   isLoadingUpdate: boolean
+  onDelete: () => Promise<void>
 }
 
 export default function UpdateQuestionForm({
   question,
   onSubmit,
   isLoadingUpdate,
+  onDelete,
 }: UpdateQuestionFormProps) {
   // Initialize the form with react-hook-form
   const form = useForm<FormValues>({
@@ -50,7 +64,7 @@ export default function UpdateQuestionForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 mt-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-10">
         {/* Title Field */}
         <FormField
           control={form.control}
@@ -85,12 +99,37 @@ export default function UpdateQuestionForm({
           )}
         />
 
-        {/* Submit Button */}
-        <ButtonWithLoading
-          buttonText="Update Question"
-          buttonType="submit"
-          isLoading={isLoadingUpdate}
-        />
+        {/* Update and Delete Buttons */}
+        <div className="flex items-center gap-4">
+          {/* Delete Button */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" className="p-5">
+                Delete Question
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. Deleting this question will
+                  remove it permanently.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Update Button */}
+          <ButtonWithLoading
+            buttonText="Update Question"
+            buttonType="submit"
+            isLoading={isLoadingUpdate}
+          />
+        </div>
       </form>
     </Form>
   )
