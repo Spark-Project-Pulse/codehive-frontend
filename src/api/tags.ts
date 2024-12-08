@@ -8,7 +8,7 @@ import type { Tag, TagOption } from '@/types/Tags';
  */
 export const getAllTags = async (): Promise<TagOption[]> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/getAll`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tags/getAll/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
