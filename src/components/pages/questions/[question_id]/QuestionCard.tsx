@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { type Question } from '@/types/Questions'
 import {
   Card,
@@ -21,6 +20,8 @@ import { Editor } from '@monaco-editor/react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
 
 interface QuestionCardProps {
   question: Question
@@ -104,7 +105,7 @@ export default function QuestionCard({
           ) : null}
           <CardTitle className="text-p1 font-subHeading">{question.title}</CardTitle>
           <CardDescription className="mt-2 text-p15 font-body">
-            {question.description}
+            <DynamicMarkdownPreview value={question.description} />
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -114,7 +115,7 @@ export default function QuestionCard({
             typeof question.code_context_line_number === 'number' &&
             question.code_context && (
               <div className="rounded-lg bg-gray-50 p-4 shadow">
-                <h2 className="mb-2 flex items-center font-lato text-p13">Code Context:</h2>
+                <h2 className="mb-2 flex items-center font-body">Code Context:</h2>
                 <h3
                   className="inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 hover:bg-gray-100"
                   onClick={() =>
@@ -125,13 +126,7 @@ export default function QuestionCard({
                 >
                   <div className="flex items-center">
                     {/* GitHub Icon */}
-                    <Image
-                      src="/github-logo-black.svg"
-                      alt="Github logo"
-                      width={20}
-                      height={20}
-                      className="h-5 w-5"
-                    />
+                    <GitHubLogoIcon />
                     &nbsp;
                     <span>{question.related_project_info?.title}</span>
                   </div>
@@ -155,19 +150,6 @@ export default function QuestionCard({
                 />
               </div>
             )}
-          {question.tags && question.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <TagIcon className="mr-2 h-4 w-4 text-gray-500" />
-              {question.tags.map((tagId, index) => {
-                const tag = tags.find((t) => t.value === tagId)
-                return tag ? (
-                  <Badge key={index} variant="secondary">
-                    {tag.label}
-                  </Badge>
-                ) : null
-              })}
-            </div>
-          )}
         </CardContent>
         <CardFooter className="flex items-center justify-between">
           <div
@@ -207,8 +189,9 @@ export default function QuestionCard({
           </div>
         )}
       </Card>
-    </div>
+    </div >
   )
+
 
   return href ? (
     <Link href={href} passHref>

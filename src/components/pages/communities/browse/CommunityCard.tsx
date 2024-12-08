@@ -1,12 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type Community } from '@/types/Communities'
 import { type TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
@@ -16,12 +11,14 @@ interface CommunityCardProps {
   community: Community
   tags: TagOption[]
   onCardClick: () => void
+  maxCharacters?: number
 }
 
 export default function CommunityCard({
   community,
   tags,
   onCardClick,
+  maxCharacters = 200,
 }: CommunityCardProps) {
   return (
     <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
@@ -40,11 +37,21 @@ export default function CommunityCard({
           <CardTitle>{community.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-4 font-body">{community.description}</p>
+          <p
+            className="mb-4 font-body"
+            aria-label={community.description}
+          >
+            {community.description.slice(0, maxCharacters)}
+            {community.description.length > maxCharacters && '...'}
+          </p>
           <div className="mb-4 flex flex-wrap gap-2">
             {community.tags?.map((tagId) => {
               const tag = tags.find((t) => t.value === tagId)
-              return tag ? <Badge key={tagId} variant="secondary">{tag.label}</Badge> : null // Handle cases where tag is not found
+              return tag ? (
+                <Badge key={tagId} variant="secondary">
+                  {tag.label}
+                </Badge>
+              ) : null // Handle cases where tag is not found
             })}
           </div>
           <div className="flex items-center gap-4 text-p15 text-black">

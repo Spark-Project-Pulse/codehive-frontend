@@ -7,11 +7,10 @@ import { getSupaUser } from '@/utils/supabase/server'
 /**
  * Submits a comment to an answer.
  *
- * Args:
- *   commentData: The response and answer ID for the comment.
- *
- * Returns:
- *   Promise<ApiResponse<Comment>>: The created comment on success, or an error message on failure.
+ * @param {Object} commentData - The response and answer ID for the comment.
+ * @param {string} commentData.response - The content of the comment.
+ * @param {string} commentData.answer - The ID of the answer to comment on.
+ * @returns {Promise<ApiResponse<Comment>>} The created comment on success, or an error message on failure.
  */
 export const createComment = async (commentData: {
   response: string
@@ -40,8 +39,13 @@ export const createComment = async (commentData: {
       throw new Error('Network response was not ok')
     }
 
-    const createdComment = (await response.json()) as Comment
-    return { errorMessage: null, data: createdComment }
+    const responseData = (await response.json()) as Comment | { error: string }
+
+    if ('error' in responseData) {
+      return { errorMessage: responseData.error }
+    } else {
+      return { errorMessage: null, data: responseData }
+    }
   } catch (error) {
     console.error('Error submitting comment:', error)
     return { errorMessage: 'Error submitting comment' }
@@ -49,13 +53,10 @@ export const createComment = async (commentData: {
 }
 
 /**
- * Fetches comments by answer ID from the backend.
+ * Fetches comments for a specific answer by ID.
  *
- * Args:
- *   answer_id (string): The ID of the answer whose comments to retrieve.
- *
- * Returns:
- *   Promise<ApiResponse<Comment[]>>: The list of comments on success, or an error message on failure.
+ * @param {string} answer_id - The ID of the answer whose comments to retrieve.
+ * @returns {Promise<ApiResponse<Comment[]>>} The list of comments on success, or an error message on failure.
  */
 export const getCommentsByAnswerId = async (
   answer_id: string

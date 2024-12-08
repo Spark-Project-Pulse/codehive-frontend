@@ -4,7 +4,7 @@ import { Linkedin, Instagram, Facebook, Twitter } from 'lucide-react'
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-border/40 dark:border-border md:px-8 md:py-0 bg-black">
+    <footer className="mt-12 border-t border-border/40 dark:border-border md:px-8 md:py-0 bg-black">
       <div className="container flex justify-center pt-8">
         <p className="text-balance text-center text-base leading-loose text-primary-foreground font-body md:text-lg">
           Built with 💛 by a couple of BU students. Check us out on{" "}

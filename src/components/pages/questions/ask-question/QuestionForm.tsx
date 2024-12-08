@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { MultiSelector } from '@/components/ui/MultiSelector'
 import { useUser } from '@/app/contexts/UserContext'
@@ -34,6 +33,7 @@ import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import CommunityCombobox from './CommunityCombobox'
 import { type UUID } from 'crypto'
+import MarkdownEditor from '@/components/universal/code/MarkdownEditor'
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -165,10 +165,9 @@ export default function QuestionForm({
                 What would you like to know?
               </FormLabel>
               <FormControl>
-                <Textarea
-                  id="description"
-                  placeholder="Description"
-                  {...field}
+                <MarkdownEditor
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
                 />
               </FormControl>
               <FormMessage />

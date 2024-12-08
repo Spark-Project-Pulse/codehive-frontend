@@ -7,11 +7,9 @@ import { getSupaUser } from '@/utils/supabase/server'
 /**
  * Creates a new project by sending a POST request to the backend.
  *
- * Args:
- *   values: An object containing `public`, `title`, and `description` for the project.
+ * @param {Object} values - An object containing `public`, `title`, and `description` for the project.
+ * @returns {Promise<ApiResponse<{ project_id: string }>>} The created project's ID on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ project_id: string }>>: The created project's ID on success, or an error message on failure.
  */
 export const createProject = async (values: {
   public: boolean
@@ -52,15 +50,12 @@ export const createProject = async (values: {
 /**
  * Performs a code review on the provided file and returns suggestions.
  *
- * Args:
- *   projectTitle (string): Title of the project.
- *   projectDescription (string): Description of the project.
- *   fileName (string): Name of the file to review.
- *   fileContent (string): Content of the file to review.
+ * @param {string} projectTitle - Title of the project.
+ * @param {string} projectDescription - Description of the project.
+ * @param {string} fileName - Name of the file to review.
+ * @param {string} fileContent - Content of the file to review.
+ * @returns {Promise<ApiResponse<{ suggestions: Array<{ line_number: number, suggestion: string }> }>>} A list of code review suggestions on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<{ suggestions: Array<{ line_number: number, suggestion: string }> }>>:
- *   A list of code review suggestions on success, or an error message on failure.
  */
 export const codeReview = async (
   projectTitle: string,
@@ -89,8 +84,13 @@ export const codeReview = async (
       throw new Error('Network response was not ok')
     }
 
-    const responseData = await response.json() as { suggestions?: Suggestion[] }
-    return {errorMessage: null, data: { suggestions: responseData.suggestions ?? [] }}
+    const responseData = (await response.json()) as {
+      suggestions?: Suggestion[]
+    }
+    return {
+      errorMessage: null,
+      data: { suggestions: responseData.suggestions ?? [] },
+    }
   } catch (error) {
     console.error('Error performing code review:', error)
     return { errorMessage: 'Error performing code review' }
@@ -100,11 +100,9 @@ export const codeReview = async (
 /**
  * Fetches all the projects associated with a user by their ID from the backend.
  *
- * Args:
- *   user_id (string): The ID of the user.
+ * @param {string} user_id - The ID of the user.
+ * @returns {Promise<ApiResponse<Project[]>>} The projects data on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<Project[]>>: The projects data on success, or an error message on failure.
  */
 export const getProjectsByUserId = async (
   user_id: string
@@ -135,11 +133,9 @@ export const getProjectsByUserId = async (
 /**
  * Fetches a project by its ID from the backend.
  *
- * Args:
- *   project_id (string): The ID of the project to retrieve.
+ * @param {string} project_id - The ID of the project to retrieve.
+ * @returns {Promise<ApiResponse<Project>>} The project data on success, or an error message on failure.
  *
- * Returns:
- *   Promise<ApiResponse<Project>>: The project data on success, or an error message on failure.
  */
 export const getProjectById = async (
   project_id: string

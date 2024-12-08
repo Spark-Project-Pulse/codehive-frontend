@@ -11,13 +11,10 @@ import {
 } from '@/lib/cookies'
 
 /**
- * Handles user login via OAuth provider.
+ * Handles user login via an OAuth provider.
  *
- * Args:
- *   provider (Provider): The OAuth provider (e.g., GitHub, Google).
- *
- * Returns:
- *   Promise<ApiResponse<{ url: string }>>: The redirect URL on success, or an error message on failure.
+ * @param {Provider} provider - The OAuth provider (e.g., GitHub, Google).
+ * @returns {Promise<ApiResponse<{ url: string }>>} The redirect URL on success, or an error message on failure.
  */
 export const loginAction = async (
   provider: Provider
@@ -44,10 +41,9 @@ export const loginAction = async (
 }
 
 /**
- * Signs the user out from the application.
+ * Signs the user out of the application.
  *
- * Returns:
- *   Promise<ApiResponse<null>>: Null on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<null>>} Null on success, or an error message on failure.
  */
 export const signOutAction = async (): Promise<ApiResponse<null>> => {
   try {
