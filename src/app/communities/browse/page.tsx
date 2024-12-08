@@ -171,7 +171,7 @@ export default function BrowseCommunities() {
               {communities.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {communities.map((community) => (
-                    <div className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
+                    <div key={community.community_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
                       <CommunityCard
                         key={community.community_id}
                         community={community}
