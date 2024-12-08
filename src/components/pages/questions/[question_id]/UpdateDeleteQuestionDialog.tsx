@@ -23,6 +23,7 @@ import { type Question } from '@/types/Questions'
 import { toast } from '@/components/ui/use-toast'
 import { updateQuestion, deleteQuestion } from '@/api/questions'
 import { useEffect, useState } from 'react'
+import { Pencil1Icon } from '@radix-ui/react-icons';
 
 interface UpdateDeleteQuestionDialogProps {
   question: Question
@@ -129,7 +130,7 @@ export default function UpdateDeleteQuestionDialog({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          Edit
+          <Pencil1Icon className="w-5 h-5 text-black" />
         </Button>
       </DialogTrigger>
       <DialogContent>

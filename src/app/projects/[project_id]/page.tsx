@@ -201,11 +201,12 @@ export default function ProjectPage({
   if (!project) return <div className="text-red-500">Project not found</div>
 
   return (
-    <section className="min-h-screen py-3">
-      <div className="mx-auto max-w-6xl px-4">
+    <section className="min-h-screen">
+      <div className="mx-auto max-w-6xl">
         {/* Project Header */}
         <ProjectHeader project={project} />
 
+        <hr className="mt-8 mb-8 border border-primary"></hr>
         {/* Resizable Panels */}
         <ResizablePanelGroup direction="horizontal">
           {/* File Browser Panel */}
@@ -233,8 +234,8 @@ export default function ProjectPage({
                 fileContent={fileContent}
               />
             ) : (
-              <div className="flex h-full text-center">
-                <p>Select a file to view suggestions.</p>
+              <div className="flex h-full text-center text-p20 font-body">
+                Select a file to view suggestions.
               </div>
             )}
           </ResizablePanel>
