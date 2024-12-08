@@ -17,6 +17,7 @@ import { type Project } from '@/types/Projects'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { useTheme } from 'next-themes'
+import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -24,7 +25,6 @@ interface CodeViewerProps {
   project: Project
   filename: string | null
   lineNumbers?: boolean
-  language?: string
   loading?: boolean
 }
 
@@ -33,12 +33,13 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   project,
   pathname,
   lineNumbers = true,
-  language = 'javascript', // TODO: dynamically pass this from parent component
+  filename,
   loading = true,
 }) => {
   const { theme } = useTheme() // Get the current theme (light or dark)
   const { toast } = useToast()
   const router = useRouter()
+  const editorLanguage = getLanguageFromFilename(filename) // Get the language from the filename, defaults to plaintext if filename is null
 
   const [selectedLine, setSelectedLine] = useState<number | null>(null)
   const codeContext =
@@ -114,7 +115,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
       <Editor
         loading={<Skeleton className="h-full w-full" />}
         height="60vh"
-        language={language}
+        language={editorLanguage}
         value={fileContent}
         options={{
           selectOnLineNumbers: true,
