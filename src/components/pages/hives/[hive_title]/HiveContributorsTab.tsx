@@ -44,19 +44,19 @@ const HiveContributorsTab: React.FC<HiveContributorsTabProps> = ({
   }, [hiveId])
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto pt-16 pb-16">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {contributorsLoading
           ? Array.from({ length: 6 }).map((_, index) => (
-              <SkeletonContributorCard key={index} />
-            ))
+            <SkeletonContributorCard key={index} />
+          ))
           : contributors.map((contributor, index) => (
-              <ContributorCard
-                key={contributor.user_id}
-                contributor={contributor}
-                index={index}
-              />
-            ))}
+            <ContributorCard
+              key={contributor.user_id}
+              contributor={contributor}
+              index={index}
+            />
+          ))}
       </div>
     </div>
   )

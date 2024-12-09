@@ -158,7 +158,7 @@ export default function HivePage({
 
       {/* Hive page content */}
       {hive !== null ? (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-36 py-8">
           <HiveHeader
             hive={hive}
             tags={tags}

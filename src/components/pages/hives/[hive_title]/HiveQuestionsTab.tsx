@@ -99,10 +99,15 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
   }
 
   return (
-    <div className="max-w-7xl p-6">
+    <div className="max-w-7xl pt-8">
 
       <div className="flex flex-wrap gap-4 md:flex-nowrap">
-        <div className="w-full flex-shrink-0 md:w-1/4">
+        <div className="w-full flex-shrink-0 md:w-1/4 mr-10">
+          <div className="mb-6">
+            <Button onClick={handleAskQuestionClick} className="rounded-lg px-4 py-2 w-full">
+              Ask Question
+            </Button>
+          </div>
           <SearchAndTagComponent
             tags={tags}
             selectedTags={selectedTags}
@@ -145,31 +150,27 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
                   onClearSearchQuery={() => setSearchQuery('')}
                 />
               )}
-                <div className="flex justify-between items-start">
+              <div className="flex justify-between items-start">
                 <ul className="flex-1">
                   {questions.length > 0 ? (
-                  questions.map((question) => (
-                    <li key={question.question_id} className="mb-6">
-                    <QuestionCard
-                      key={question.question_id}
-                      question={question}
-                      href={`/questions/${question.question_id}`}
-                    />
-                    </li>
-                  ))
+                    questions.map((question) => (
+                      <li key={question.question_id} className="mb-6">
+                        <QuestionCard
+                          key={question.question_id}
+                          question={question}
+                          href={`/questions/${question.question_id}`}
+                        />
+                      </li>
+                    ))
                   ) : (
-                  <p className="text-center text-lg text-gray-700">
-                    No questions match your search criteria.
-                  </p>
+                    <p className="text-center text-lg text-gray-700">
+                      No questions match your search criteria.
+                    </p>
                   )}
                 </ul>
 
-                <div className="ml-4">
-                  <Button onClick={handleAskQuestionClick} className="rounded px-4 py-2">
-                  Ask Question
-                  </Button>
-                </div>
-                </div>
+
+              </div>
 
               {totalPages > 1 && (
                 <PaginationComponent

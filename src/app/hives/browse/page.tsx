@@ -118,9 +118,9 @@ export default function BrowseHives() {
   const handleClearSearchQuery = () => setSearchQuery('')
 
   return (
-    <div className="max-w-7xl p-6">
+    <div className="max-w-7xl p-6 mb-96">
       {/* Main title for the hives page */}
-      <h1 className="text-center text-h2 font-bold text-secondary-foreground">
+      <h1 className="text-center text-h4 font-subHeading text-black mb-10">
         Hives
       </h1>
 
@@ -171,12 +171,14 @@ export default function BrowseHives() {
               {hives.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {hives.map((hive) => (
-                    <HiveCard
-                      key={hive.hive_id}
-                      hive={hive}
-                      tags={tags}
-                      onCardClick={() => handleHiveClick(hive.title)}
-                    />
+                    <div key={hive.hive_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
+                      <HiveCard
+                        key={hive.hive_id}
+                        hive={hive}
+                        tags={tags}
+                        onCardClick={() => handleHiveClick(hive.title)}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (

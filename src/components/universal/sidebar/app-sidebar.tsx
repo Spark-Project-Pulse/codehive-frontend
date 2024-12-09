@@ -227,10 +227,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           >
             <Image
               src="/logo-and-codehive-dark.svg"
-              className="block dark:hidden"
+              className="mx-auto block dark:hidden"
               alt="CodeHive and its logo"
-              width={235}
-              height={50}
+              width={210}
+              height={45}
               onError={(e) => {
                 e.currentTarget.onerror = null
                 if (e.currentTarget.parentElement) {

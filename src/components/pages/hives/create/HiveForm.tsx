@@ -111,7 +111,7 @@ export default function HiveForm({
               <FormControl>
                 <Input
                   id="title"
-                  placeholder="Enter hive title"
+                  placeholder="Hive title"
                   {...field}
                 />
               </FormControl>

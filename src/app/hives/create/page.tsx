@@ -88,18 +88,25 @@ export default function CreateHivePage() {
       />
 
       {/* Main Hive Creation Card */}
-      <Card className="mx-auto w-full max-w-4xl">
-        <CardHeader>
-          <CardTitle>Create a New Hive</CardTitle>
-          <CardDescription>
-            Fill out the form below to request a new hive. Your request
-            will be reviewed by a moderator before being approved.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <HiveForm onSubmit={handleFormSubmit} />
-        </CardContent>
-      </Card>
+      <h1 className="text-center text-h4 font-heading relative mb-6">
+        Create a New Hive
+      </h1>
+      <div className="flex items-center justify-center relative">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <Card className="mx-auto w-full max-w-2xl">
+            <CardHeader>
+              <CardDescription>
+                Fill out the form below to request a new hive. Your request
+                will be reviewed by a moderator before being approved.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <HiveForm onSubmit={handleFormSubmit} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </>
+
   )
 }

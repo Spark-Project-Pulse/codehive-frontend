@@ -63,18 +63,26 @@ function AskQuestion() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle>Ask a Question</CardTitle>
-        <CardDescription>
-          Fill out the form below to ask a question. You can add tags and/or
-          submit the question to a hive. You can also link an existing
-          project or create one as needed.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <QuestionForm onSubmit={handleFormSubmit} hiveId={hiveId} />
-      </CardContent>
-    </Card>
+    <div>
+      <h1 className="text-center text-h4 font-heading relative mb-4">
+        Ask a Question
+      </h1>
+      <div className="flex items-center justify-center relative">
+        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+          <Card className="mx-auto w-full max-w-4xl">
+            <CardHeader>
+              <CardDescription>
+                Fill out the form below to ask a question. You can add tags and/or
+                submit the question to a hive. You can also link an existing
+                project or create one as needed.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <QuestionForm onSubmit={handleFormSubmit} hiveId={hiveId} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   )
 }

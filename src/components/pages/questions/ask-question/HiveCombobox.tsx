@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check } from 'lucide-react'
 import {
   Command,
   CommandEmpty,
@@ -75,10 +75,9 @@ export default function HiveCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={hiveSelectOpen}
-          className="w-full justify-start"
+          className="w-full justify-start !text-p13 text-muted-foreground border"
         >
-          <ChevronsUpDown className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-          {hiveLabel || 'Select hive...'}
+          {hiveLabel || 'Select hive (optional)'}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
