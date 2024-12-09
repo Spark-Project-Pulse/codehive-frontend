@@ -66,7 +66,7 @@ export const getQuestionsByUserId = async (
 ): Promise<ApiResponse<Question[]>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}/`,
       {
         method: 'GET',
         headers: {
@@ -99,7 +99,7 @@ export const getQuestionById = async (
 ): Promise<ApiResponse<Question>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${question_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${question_id}/`,
       {
         method: 'GET',
         headers: {
