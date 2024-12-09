@@ -40,13 +40,6 @@ const QuestionsPage: React.FC = () => {
         setIsLoading(true)
 
         const selectedTagValues = selectedTags.map((tag) => tag.value)
-        console.log('Fetching questions with:', {
-          currentPage,
-          pageSize,
-          selectedTagValues,
-          searchQuery: debouncedSearchQuery,
-          sortBy,
-        })
 
         const response = await getAllQuestions(
           currentPage,
@@ -62,7 +55,6 @@ const QuestionsPage: React.FC = () => {
         }
 
         if (response.data) {
-          console.log('API response:', response.data.questions)
           const uniqueQuestionsMap = new Map<string, Question>()
           response.data.questions.forEach((question) => {
             uniqueQuestionsMap.set(question.question_id.toString(), question)
