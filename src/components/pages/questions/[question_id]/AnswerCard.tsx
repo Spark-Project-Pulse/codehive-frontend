@@ -15,6 +15,7 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import CollapsibleComments from './CollapsibleComments'
 import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface AnswerCardProps {
   answer: Answer
@@ -36,6 +37,8 @@ export default function AnswerCard({
   onCommentSubmit,
   isLoadingComments,
 }: AnswerCardProps) {
+
+
   const [optimisticScore, setOptimisticScore] = useState<number>(answer.score)
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(upvoted)
   const [hasDownvoted, setHasDownvoted] = useState<boolean>(downvoted)
@@ -186,9 +189,8 @@ export default function AnswerCard({
             <Button
               onClick={() => handleUpvote()}
               variant="outline"
-              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-                hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-              }`}
+              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasUpvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+                }`}
             >
               👍
             </Button>
@@ -196,9 +198,8 @@ export default function AnswerCard({
             <Button
               onClick={() => handleDownvote()}
               variant="outline"
-              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${
-                hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
-              }`}
+              className={`flex items-center space-x-2 text-xl transition-colors hover:text-primary-foreground ${hasDownvoted ? 'bg-gray-300 text-white' : 'bg-transparent'
+                }`}
             >
               👎
             </Button>
@@ -216,7 +217,7 @@ export default function AnswerCard({
                   onClick={handleProfileClick}
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={answer?.expert_info?.profile_image_url} />
+                    <AvatarImage src={answer.expert_info?.profile_image_url} />
                     <AvatarFallback>
                       {answer.expert_info?.username?.[0] ?? (
                         <UserIcon className="h-4 w-4" />
@@ -234,6 +235,55 @@ export default function AnswerCard({
                   {format(new Date(answer.created_at), 'PPP')}
                 </div>
               </div>
+
+              {/* Expert Badges */}
+              {answer.expert_badges && answer.expert_badges.length > 0 && (
+                <div className="mt-4 flex items-center space-x-2">
+                  {answer.expert_badges
+                    .filter((userBadge) => userBadge.badge_tier_info && userBadge.badge_tier_info?.tier_level >= 1) // Filter badges that have at least Tier 1
+                    .map((userBadge) => (
+                      <Popover key={`${userBadge.badge_info?.badge_id}-${userBadge.badge_tier_info?.tier_level ?? 'base'}`}>
+                        <PopoverTrigger asChild>
+                          <div className="relative">
+                            <img
+                              src={
+                                userBadge.badge_tier_info?.image_url ??
+                                userBadge.badge_info?.image_url ??
+                                'https://cdn-icons-png.flaticon.com/512/20/20100.png' // Default image
+                              }
+                              alt={
+                                userBadge.badge_tier_info?.name ??
+                                userBadge.badge_info?.name ??
+                                'Badge' // Default alt text
+                              }
+                              className="h-8 w-8 cursor-pointer transition-transform duration-200 hover:scale-110"
+                              loading="lazy" // Improves performance by deferring off-screen images
+                            />
+                            {/* Display tier level if available */}
+                            {userBadge.badge_tier_info && (
+                              <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-primary-foreground bg-primary rounded-full">
+                                {userBadge.badge_tier_info.tier_level}
+                              </span>
+                            )}
+                          </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="absolute top-full mt-2 bg-card shadow-lg rounded-md p-3 z-10 max-w-sm sm:max-w-md text-card-foreground">
+                          <h4 className="font-medium text-base break-words">
+                            {userBadge.badge_tier_info?.name ?? userBadge.badge_info?.name ?? 'Unnamed Badge'}
+                          </h4>
+                          <p className="text-sm text-muted-foreground mt-2 break-words">
+                            {userBadge.badge_tier_info?.description ?? userBadge.badge_info?.description ?? 'No description available.'}
+                          </p>
+                          {userBadge.badge_tier_info && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Tier {userBadge.badge_tier_info.tier_level}
+                            </p>
+                          )}
+                        </PopoverContent>
+                      </Popover>
+                    ))}
+                </div>
+              )}
             </CardContent>
 
             {/* Comments Section */}

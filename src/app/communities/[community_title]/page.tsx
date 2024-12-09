@@ -158,7 +158,7 @@ export default function CommunityPage({
 
       {/* Community page content */}
       {community !== null ? (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-36 py-8">
           <CommunityHeader
             community={community}
             tags={tags}

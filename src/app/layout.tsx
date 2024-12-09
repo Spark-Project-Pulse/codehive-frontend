@@ -15,7 +15,7 @@ import {
 } from '@radix-ui/react-tooltip'
 
 export const metadata: Metadata = {
-  title: 'CodeHive',
+  title: 'Welcome to CodeHive | Your developer hivemind',
   description: 'Keep on buzzing!',
 }
 import { ThemeProvider } from "@/components/universal/theme-provider"
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning lang="en">
-      <body>
+      <body className="flex flex-col min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -38,7 +38,7 @@ export default function RootLayout({
           <UserProvider>
             <SidebarProvider>
               <AppSidebar />
-              <SidebarInset>
+              <SidebarInset className="min-h-screen flex flex-col">
                 <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                   <div className="flex items-center gap-2 px-4">
                     <Tooltip>
@@ -47,12 +47,12 @@ export default function RootLayout({
                       </TooltipTrigger>
                       <TooltipContent side="right">
                         {/* TODO: fix tooltip styling (doesn't seem correct) */}
-                        <p>⌘ /</p>  
+                        <p>⌘ /</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
                 </header>
-                {children}
+                <main className="flex-grow ml-6 mr-6 mt-12">{children}</main>
                 <SiteFooter />
                 <Toaster />
               </SidebarInset>

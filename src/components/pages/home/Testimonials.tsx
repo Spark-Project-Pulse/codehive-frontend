@@ -54,20 +54,44 @@ const ReviewCard = ({
   username: string
   body: string
 }) => {
+  const handleClick = () => {
+    // Programmatically announce content for screen readers
+    const announcement = `${name}, username ${username}: ${body}`;
+    const liveRegion = document.getElementById('live-region');
+    if (liveRegion) {
+      liveRegion.textContent = announcement;
+
+      // Clear the content after announcement to avoid conflicts
+      setTimeout(() => {
+        liveRegion.textContent = '';
+      }, 1000);
+    }
+  };
+
   return (
     <figure
       className={cn(
         'relative w-64 cursor-pointer overflow-hidden rounded-xl border p-4',
-        // light styles
         'border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]',
-        // dark styles
         'dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]'
       )}
+      tabIndex={0} // Makes the card focusable for keyboard navigation
+      aria-labelledby={`review-${username}`} // Links to descriptive content for screen readers
+      onClick={handleClick} // Announces content for screen readers
     >
       <div className="flex flex-row items-center gap-2">
-        <img className="rounded-full" width="32" height="32" alt="" src={img} />
+        <img
+          className="rounded-full"
+          width="32"
+          height="32"
+          alt={`${name}'s avatar`}
+          src={img}
+        />
         <div className="flex flex-col">
-          <figcaption className="text-sm font-medium dark:text-white">
+          <figcaption
+            id={`review-${username}`}
+            className="text-sm font-medium dark:text-white"
+          >
             {name}
           </figcaption>
           <p className="text-xs font-medium dark:text-white/40">{username}</p>
@@ -80,7 +104,7 @@ const ReviewCard = ({
 
 export default function Testimonials() {
   return (
-    <section className="container mx-auto px-4 py-12 text-center">
+    <section className="container mx-auto px-4 py-12 text-center mb-36">
       {/* Title and Description */}
       <div className="mb-8 flex flex-col items-center">
         <h2 className="text-3xl font-bold tracking-tight">
@@ -91,14 +115,31 @@ export default function Testimonials() {
         </p>
       </div>
 
+      {/* Live Region for Screen Readers */}
+      <div
+        id="live-region"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      ></div>
+
       {/* Testimonials Section */}
       <div className="relative">
-        <Marquee pauseOnHover className="[--duration:20s]">
+        <Marquee
+          pauseOnHover
+          className="[--duration:20s]"
+          aria-live="polite" // Ensures testimonials are announced as they scroll
+        >
           {firstRow.map((review) => (
             <ReviewCard key={review.username} {...review} />
           ))}
         </Marquee>
-        <Marquee reverse pauseOnHover className="[--duration:20s]">
+        <Marquee
+          reverse
+          pauseOnHover
+          className="[--duration:20s]"
+          aria-live="polite"
+        >
           {secondRow.map((review) => (
             <ReviewCard key={review.username} {...review} />
           ))}

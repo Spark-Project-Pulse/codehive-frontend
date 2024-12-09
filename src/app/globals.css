@@ -7,6 +7,20 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .hexagonal-bg-light {
+    background-image: url('/hive-bg-light.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-attachment: scroll;
+  }
+
+  .hexagonal-bg-dark {
+    background-image: url('/hive-bg-dark.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-attachment: scroll;
+  }
 }
 
 @layer base {
@@ -15,29 +29,46 @@
     /* Main colors from your palette */
     --background: 223 47% 97%;
     --foreground: 230 47% 7%;
-    --primary: 35 92% 33%;
+    /* yellow */
+    --primary: 47, 100%, 50%;
+
+    /* white */
     --primary-foreground: 0 0% 100%;
-    --secondary: 36 64% 80%;
-    --secondary-foreground: 230 47% 7%;
+
+    /* light yellow */
+    --secondary: 52, 100%, 85%;
+    /* light brown */
+    --secondary-foreground: 39, 22%, 69%;
+
+    /* brown */
+    --tertiary: 35, 92%, 33%;
+
+    /* black */
+    --tertiary-foreground: 0, 0%, 0%;
+
     --accent: 45 93% 47%;
     --accent-foreground: 230 47% 7%;
+
+    /* Default button colors */
+    --default-button: 0, 0%, 0%; /* Black */
+    --default-button-foreground: 0, 0%, 100%; /* White */
 
     /* Maintaining existing system colors with adjusted values */
     --card: 223 47% 97%;
     --card-foreground: 230 47% 7%;
     --popover: 223 47% 97%;
     --popover-foreground: 230 47% 7%;
-    
+
     /* Adjusted muted and system colors to complement your palette */
     --muted: 223 47% 90%;
-    --muted-foreground: 230 47% 30%;
+    --muted-foreground: 215, 20%, 65%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    
+
     /* Border and input colors adjusted to match theme */
     --border: 223 47% 85%;
     --input: 223 47% 85%;
-    --ring: 35 92% 33%;
+    --ring: 0 0% 0%;
 
     /* Chart colors maintained but slightly adjusted to complement palette */
     --chart-1: 35 92% 33%;
@@ -54,7 +85,7 @@
     --sidebar-foreground: 230 47% 7%;
     --sidebar-primary: 35 92% 33%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 36 64% 80%;
+    --sidebar-accent: 52, 100%, 85%;
     --sidebar-accent-foreground: 230 47% 7%;
     --sidebar-border: 223 47% 85%;
     --sidebar-ring: 35 92% 33%;
@@ -70,27 +101,31 @@
     --secondary-foreground: 0 0% 98%;
     --accent: 45 93% 53%;
     --accent-foreground: 223 47% 3%;
-    
+
+    /* Default button colors */
+    --default-button: 0, 0%, 100%; /* White */
+    --default-button-foreground: 0, 0%, 0%; /* Black */
+
     --card: 223 47% 3%;
     --card-foreground: 0 0% 98%;
     --popover: 223 47% 3%;
     --popover-foreground: 0 0% 98%;
-    
+
     --muted: 223 47% 15%;
     --muted-foreground: 229 49% 80%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 223 47% 15%;
     --input: 223 47% 15%;
     --ring: 35 92% 67%;
-    
+
     --chart-1: 35 92% 67%;
     --chart-2: 36 65% 20%;
     --chart-3: 45 93% 53%;
     --chart-4: 35 92% 60%;
     --chart-5: 36 65% 40%;
-    
+
     --sidebar-background: 223 47% 5%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 35 92% 67%;
@@ -99,7 +134,7 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 223 47% 15%;
     --sidebar-ring: 35 92% 67%;
-}
+  }
 
   /* For custom fonts */
   @font-face {
@@ -117,6 +152,21 @@
     font-display: swap;
     src: url('./fonts/Ubuntu-Regular.ttf') format('truetype');
   }
+
+  @font-face {
+    font-family: 'Roboto-Black';
+    src: url('./fonts/Roboto-Black.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Roboto-Bold';
+    src: url('./fonts/Roboto-Bold.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Lato-Regular';
+    src: url('./fonts/Lato-Regular.ttf') format('truetype');
+  }
 }
 
 /* Applies tailwind css to elements */
@@ -129,3 +179,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* *************************** START: MDEditor specific *************************** */
+
+/* adjust editor height (see issue: https://github.com/uiwjs/react-md-editor/issues/625#issuecomment-2016506050) */
+.w-md-editor-text {
+  height: 100%;
+}
+
+/* apply our base font to editor */
+.w-md-editor-content .w-md-editor-area .w-md-editor-text-input {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
+  font-weight: 500;
+  /* background-color: hsl(var(--background)); */
+}
+
+/* TODO: not sure if we should apply styles to the preview (causes some weird color conflicts) */
+/* .w-md-editor-show-preview .w-md-editor-preview {
+  background-color: hsl(var(--background));
+} */
+
+/* NOTE: `dynamic-md-preview` only applies to the `DynamicMarkdownPreview.tsx` component
+  preview should adapt to content height (cannot use absolute positioning...) */
+.dynamic-md-preview .w-md-editor-preview {
+  position: relative !important;
+  height: auto !important;
+  width: 100% !important; /* Optional: Ensure it fits parent width */
+}
+
+.dynamic-md-preview .w-md-editor-show-preview {
+  height: auto !important;
+}
+
+/* *************************** END: MDEditor specific *************************** */

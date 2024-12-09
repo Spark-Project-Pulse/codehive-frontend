@@ -23,6 +23,7 @@ import { type Question } from '@/types/Questions'
 import { toast } from '@/components/ui/use-toast'
 import { updateQuestion, deleteQuestion } from '@/api/questions'
 import { useState } from 'react'
+import { Pencil1Icon } from '@radix-ui/react-icons';
 
 interface UpdateDeleteQuestionDialogProps {
   question: Question
@@ -36,9 +37,12 @@ export default function UpdateDeleteQuestionDialog({
   onDelete,
 }: UpdateDeleteQuestionDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
 
   const handleQuestionUpdate = async (form_data: FormValues) => {
     try {
+      setIsLoadingUpdate(true)
+
       const { errorMessage } = await updateQuestion({
         questionId: form_data.question_id,
         asker: form_data.asker,
@@ -55,6 +59,8 @@ export default function UpdateDeleteQuestionDialog({
         })
         throw new Error(errorMessage)
       }
+
+      setIsLoadingUpdate(false)
 
       const updatedQuestion = { ...question, ...form_data }
       onUpdate(updatedQuestion as Question)
@@ -112,7 +118,7 @@ export default function UpdateDeleteQuestionDialog({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          Edit
+          <Pencil1Icon className="w-5 h-5 text-black" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -125,6 +131,7 @@ export default function UpdateDeleteQuestionDialog({
         <UpdateQuestionForm
           question={question}
           onSubmit={handleQuestionUpdate}
+          isLoadingUpdate={isLoadingUpdate}
         />
 
         {/* Delete Button within the dialog */}
