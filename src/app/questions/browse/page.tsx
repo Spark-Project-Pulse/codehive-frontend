@@ -63,7 +63,21 @@ const QuestionsPage: React.FC = () => {
 
         if (response.data) {
           console.log('API response:', response.data.questions)
-          setQuestions(response.data.questions)
+          const uniqueQuestionsMap = new Map<string, Question>()
+          response.data.questions.forEach((question) => {
+            uniqueQuestionsMap.set(question.question_id.toString(), question)
+          })
+          let uniqueQuestions = Array.from(uniqueQuestionsMap.values())
+
+          // // Sort questions to prioritize unanswered ones
+          // uniqueQuestions = uniqueQuestions.sort((a, b) => {
+          //   // Unanswered questions (is_answered === false) come first
+          //   if (!a.is_answered && b.is_answered) return -1
+          //   if (a.is_answered && !b.is_answered) return 1
+          //   return 0 // Keep relative order for questions with the same state
+          // })
+
+          setQuestions(uniqueQuestions)
           setTotalQuestions(response.data.totalQuestions)
           setTotalPages(Math.ceil(response.data.totalQuestions / pageSize))
         } else {
@@ -93,6 +107,11 @@ const QuestionsPage: React.FC = () => {
 
     void fetchTags()
   }, [])
+
+  // Reset to first page when filters, search query, or sort changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [selectedTags, debouncedSearchQuery, sortBy])
 
   const clearFilters = () => {
     setSelectedTags([])
