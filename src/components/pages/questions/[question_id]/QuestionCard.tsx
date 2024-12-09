@@ -21,6 +21,8 @@ import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
+import { useTheme } from 'next-themes'
+import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 import { Badge } from '@/components/ui/badge'
 
 interface QuestionCardProps {
@@ -38,10 +40,11 @@ export default function QuestionCard({
   onUpdate,
 }: QuestionCardProps) {
   const { user: currentUser } = useUser()
-  const isCurrentUser = question.asker === currentUser?.user
-
-  const [tags, setTags] = useState<TagOption[]>([])
   const router = useRouter()
+  const { resolvedTheme } = useTheme() // Get the current theme (light or dark)
+
+  const isCurrentUser = question.asker === currentUser?.user
+  const [tags, setTags] = useState<TagOption[]>([])
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -87,7 +90,7 @@ export default function QuestionCard({
             <div
               className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
                 !href &&
-                'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
+                `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
               }`}
               onClick={handleHiveClick}
             >
@@ -118,12 +121,10 @@ export default function QuestionCard({
             question.code_context_full_pathname &&
             typeof question.code_context_line_number === 'number' &&
             question.code_context && (
-              <div className="rounded-lg bg-gray-50 p-4 shadow">
-                <h2 className="mb-2 flex items-center font-body">
-                  Code Context:
-                </h2>
+              <div className="rounded-lg p-4 shadow">
+                <h2 className="mb-2 flex items-center">Code Context:</h2>
                 <h3
-                  className="inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 hover:bg-gray-100"
+                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
                   onClick={() =>
                     router.push(
                       `/projects/${question.related_project_info?.project_id}`
@@ -140,8 +141,11 @@ export default function QuestionCard({
                 <Editor
                   loading={<Skeleton className="h-full w-full" />}
                   height="20px"
-                  language="javascript" // TODO: Change to actual language
+                  language={getLanguageFromFilename(
+                    question.code_context_full_pathname
+                  )}
                   value={question.code_context}
+                  theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
                   options={{
                     lineNumbers: (num) =>
                       (num + question.code_context_line_number).toString(),
@@ -175,7 +179,7 @@ export default function QuestionCard({
           <div
             className={`flex items-center space-x-4 ${
               question.asker_info && !href
-                ? 'cursor-pointer rounded-md p-2 transition-transform duration-200 hover:bg-gray-100'
+                ? `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
                 : ''
             }`}
             onClick={handleProfileClick}

@@ -25,21 +25,24 @@ import { useTheme } from 'next-themes'
 
 interface MarkdownEditorProps {
   value: string
+  height?: number
   onChange: (value: string) => void
 }
 
 export default function MarkdownEditor({
   value,
+  height,
   onChange,
 }: MarkdownEditorProps) {
   const [activeTab, setActiveTab] = useState('edit')
   const { resolvedTheme } = useTheme()
 
-  const editorRef = useRef<HTMLDivElement>(null)
+  const editorContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (editorRef.current && resolvedTheme) {
-      editorRef.current.setAttribute('data-color-mode', resolvedTheme)
+    if (editorContainerRef.current) {
+      const theme = resolvedTheme === 'dark' ? 'dark' : 'light'
+      editorContainerRef.current.setAttribute('data-color-mode', theme)
     }
   }, [resolvedTheme])
 
@@ -63,6 +66,8 @@ export default function MarkdownEditor({
     help,
   ]
 
+  const theme = resolvedTheme === 'dark' ? 'dark' : 'light' // Narrow theme type here
+
   return (
     <Card className="border-none shadow-none">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -79,15 +84,16 @@ export default function MarkdownEditor({
 
         {/* Edit Tab */}
         <TabsContent value="edit" className="mt-0">
-          <div ref={editorRef}>
+          <div ref={editorContainerRef}>
             <MDEditor
               value={value}
               onChange={handleEditorChange}
-              height={300}
+              height={height ?? 300}
               preview="edit"
               highlightEnable={false}
               fullscreen={false}
               commands={valid}
+              data-color-mode={theme} // Use narrowed theme
               commandsFilter={(cmd) => {
                 if (
                   [
@@ -109,13 +115,14 @@ export default function MarkdownEditor({
 
         {/* Preview Tab */}
         <TabsContent value="preview" className="mt-0">
-          <div ref={editorRef}>
+          <div ref={editorContainerRef}>
             <MDEditor
               value={value}
               height={300}
               preview="preview"
               hideToolbar
               visibleDragbar={false}
+              data-color-mode={theme} // Use narrowed theme
             />
           </div>
         </TabsContent>

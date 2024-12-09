@@ -10,7 +10,6 @@ import { useUser } from '@/app/contexts/UserContext'
 import {
   Card,
   CardHeader,
-  CardTitle,
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
