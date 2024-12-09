@@ -48,8 +48,6 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
     const selectedBg = resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
     const hoverBg = resolvedTheme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
 
-    console.log(resolvedTheme);
-    
     return (
       <div key={item.path}>
         <div
