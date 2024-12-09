@@ -66,7 +66,7 @@ export const getQuestionsByUserId = async (
 ): Promise<ApiResponse<Question[]>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getByUserId/${user_id}/`,
       {
         method: 'GET',
         headers: {
@@ -99,7 +99,7 @@ export const getQuestionById = async (
 ): Promise<ApiResponse<Question>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${question_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getById/${question_id}/`,
       {
         method: 'GET',
         headers: {
@@ -127,6 +127,7 @@ export const getQuestionById = async (
  * @param {number} pageSize - The number of questions per page.
  * @param {string[]} selectedTags - An array of selected tag IDs.
  * @param {string} searchQuery - The search query string.
+ * @param {string} sortBy - Sort filter applied to the search
  * @returns {Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>} The questions data on success, or an error message on failure.
  *
  */
@@ -136,7 +137,8 @@ export const getAllQuestions = async (
   pageSize: number,
   selectedTags: string[],
   searchQuery: string,
-  related_hive_id: UUID | null
+  related_hive_id: UUID | null,
+  sortBy: string
 ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
   try {
     let url = ''
@@ -149,21 +151,18 @@ export const getAllQuestions = async (
     } else {
       // Use the general getAll endpoint
       url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`
-      params.append('page', pageNumber.toString())
-      params.append('page_size', pageSize.toString())
     }
 
-    // Append tags in both cases
-    selectedTags.forEach((tagId) => {
-      params.append('tags', tagId)
-    })
+    // Append tags and related hive
+    selectedTags.forEach((tagId) => params.append('tags', tagId))
     if (related_hive_id) {
       params.append('related_hive_id', related_hive_id.toString())
     }
 
-    // Always append pagination parameters
+    // Always append pagination and sorting
     params.append('page', pageNumber.toString())
     params.append('page_size', pageSize.toString())
+    params.append('sort_by', sortBy)
 
     const response = await fetch(`${url}?${params.toString()}`, {
       method: 'GET',
@@ -193,7 +192,7 @@ export const getAllQuestions = async (
     return { errorMessage: 'Error fetching questions' }
   }
 }
-
+  
 /**
  * Marks a question as answered or un-answered, depending on current state
  *

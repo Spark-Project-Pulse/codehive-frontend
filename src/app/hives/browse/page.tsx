@@ -133,6 +133,7 @@ export default function BrowseHives() {
           onTagChange={setSelectedTags}
           onClearFilters={clearFilters}
           searchQuery={searchQuery}
+          showSortOptions={false}
         />
         <div className="md:w-3/4">
           {/* Display hive card skeletons while fetching hives */}

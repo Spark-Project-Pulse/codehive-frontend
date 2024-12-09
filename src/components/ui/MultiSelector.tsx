@@ -27,18 +27,21 @@ interface MultiSelectorProps {
   selected: TagOption[];
   onSelectedChange: (selected: TagOption[]) => void;
   placeholder?: string;
+  singleSelect?: boolean; // New prop: single-select mode
+  inputPlaceholder?: string; // New prop: custom input placeholder
 }
 
 export function MultiSelector({
-  options,
+  options = [], // Default empty array to prevent `undefined`
   selected,
   onSelectedChange,
   placeholder = "Select relevant tags...",
+  singleSelect = false,
+  inputPlaceholder = "Search options...", // Default value for new prop
 }: MultiSelectorProps) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // For dynamic maxVisibleTags calculation
   const [maxVisibleTags, setMaxVisibleTags] = useState<number>(3);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -47,59 +50,54 @@ export function MultiSelector({
     option.label.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
 
-  // Reset searchTerm when the popover closes
+  // Reset search term when the popover closes
   useEffect(() => {
     if (!open) {
       setSearchTerm("");
     }
   }, [open]);
 
-  // Handler to toggle selection
+  // Handle selection
   const handleSelect = (option: TagOption) => {
-    if (selected.find((item) => item.value === option.value)) {
-      // If already selected, remove it
-      onSelectedChange(selected.filter((item) => item.value !== option.value));
+    if (singleSelect) {
+      // For single-select, replace the selected option
+      onSelectedChange([option]);
     } else {
-      // Else, add it
-      onSelectedChange([...selected, option]);
+      if (selected.find((item) => item.value === option.value)) {
+        // If already selected, remove it
+        onSelectedChange(
+          selected.filter((item) => item.value !== option.value)
+        );
+      } else {
+        // Else, add it
+        onSelectedChange([...selected, option]);
+      }
     }
   };
 
-  // Use ResizeObserver to adjust maxVisibleTags based on available width
+  // Adjust maxVisibleTags dynamically
   useEffect(() => {
     const container = containerRef.current;
 
     if (!container) return;
 
-    // Function to calculate maxVisibleTags based on container width
     const calculateMaxVisibleTags = () => {
       const containerWidth = container.offsetWidth;
       const tagWidth = 80;
       const chevronWidth = 24;
       const padding = 16;
 
-      // Calculate the number of tags that can fit
       const availableWidth = containerWidth - chevronWidth - padding;
-      const newMaxVisibleTags = Math.max(
-        1,
-        Math.floor(availableWidth / tagWidth)
-      );
-
-      setMaxVisibleTags(newMaxVisibleTags);
+      setMaxVisibleTags(Math.max(1, Math.floor(availableWidth / tagWidth)));
     };
 
-    // Create a ResizeObserver to observe size changes
     const resizeObserver = new ResizeObserver(() => {
       calculateMaxVisibleTags();
     });
 
-    // Start observing the container
     resizeObserver.observe(container);
-
-    // Initial calculation
     calculateMaxVisibleTags();
 
-    // Cleanup function
     return () => {
       resizeObserver.disconnect();
     };
@@ -135,7 +133,9 @@ export function MultiSelector({
                 )}
               </>
             ) : (
-              <span className="font-body text-p13 text-muted-foreground truncate">{placeholder}</span>
+              <span className="font-body text-p13 text-muted-foreground truncate">
+                {placeholder}
+              </span>
             )}
           </div>
         </Button>
@@ -150,7 +150,7 @@ export function MultiSelector({
       >
         <Command>
           <CommandInput
-            placeholder="Search tags..."
+            placeholder={inputPlaceholder} // Use inputPlaceholder prop
             value={searchTerm}
             onValueChange={(value) => {
               setSearchTerm(value);
@@ -158,7 +158,7 @@ export function MultiSelector({
           />
           <CommandList>
             {filteredOptions.length === 0 && searchTerm !== "" ? (
-              <CommandEmpty>No tags found.</CommandEmpty>
+              <CommandEmpty>No options found.</CommandEmpty>
             ) : (
               <CommandGroup>
                 {filteredOptions.map((option) => (
@@ -180,7 +180,6 @@ export function MultiSelector({
               </CommandGroup>
             )}
           </CommandList>
-          {/* Adjust padding at the bottom */}
           <div className="p-2" />
         </Command>
       </PopoverContent>

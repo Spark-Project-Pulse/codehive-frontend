@@ -19,12 +19,11 @@ interface HiveQuestionsTabProps {
   hiveId: UUID
 }
 
-const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
-  hiveId,
-}) => {
+const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({ hiveId }) => {
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionsLoading, setQuestionsLoading] = useState<boolean>(true)
   const [hasError, setHasError] = useState<boolean>(false)
+  const [sortBy, setSortBy] = useState<string>('Recency') // Default to 'Recency'
 
   const [tags, setTags] = useState<TagOption[]>([])
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
@@ -62,7 +61,8 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
           pageSize,
           selectedTagValues,
           debouncedSearchQuery,
-          hiveId // Filter by hive ID
+          hiveId, // Filter by hive ID
+          sortBy,
         )
 
         if (response.errorMessage) {
@@ -85,22 +85,27 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
     }
 
     void fetchQuestions()
-  }, [hiveId, currentPage, pageSize, selectedTags, debouncedSearchQuery])
+  }, [hiveId, currentPage, pageSize, selectedTags, debouncedSearchQuery, sortBy])
 
   const clearFilters = () => {
     setSelectedTags([])
     setSearchQuery('')
+    setSortBy('Recency') // Reset to default sort
     setCurrentPage(1)
   }
 
-  // Naviage to ask questions page, include hive id as a query parameter
+  const handleSortChange = (sortOption: string) => {
+    setSortBy(sortOption)
+    setCurrentPage(1) // Reset to the first page when sort changes
+  }
+
+  // Navigate to ask questions page, include hive id as a query parameter
   const handleAskQuestionClick = () => {
     router.push(`/questions/ask-question?hiveId=${hiveId}`)
   }
 
   return (
     <div className="max-w-7xl pt-8">
-
       <div className="flex flex-wrap gap-4 md:flex-nowrap">
         <div className="w-full flex-shrink-0 md:w-1/4 mr-10">
           <div className="mb-6">
@@ -115,6 +120,13 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
             onTagChange={setSelectedTags}
             onClearFilters={clearFilters}
             searchQuery={searchQuery}
+            sortOptions={[
+              { label: 'Recency', value: 'Recency' },
+              { label: 'Trending', value: 'Trending' },
+              { label: 'Unanswered', value: 'Unanswered' },
+            ]}
+            onSortChange={handleSortChange}
+            showSortOptions={true}
           />
         </div>
 
@@ -138,10 +150,11 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
 
           {!questionsLoading && !hasError && (
             <>
-              {(selectedTags.length > 0 || searchQuery.trim()) && (
+              {(selectedTags.length > 0 || searchQuery.trim() || sortBy !== 'Recency') && (
                 <ActiveFilters
                   selectedTags={selectedTags}
                   searchQuery={searchQuery}
+                  currentSort={sortBy}
                   onRemoveTag={(tagValue) =>
                     setSelectedTags(
                       selectedTags.filter((tag) => tag.value !== tagValue)
@@ -168,8 +181,6 @@ const HiveQuestionsTab: React.FC<HiveQuestionsTabProps> = ({
                     </p>
                   )}
                 </ul>
-
-
               </div>
 
               {totalPages > 1 && (
