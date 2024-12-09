@@ -26,6 +26,7 @@ export default function Hero() {
               <strong>share insights</strong>, and <strong>build</strong>{' '}
               something extraordinary.
             </p>
+
           </div>
           <div className="space-x-4">
             <Link href="/questions/browse">
