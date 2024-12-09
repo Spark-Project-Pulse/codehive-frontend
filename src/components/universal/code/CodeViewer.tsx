@@ -36,7 +36,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   filename,
   loading = true,
 }) => {
-  const { theme } = useTheme() // Get the current theme (light or dark)
+  const { resolvedTheme } = useTheme() // Get the current theme (light or dark)
   const { toast } = useToast()
   const router = useRouter()
   const editorLanguage = getLanguageFromFilename(filename) // Get the language from the filename, defaults to plaintext if filename is null
@@ -142,7 +142,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           scrollBeyondLastLine: false,
           cursorStyle: 'block',
         }}
-        theme={theme === 'dark' ? 'vs-dark' : 'light'}
+        theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
         onMount={handleEditorMount}
       />
       {selectedLine !== null && (

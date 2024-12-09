@@ -37,7 +37,7 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
   isLoadingFileContent,
   fileContent,
 }) => {
-  const { theme } = useTheme() // Get the current theme (light or dark)
+  const { resolvedTheme } = useTheme() // Get the current theme (light or dark)
 
   const renderItem = (item: FileSystemItem) => {
     const isExpanded = item.isExpanded
@@ -45,9 +45,11 @@ const FileBrowser: React.FC<FileBrowserProps> = ({
     const isLoading =
       item.path === (isLoadingDirectory ? currentFilePath : null)
 
-    const selectedBg = theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
-    const hoverBg = theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+    const selectedBg = resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
+    const hoverBg = resolvedTheme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
 
+    console.log(resolvedTheme);
+    
     return (
       <div key={item.path}>
         <div

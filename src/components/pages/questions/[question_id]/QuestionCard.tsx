@@ -41,7 +41,7 @@ export default function QuestionCard({
 }: QuestionCardProps) {
   const { user: currentUser } = useUser()
   const router = useRouter()
-  const { theme } = useTheme() // Get the current theme (light or dark)
+  const { resolvedTheme } = useTheme() // Get the current theme (light or dark)
 
   const isCurrentUser = question.asker === currentUser?.user
   const [tags, setTags] = useState<TagOption[]>([])
@@ -90,7 +90,7 @@ export default function QuestionCard({
             <div
               className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
                 !href &&
-                `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
+                `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
               }`}
               onClick={handleHiveClick}
             >
@@ -124,7 +124,7 @@ export default function QuestionCard({
               <div className="rounded-lg p-4 shadow">
                 <h2 className="mb-2 flex items-center">Code Context:</h2>
                 <h3
-                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
+                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
                   onClick={() =>
                     router.push(
                       `/projects/${question.related_project_info?.project_id}`
@@ -145,7 +145,7 @@ export default function QuestionCard({
                     question.code_context_full_pathname
                   )}
                   value={question.code_context}
-                  theme={theme === 'dark' ? 'vs-dark' : 'light'}
+                  theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
                   options={{
                     lineNumbers: (num) =>
                       (num + question.code_context_line_number).toString(),
@@ -179,7 +179,7 @@ export default function QuestionCard({
           <div
             className={`flex items-center space-x-4 ${
               question.asker_info && !href
-                ? `cursor-pointer rounded-md p-2 transition-transform duration-200 ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
+                ? `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
                 : ''
             }`}
             onClick={handleProfileClick}
