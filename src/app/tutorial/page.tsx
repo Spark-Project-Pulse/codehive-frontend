@@ -42,7 +42,7 @@ export default function TutorialPage() {
               fields are also available for you to explore
             </AccordionContent>
             <AccordionContent>
-              You can tag your question, share it with a specific community, or
+              You can tag your question, share it with a specific hive, or
               even link it to a related project. These are all optional, but
               always encouraged!
             </AccordionContent>
@@ -61,12 +61,12 @@ export default function TutorialPage() {
           </AccordionItem>
 
           <AccordionItem value="item-4">
-            <AccordionTrigger>Join a Community</AccordionTrigger>
+            <AccordionTrigger>Join a Hive</AccordionTrigger>
             <AccordionContent>
-              Open the sidebar, navigate to the &quot;Communities&quot; section
+              Open the sidebar, navigate to the &quot;Hives&quot; section
             </AccordionContent>
             <AccordionContent>
-              Browse through existing communities, or request to create one of
+              Browse through existing hives, or request to create one of
               your own. Collaboration starts here!
             </AccordionContent>
           </AccordionItem>

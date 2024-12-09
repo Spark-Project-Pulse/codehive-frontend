@@ -2,50 +2,50 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { type Community } from '@/types/Communities'
+import { type Hive } from '@/types/Hives'
 import { type TagOption } from '@/types/Tags'
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar'
 import { Users } from 'lucide-react'
 
-interface CommunityCardProps {
-  community: Community
+interface HiveCardProps {
+  hive: Hive
   tags: TagOption[]
   onCardClick: () => void
   maxCharacters?: number
 }
 
-export default function CommunityCard({
-  community,
+export default function HiveCard({
+  hive,
   tags,
   onCardClick,
   maxCharacters = 200,
-}: CommunityCardProps) {
+}: HiveCardProps) {
   return (
     <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
       <Card
-        key={community.community_id}
+        key={hive.hive_id}
         onClick={onCardClick}
         className="flex transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg"
       >
         <CardHeader className="flex-row items-center gap-4">
           <Avatar className="h-12 w-12">
             <AvatarImage
-              src={community?.avatar_url ?? '/default-community-avatar.png'}
-              alt="Community avatar"
+              src={hive?.avatar_url ?? '/default-hive-avatar.png'}
+              alt="Hive avatar"
             />
           </Avatar>
-          <CardTitle>{community.title}</CardTitle>
+          <CardTitle>{hive.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <p
             className="mb-4 font-body"
-            aria-label={community.description}
+            aria-label={hive.description}
           >
-            {community.description.slice(0, maxCharacters)}
-            {community.description.length > maxCharacters && '...'}
+            {hive.description.slice(0, maxCharacters)}
+            {hive.description.length > maxCharacters && '...'}
           </p>
           <div className="mb-4 flex flex-wrap gap-2">
-            {community.tags?.map((tagId) => {
+            {hive.tags?.map((tagId) => {
               const tag = tags.find((t) => t.value === tagId)
               return tag ? (
                 <Badge key={tagId} variant="secondary">
@@ -57,7 +57,7 @@ export default function CommunityCard({
           <div className="flex items-center gap-4 text-p15 text-black">
             <span className="flex items-center gap-1">
               <Users className="h-4 w-4" />
-              {community.member_count.toLocaleString()} members
+              {hive.member_count.toLocaleString()} members
             </span>
           </div>
         </CardContent>
