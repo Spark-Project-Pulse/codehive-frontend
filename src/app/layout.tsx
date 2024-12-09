@@ -52,7 +52,7 @@ export default function RootLayout({
                     </Tooltip>
                   </div>
                 </header>
-                <main className="flex-grow ml-28 mr-28 mt-28">{children}</main>
+                <main className="flex-grow ml-6 mr-6 mt-12">{children}</main>
                 <SiteFooter />
                 <Toaster />
               </SidebarInset>
