@@ -120,7 +120,7 @@ export default function BrowseHives() {
   return (
     <div className="max-w-7xl p-6 mb-96">
       {/* Main title for the hives page */}
-      <h1 className="text-center text-h4 font-subHeading text-black mb-10">
+      <h1 className="text-center text-h4 font-subHeading mb-10">
         Hives
       </h1>
 

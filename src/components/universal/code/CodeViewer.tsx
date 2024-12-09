@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { type editor as monacoEditor } from 'monaco-editor'
 import {
@@ -16,6 +16,8 @@ import { useRouter } from 'next/navigation'
 import { type Project } from '@/types/Projects'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { useTheme } from 'next-themes'
+import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 
 interface CodeViewerProps {
   fileContent: string | null
@@ -23,7 +25,6 @@ interface CodeViewerProps {
   project: Project
   filename: string | null
   lineNumbers?: boolean
-  language?: string
   loading?: boolean
 }
 
@@ -32,15 +33,32 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   project,
   pathname,
   lineNumbers = true,
-  language = 'javascript', // TODO: dynamically pass this from parent component
+  filename,
   loading = true,
 }) => {
+  const { resolvedTheme } = useTheme() // Get the current theme (light or dark)
   const { toast } = useToast()
   const router = useRouter()
-
+  const editorLanguage = getLanguageFromFilename(filename) // Get the language from the filename, defaults to plaintext if filename is null
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [selectedLine, setSelectedLine] = useState<number | null>(null)
   const codeContext =
     selectedLine !== null ? fileContent?.split('\n')[selectedLine - 1] : ''
+
+  // useEffect to handle body overflow when the sheet is open/closed
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow
+    if (isSheetOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = originalOverflow
+    }
+
+    return () => {
+      // Reset overflow on cleanup
+      document.body.style.overflow = originalOverflow
+    }
+  }, [isSheetOpen])
 
   const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
     // Add click event listener
@@ -81,7 +99,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: errorMessage ?? 'There was an error submitting your question.',
+          description:
+            errorMessage ?? 'There was an error submitting your question.',
         })
       }
     } catch (error) {
@@ -111,7 +130,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
       <Editor
         loading={<Skeleton className="h-full w-full" />}
         height="60vh"
-        language={language}
+        language={editorLanguage}
         value={fileContent}
         options={{
           selectOnLineNumbers: true,
@@ -123,15 +142,16 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           scrollBeyondLastLine: false,
           cursorStyle: 'block',
         }}
+        theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
         onMount={handleEditorMount}
       />
       {selectedLine !== null && (
         <div className="fixed bottom-4 right-6 z-50 rounded shadow-lg">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger>
               <Button>Ask on line {selectedLine}</Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="overflow-auto">
               <SheetHeader>
                 <SheetTitle>Ask a Question</SheetTitle>
                 <SheetDescription>

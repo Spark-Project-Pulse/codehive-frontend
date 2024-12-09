@@ -18,7 +18,7 @@ export default function HiveCard({
   hive,
   tags,
   onCardClick,
-  maxCharacters = 200,
+  maxCharacters = 30,
 }: HiveCardProps) {
   return (
     <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
