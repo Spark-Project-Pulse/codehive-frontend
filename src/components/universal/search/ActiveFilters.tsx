@@ -6,7 +6,7 @@ import { type TagOption } from '@/types/Tags'
 interface ActiveFiltersProps {
   selectedTags: TagOption[]
   searchQuery: string
-  currentSort: string
+  currentSort?: string
   onRemoveTag: (tagValue: string) => void
   onClearSearchQuery: () => void
 }

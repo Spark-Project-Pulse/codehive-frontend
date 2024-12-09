@@ -133,6 +133,7 @@ export default function BrowseCommunities() {
           onTagChange={setSelectedTags}
           onClearFilters={clearFilters}
           searchQuery={searchQuery}
+          showSortOptions={false}
         />
         <div className="md:w-3/4">
           {/* Display community card skeletons while fetching communities */}

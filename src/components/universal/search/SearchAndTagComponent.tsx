@@ -1,9 +1,8 @@
-'use client'
+"use client";
 
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
-import { MultiSelector } from '@/components/ui/MultiSelector'
-import { type TagOption } from '@/types/Tags'
+import React from "react";
+import { MultiSelector } from "@/components/ui/MultiSelector";
+import { type TagOption } from "@/types/Tags";
 
 interface SearchAndTagComponentProps {
   tags: TagOption[];
@@ -12,10 +11,11 @@ interface SearchAndTagComponentProps {
   onTagChange: (selected: TagOption[]) => void;
   onClearFilters: () => void;
   searchQuery: string;
-  sortOptions: { label: string; value: string }[];
-  onSortChange: (sortOption: string) => void;
+  sortOptions?: { label: string; value: string }[]; // Optional
+  selectedSort?: string;
+  onSortChange?: (sortOption: string) => void;
+  showSortOptions?: boolean; // New prop to toggle the sort dropdown
 }
-
 
 export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
   tags,
@@ -24,8 +24,10 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
   onTagChange,
   onClearFilters,
   searchQuery,
-  sortOptions,
+  sortOptions = [],
+  selectedSort,
   onSortChange,
+  showSortOptions = true, // Default to true
 }) => {
   return (
     <aside className="flex flex-col min-w-[250px] max-w-xs md:basis-1/4">
@@ -33,13 +35,12 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
         <h2 className="mb-4 text-p1 font-subHeading">Search and Filter</h2>
         <div className="mb-4">
           <div className="relative">
-            <Input
+            <input
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search"
-              className="w-full pr-10"
+              className="w-full rounded border px-3 py-2"
             />
-            <Search className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />
           </div>
         </div>
         <MultiSelector
@@ -48,17 +49,21 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
           onSelectedChange={onTagChange}
           placeholder="Tags"
         />
-        <div className="mt-4">
-        <MultiSelector
-          options={sortOptions} // Pass sortOptions
-          selected={[]} // No pre-selected sort
-          onSelectedChange={(selected) => {
-            onSortChange(selected[0]?.value || ""); // Trigger sort change
-          }}
-          placeholder="Sort by" // Unique placeholder for sort dropdown
-          singleSelect={true} // Ensure single select
-        />
-        </div>
+        {showSortOptions && sortOptions && onSortChange && (
+          <MultiSelector
+            options={sortOptions}
+            selected={
+              selectedSort
+                ? [{ label: selectedSort, value: selectedSort }]
+                : []
+            }
+            onSelectedChange={(selected) =>
+              onSortChange(selected[0]?.value || "")
+            }
+            singleSelect={true}
+            placeholder="Sort by..."
+          />
+        )}
         {(selectedTags.length > 0 || searchQuery.trim()) && (
           <button
             onClick={onClearFilters}
@@ -69,5 +74,5 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
         )}
       </div>
     </aside>
-  )
-}
+  );
+};

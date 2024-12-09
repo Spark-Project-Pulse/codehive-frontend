@@ -143,6 +143,7 @@ const QuestionsPage: React.FC = () => {
               { label: 'Unanswered', value: 'unanswered' },
             ]}
             onSortChange={handleSortChange}
+            showSortOptions={true}
           />
         </div>
 
