@@ -1,15 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -22,8 +11,8 @@ import UpdateQuestionForm, { type FormValues } from './UpdateQuestionForm'
 import { type Question } from '@/types/Questions'
 import { toast } from '@/components/ui/use-toast'
 import { updateQuestion, deleteQuestion } from '@/api/questions'
-import { useState } from 'react'
-import { Pencil1Icon } from '@radix-ui/react-icons';
+import { useEffect, useState } from 'react'
+import { Pencil1Icon } from '@radix-ui/react-icons'
 
 interface UpdateDeleteQuestionDialogProps {
   question: Question
@@ -38,6 +27,18 @@ export default function UpdateDeleteQuestionDialog({
 }: UpdateDeleteQuestionDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false)
+
+  // Lock and unlock scrolling when the sheet opens or closes
+  useEffect(() => {
+    if (isDialogOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = '' // Clean up in case of unmount
+    }
+  }, [isDialogOpen])
 
   const handleQuestionUpdate = async (form_data: FormValues) => {
     try {
@@ -118,7 +119,7 @@ export default function UpdateDeleteQuestionDialog({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <Pencil1Icon className="w-5 h-5 text-black" />
+          <Pencil1Icon className="h-5 w-5 text-black" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -132,33 +133,8 @@ export default function UpdateDeleteQuestionDialog({
           question={question}
           onSubmit={handleQuestionUpdate}
           isLoadingUpdate={isLoadingUpdate}
+          onDelete={handleQuestionDelete}
         />
-
-        {/* Delete Button within the dialog */}
-        <div className="mt-2">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" className="p-5">
-                Delete Question
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. Deleting this question will
-                  remove it permanently.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleQuestionDelete}>
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
       </DialogContent>
     </Dialog>
   )
