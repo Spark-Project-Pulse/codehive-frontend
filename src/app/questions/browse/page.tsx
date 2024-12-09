@@ -20,7 +20,7 @@ const QuestionsPage: React.FC = () => {
   const [hasError, setHasError] = useState<boolean>(false)
   const [tags, setTags] = useState<TagOption[]>([])
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
-  const [sortBy, setSortBy] = useState<string>('recency') // Default to 'recency'
+  const [sortBy, setSortBy] = useState<string>('Recency') // Default to 'recency'
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -116,7 +116,7 @@ const QuestionsPage: React.FC = () => {
   const clearFilters = () => {
     setSelectedTags([])
     setSearchQuery('')
-    setSortBy('recency') // Reset to default sort
+    setSortBy('Recency') // Reset to default sort
     setCurrentPage(1) // Reset to first page when filters are cleared
   }
 
@@ -186,7 +186,7 @@ const QuestionsPage: React.FC = () => {
 
           {!isLoading && !hasError && (
             <>
-              {(selectedTags.length > 0 || searchQuery.trim() || sortBy !== 'recency') && (
+              {(selectedTags.length > 0 || searchQuery.trim() || sortBy !== 'Recency') && (
                 <ActiveFilters
                   selectedTags={selectedTags}
                   searchQuery={searchQuery}
