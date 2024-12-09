@@ -59,7 +59,7 @@ const QuestionsPage: React.FC = () => {
           response.data.questions.forEach((question) => {
             uniqueQuestionsMap.set(question.question_id.toString(), question)
           })
-          let uniqueQuestions = Array.from(uniqueQuestionsMap.values())
+          const uniqueQuestions = Array.from(uniqueQuestionsMap.values())
 
           // // Sort questions to prioritize unanswered ones
           // uniqueQuestions = uniqueQuestions.sort((a, b) => {
