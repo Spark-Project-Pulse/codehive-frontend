@@ -8,18 +8,23 @@
     text-wrap: balance;
   }
 
-  .hexagonal-bg-light {
+  .hexagonal-bg {
     background-image: url('/hive-bg-light.svg');
     background-repeat: no-repeat;
     background-size: contain;
-    background-attachment: scroll;
+    background-attachment: scroll ;
+    transition: background-image 0.3s ease-in-out;
   }
+  
+  @media (prefers-color-scheme: dark) {
+    .hexagonal-bg {
+      background-image: url('/hive-bg-dark.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-attachment: scroll;
+      transition: background-image 0.3s ease-in-out;
 
-  .hexagonal-bg-dark {
-    background-image: url('/hive-bg-dark.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-attachment: scroll;
+    }
   }
 }
 
