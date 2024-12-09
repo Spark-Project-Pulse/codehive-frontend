@@ -7,7 +7,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import NotAuthenticatedPopup from '@/components/universal/NotAuthenticatedPopup'
