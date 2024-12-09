@@ -1,11 +1,11 @@
-// Create a new file for the Skeleton component, e.g., 'CommunityCardSkeleton.tsx'
+// Create a new file for the Skeleton component, e.g., 'HiveCardSkeleton.tsx'
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Avatar } from '@radix-ui/react-avatar'
 
-export default function SkeletonCommunityCard() {
+export default function SkeletonHiveCard() {
   return (
     <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
       <Card className="flex transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg">

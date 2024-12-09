@@ -1,23 +1,20 @@
 'use server'
 
 import { type SuccessResponse, type ApiResponse } from '@/types/Api'
-import {
-  type Community,
-  type CommunityOption,
-  type CommunityMember,
-} from '@/types/Communities'
+import { type Hive, type HiveOption, type HiveMember } from '@/types/Hives'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
+import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
- * Creates a new community request.
+ * Creates a new hive request.
  *
- * @param {FormData} formData - Form data containing community details.
- * @returns {Promise<ApiResponse<{ community_id: string; title: string }>>} The community's ID and title on success, or an error message on failure.
+ * @param {FormData} formData - Form data containing hive details.
+ * @returns {Promise<ApiResponse<{ hive_id: string; title: string }>>} The hive's ID and title on success, or an error message on failure.
  */
-export const createCommunityRequest = async (
+export const createHiveRequest = async (
   formData: FormData
-): Promise<ApiResponse<{ community_id: string; title: string }>> => {
+): Promise<ApiResponse<{ hive_id: string; title: string }>> => {
   try {
     const user = await getSupaUser()
     if (!user) {
@@ -28,7 +25,7 @@ export const createCommunityRequest = async (
     formData.append('owner', user.id)
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/createRequest/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/createRequest/`,
       {
         method: 'POST',
         body: formData,
@@ -41,7 +38,7 @@ export const createCommunityRequest = async (
 
     const responseData = (await response.json()) as
       | {
-          community_id: string
+          hive_id: string
           title: string
         }
       | { error: string }
@@ -52,25 +49,25 @@ export const createCommunityRequest = async (
       return {
         errorMessage: null,
         data: {
-          community_id: responseData.community_id,
+          hive_id: responseData.hive_id,
           title: responseData.title,
         },
       }
     }
   } catch (error) {
-    console.error('Error creating community request: ', error)
-    return { errorMessage: 'Error creating community request' }
+    console.error('Error creating hive request: ', error)
+    return { errorMessage: 'Error creating hive request' }
   }
 }
 
 /**
- * Approves a community request.
+ * Approves a hive request.
  *
- * @param {UUID} communityId - The ID of the community request to approve.
+ * @param {UUID} hiveId - The ID of the hive request to approve.
  * @returns {Promise<ApiResponse<{ message: string }>>} A success message on approval or an error message on failure.
  */
-export const approveCommunityRequest = async (
-  communityId: UUID
+export const approveHiveRequest = async (
+  hiveId: UUID
 ): Promise<ApiResponse<{ message: string }>> => {
   try {
     const user = await getSupaUser()
@@ -79,14 +76,14 @@ export const approveCommunityRequest = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/approveCommunityRequest/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/approveHiveRequest/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          community_id: communityId,
+          hive_id: hiveId,
           user_id: user.id,
         }),
       }
@@ -102,19 +99,19 @@ export const approveCommunityRequest = async (
     const responseData = (await response.json()) as { message: string }
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error approving community request:', error)
-    return { errorMessage: 'Error approving community request' }
+    console.error('Error approving hive request:', error)
+    return { errorMessage: 'Error approving hive request' }
   }
 }
 
 /**
- * Rejects a community request.
+ * Rejects a hive request.
  *
- * @param {UUID} communityId - The ID of the community request to reject.
+ * @param {UUID} hiveId - The ID of the hive request to reject.
  * @returns {Promise<ApiResponse<{ message: string }>>} A success message on rejection or an error message on failure.
  */
-export const rejectCommunityRequest = async (
-  communityId: UUID
+export const rejectHiveRequest = async (
+  hiveId: UUID
 ): Promise<ApiResponse<{ message: string }>> => {
   try {
     const user = await getSupaUser()
@@ -123,14 +120,14 @@ export const rejectCommunityRequest = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/rejectCommunityRequest/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/rejectHiveRequest/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          community_id: communityId,
+          hive_id: hiveId,
           user_id: user.id,
         }),
       }
@@ -146,19 +143,19 @@ export const rejectCommunityRequest = async (
     const responseData = (await response.json()) as { message: string }
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error rejecting community request:', error)
-    return { errorMessage: 'Error rejecting community request' }
+    console.error('Error rejecting hive request:', error)
+    return { errorMessage: 'Error rejecting hive request' }
   }
 }
 
 /**
- * Adds the current user to a community.
+ * Adds the current user to a hive.
  *
- * @param {UUID} communityId - The ID of the community to join.
+ * @param {UUID} hiveId - The ID of the hive to join.
  * @returns {Promise<ApiResponse<{ message: string }>>} A success message on success or an error message on failure.
  */
-export const addUserToCommunity = async (
-  communityId: UUID
+export const addUserToHive = async (
+  hiveId: UUID
 ): Promise<ApiResponse<{ message: string }>> => {
   try {
     const user = await getSupaUser()
@@ -168,13 +165,13 @@ export const addUserToCommunity = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/addCommunityMember/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/addHiveMember/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ community_id: communityId, user_id: user.id }),
+        body: JSON.stringify({ hive_id: hiveId, user_id: user.id }),
       }
     )
 
@@ -188,19 +185,19 @@ export const addUserToCommunity = async (
     const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error adding user to community: ', error)
-    return { errorMessage: 'Error adding user to community' }
+    console.error('Error adding user to hive: ', error)
+    return { errorMessage: 'Error adding user to hive' }
   }
 }
 
 /**
- * Removes the current user from a community.
+ * Removes the current user from a hive.
  *
- * @param {UUID} communityId - The ID of the community to leave.
+ * @param {UUID} hiveId - The ID of the hive to leave.
  * @returns {Promise<ApiResponse<{ message: string }>>} A success message on success or an error message on failure.
  */
-export const removeUserFromCommunity = async (
-  communityId: UUID
+export const removeUserFromHive = async (
+  hiveId: UUID
 ): Promise<ApiResponse<{ message: string }>> => {
   try {
     const user = await getSupaUser()
@@ -210,13 +207,13 @@ export const removeUserFromCommunity = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/removeCommunityMember/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/removeHiveMember/`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ community_id: communityId, user_id: user.id }),
+        body: JSON.stringify({ hive_id: hiveId, user_id: user.id }),
       }
     )
 
@@ -230,39 +227,37 @@ export const removeUserFromCommunity = async (
     const responseData = (await response.json()) as SuccessResponse
     return { errorMessage: null, data: responseData }
   } catch (error) {
-    console.error('Error removing user from community: ', error)
-    return { errorMessage: 'Error removing user from community' }
+    console.error('Error removing user from hive: ', error)
+    return { errorMessage: 'Error removing user from hive' }
   }
 }
 
 /**
- * Fetches communities with pagination, tag filtering, and search functionality.
+ * Fetches hives with pagination, tag filtering, and search functionality.
  *
  * @param {number} pageNumber - The current page number.
- * @param {number} pageSize - The number of communities per page.
+ * @param {number} pageSize - The number of hives per page.
  * @param {string[]} selectedTags - An array of selected tag IDs.
  * @param {string} searchQuery - The search query string.
- * @returns {Promise<ApiResponse<{ communities: Community[]; totalCommunities:
+ * @returns {Promise<ApiResponse<{ hives: Hive[]; totalHives:
  */
-export const getAllCommunities = async (
+export const getAllHives = async (
   pageNumber: number,
   pageSize: number,
   selectedTags: string[],
   searchQuery: string
-): Promise<
-  ApiResponse<{ communities: Community[]; totalCommunities: number }>
-> => {
+): Promise<ApiResponse<{ hives: Hive[]; totalHives: number }>> => {
   try {
     let url = ''
     const params = new URLSearchParams()
 
     if (searchQuery.trim()) {
       // Use the search endpoint
-      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/search/`
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/search/`
       params.append('q', searchQuery.trim())
     } else {
       // Use the general getAll endpoint
-      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAll/`
+      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getAll/`
     }
 
     // Append tags in both cases
@@ -274,12 +269,15 @@ export const getAllCommunities = async (
     params.append('page', pageNumber.toString())
     params.append('page_size', pageSize.toString())
 
-    const response = await fetch(`${url}?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getAll/?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -289,33 +287,32 @@ export const getAllCommunities = async (
     }
 
     const responseData = (await response.json()) as {
-      communities: Community[]
-      totalCommunities: number
+      hives: Hive[]
+      totalHives: number
     }
 
     return {
       errorMessage: null,
       data: {
-        communities: responseData.communities,
-        totalCommunities: responseData.totalCommunities,
+        hives: responseData.hives,
+        totalHives: responseData.totalHives,
       },
     }
   } catch (error) {
-    console.error('Error fetching communities:', error)
-    return { errorMessage: 'Error fetching communities' }
+    console.error('Error fetching hives:', error)
+    return { errorMessage: 'Error fetching hives' }
   }
 }
 
-
 /**
- * Fetches all community options from the backend.
+ * Fetches all hive options from the backend.
  *
- * @returns {Promise<CommunityOption[]>} An array of community options on success, or an empty array on failure.
+ * @returns {Promise<HiveOption[]>} An array of hive options on success, or an empty array on failure.
  */
-export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
+export const getAllHiveOptions = async (): Promise<HiveOption[]> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllOptions`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getAllOptions`,
       {
         method: 'GET',
         headers: {
@@ -328,32 +325,32 @@ export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
       throw new Error('Network response was not ok')
     }
 
-    const data = (await response.json()) as Community[]
+    const data = (await response.json()) as Hive[]
 
-    const options: CommunityOption[] = data.map((community) => ({
-      value: community.community_id,
-      label: community.title,
+    const options: HiveOption[] = data.map((hive) => ({
+      value: hive.hive_id,
+      label: hive.title,
     }))
 
     return options
   } catch (error) {
-    console.error('Error fetching communities:', error)
+    console.error('Error fetching hives:', error)
     return []
   }
 }
 
 /**
- * Fetches all members of a specific community by ID from the backend.
+ * Fetches all members of a specific hive by ID from the backend.
  *
- * @param {string} community_id - The ID of the community whose members to retrieve.
- * @returns {Promise<ApiResponse<CommunityMember[]>>} The list of members on success, or an error message on failure.
+ * @param {string} hive_id - The ID of the hive whose members to retrieve.
+ * @returns {Promise<ApiResponse<HiveMember[]>>} The list of members on success, or an error message on failure.
  */
-export const getAllCommunityMembers = async (
-  community_id: string
-): Promise<ApiResponse<CommunityMember[]>> => {
+export const getAllHiveMembers = async (
+  hive_id: string
+): Promise<ApiResponse<HiveMember[]>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllMembers/${community_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getAllMembers/${hive_id}`,
       {
         method: 'GET',
         headers: {
@@ -366,7 +363,7 @@ export const getAllCommunityMembers = async (
       throw new Error('Network response was not ok')
     }
 
-    const membersData = (await response.json()) as CommunityMember[]
+    const membersData = (await response.json()) as HiveMember[]
     return { errorMessage: null, data: membersData }
   } catch (error) {
     console.error('Error fetching members: ', error)
@@ -375,17 +372,17 @@ export const getAllCommunityMembers = async (
 }
 
 /**
- * Fetches a community by its ID from the backend.
+ * Fetches a hive by its ID from the backend.
  *
- * @param {UUID} community_id - The ID of the community to retrieve.
- * @returns {Promise<ApiResponse<Community>>} The community data on success, or an error message on failure.
+ * @param {UUID} hive_id - The ID of the hive to retrieve.
+ * @returns {Promise<ApiResponse<Hive>>} The hive data on success, or an error message on failure.
  */
-export const getCommunityById = async (
-  community_id: UUID
-): Promise<ApiResponse<Community>> => {
+export const getHiveById = async (
+  hive_id: UUID
+): Promise<ApiResponse<Hive>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getById/${community_id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getById/${hive_id}`,
       {
         method: 'GET',
         headers: {
@@ -398,26 +395,26 @@ export const getCommunityById = async (
       throw new Error('Network response was not ok')
     }
 
-    const communityData = (await response.json()) as Community
-    return { errorMessage: null, data: communityData }
+    const hiveData = (await response.json()) as Hive
+    return { errorMessage: null, data: hiveData }
   } catch (error) {
-    console.error('Error fetching community: ', error)
-    return { errorMessage: 'Error fetching community' }
+    console.error('Error fetching hive: ', error)
+    return { errorMessage: 'Error fetching hive' }
   }
 }
 
 /**
- * Retrieves a community by its title from the backend.
+ * Retrieves a hive by its title from the backend.
  *
- * @param {string} title - The title of the community to retrieve.
- * @returns {Promise<ApiResponse<Community>>} The community's data on success, or an error message on failure.
+ * @param {string} title - The title of the hive to retrieve.
+ * @returns {Promise<ApiResponse<Hive>>} The hive's data on success, or an error message on failure.
  */
-export const getCommunityByTitle = async (
+export const getHiveByTitle = async (
   title: string
-): Promise<ApiResponse<Community>> => {
+): Promise<ApiResponse<Hive>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getByTitle/${title}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getByTitle/${title}`,
       {
         method: 'GET',
         headers: {
@@ -431,21 +428,21 @@ export const getCommunityByTitle = async (
       throw new Error('Network response was not ok')
     }
 
-    const communityData = (await response.json()) as Community
-    return { errorMessage: null, data: communityData }
+    const hiveData = (await response.json()) as Hive
+    return { errorMessage: null, data: hiveData }
   } catch (error) {
-    console.error('Error getting community: ', error)
-    return { errorMessage: 'Error getting community' }
+    console.error('Error getting hive: ', error)
+    return { errorMessage: 'Error getting hive' }
   }
 }
 
 /**
- * Fetches all communities associated with the current user.
+ * Fetches all hives associated with the current user.
  *
- * @returns {Promise<ApiResponse<CommunityMember[]>>} The communities data on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<HiveMember[]>>} The hives data on success, or an error message on failure.
  */
-export const getCurrentUserCommunities = async (): Promise<
-  ApiResponse<CommunityMember[]>
+export const getCurrentUserHives = async (): Promise<
+  ApiResponse<HiveMember[]>
 > => {
   try {
     const user = await getSupaUser()
@@ -455,7 +452,7 @@ export const getCurrentUserCommunities = async (): Promise<
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getUserCommunitiesById/${user.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getUserHivesById/${user.id}`,
       {
         method: 'GET',
         headers: {
@@ -468,25 +465,23 @@ export const getCurrentUserCommunities = async (): Promise<
       throw new Error('Network response was not ok')
     }
 
-    const communityData = (await response.json()) as CommunityMember[]
-    return { errorMessage: null, data: communityData }
+    const hiveData = (await response.json()) as HiveMember[]
+    return { errorMessage: null, data: hiveData }
   } catch (error) {
-    console.error('Error fetching communities: ', error)
-    return { errorMessage: 'Error fetching communities' }
+    console.error('Error fetching hives: ', error)
+    return { errorMessage: 'Error fetching hives' }
   }
 }
 
 /**
- * Fetches all community requests from the backend.
+ * Fetches all hive requests from the backend.
  *
- * @returns {Promise<ApiResponse<Community[]>>} An array of community requests on success, or an error message on failure.
+ * @returns {Promise<ApiResponse<Hive[]>>} An array of hive requests on success, or an error message on failure.
  */
-export const getAllCommunityRequests = async (): Promise<
-  ApiResponse<Community[]>
-> => {
+export const getAllHiveRequests = async (): Promise<ApiResponse<Hive[]>> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllCommunityRequests`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/getAllHiveRequests`,
       {
         method: 'GET',
         headers: {
@@ -499,22 +494,22 @@ export const getAllCommunityRequests = async (): Promise<
       throw new Error('Network response was not ok')
     }
 
-    const communityData = (await response.json()) as Community[]
-    return { errorMessage: null, data: communityData }
+    const hiveData = (await response.json()) as Hive[]
+    return { errorMessage: null, data: hiveData }
   } catch (error) {
-    console.error('Error fetching community requests: ', error)
-    return { errorMessage: 'Error fetching community requests' }
+    console.error('Error fetching hive requests: ', error)
+    return { errorMessage: 'Error fetching hive requests' }
   }
 }
 
 /**
- * Checks if a user is part of a specific community by title.
+ * Checks if a user is part of a specific hive by title.
  *
- * @param {string} community_title - The title of the community to check.
- * @returns {Promise<ApiResponse<{ is_member: boolean }>>} Whether the user is part of the community on success, or an error message on failure.
+ * @param {string} hive_title - The title of the hive to check.
+ * @returns {Promise<ApiResponse<{ is_member: boolean }>>} Whether the user is part of the hive on success, or an error message on failure.
  */
-export const userIsPartOfCommunity = async (
-  community_title: string
+export const userIsPartOfHive = async (
+  hive_title: string
 ): Promise<ApiResponse<{ is_member: boolean }>> => {
   try {
     const user = await getSupaUser()
@@ -524,7 +519,7 @@ export const userIsPartOfCommunity = async (
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/userIsPartOfCommunity/${community_title}/${user.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hives/userIsPartOfHive/${hive_title}/${user.id}`,
       {
         method: 'GET',
         headers: {
@@ -542,7 +537,7 @@ export const userIsPartOfCommunity = async (
     const responseData = (await response.json()) as { is_member: boolean }
     return { errorMessage: null, data: { is_member: responseData.is_member } }
   } catch (error) {
-    console.error('Error checking if user is part of community: ', error)
-    return { errorMessage: 'Error checking if user is part of community' }
+    console.error('Error checking if user is part of hive: ', error)
+    return { errorMessage: 'Error checking if user is part of hive' }
   }
 }

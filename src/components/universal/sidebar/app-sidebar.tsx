@@ -12,7 +12,7 @@ import { getProjectsByUserId } from '@/api/projects'
 
 import { NavMain } from '@/components/universal/sidebar/nav-main'
 import { NavProjects } from '@/components/universal/sidebar/nav-projects'
-import { NavCommunities } from '@/components/universal/sidebar/nav-communities'
+import { NavHives } from '@/components/universal/sidebar/nav-hives'
 import { NavUser } from '@/components/universal/sidebar/nav-user'
 import {
   Sidebar,
@@ -29,15 +29,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
-import { getCurrentUserCommunities } from '@/api/communities'
-import { type SidebarCommunity } from '@/types/Communities'
+import { getCurrentUserHives } from '@/api/hives'
+import { type SidebarHive } from '@/types/Hives'
 import { ThemeToggle } from '@/components/universal/sidebar/ThemeToggle'
 import {
-  communitiesCookieExists,
-  getCommunitiesCookie,
+  hivesCookieExists,
+  getHivesCookie,
   getNotificationsCookie,
   notificationsCookieExists,
-  setCommunitiesCookie,
+  setHivesCookie,
   setNotificationsCookie,
 } from '@/lib/cookies'
 import { AdminPanelLink } from '@/components/universal/sidebar/nav-admin'
@@ -47,15 +47,12 @@ import { getUnreadNotificationsCountByUserId } from '@/api/notifications'
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, loading } = useUser()
   const { open, toggleSidebar } = useSidebar()
-  const [communities, setCommunities] = React.useState<SidebarCommunity[]>([])
-  const [communitiesLoading, setCommunitiesLoading] =
-    React.useState<boolean>(true)
-  const [projectsLoading, setProjectsLoading] =
-    React.useState<boolean>(true)
+  const [hives, setHives] = React.useState<SidebarHive[]>([])
+  const [hivesLoading, setHivesLoading] = React.useState<boolean>(true)
+  const [projectsLoading, setProjectsLoading] = React.useState<boolean>(true)
   const [notificationsInfo, setNotificationsInfo] =
     React.useState<NotificatonsInfo>({ count: 0 })
-  const [, setNotificationsInfoLoading] =
-    React.useState<boolean>(true)
+  const [, setNotificationsInfoLoading] = React.useState<boolean>(true)
 
   const [projects, setProjects] = React.useState<SidebarProject[]>([])
   React.useEffect(() => {
@@ -85,44 +82,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     void fetchProjects()
   }, [user?.user, loading])
 
-  // Fetch communities/use cookies
+  // Fetch hives/use cookies
   React.useEffect(() => {
-    const fetchCommunities = async () => {
+    const fetchHives = async () => {
       if (loading) return
 
       if (!user?.user) {
-        setCommunitiesLoading(false)
+        setHivesLoading(false)
         return
       }
 
-      setCommunitiesLoading(true)
+      setHivesLoading(true)
       try {
-        // Check if communities info cookie exists
-        if (await communitiesCookieExists()) {
-          const cookieData = await getCommunitiesCookie()
-          setCommunities(cookieData)
+        // Check if hives info cookie exists
+        if (await hivesCookieExists()) {
+          const cookieData = await getHivesCookie()
+          setHives(cookieData)
         } else {
-          // Fetch community data and set cookie if not already cached
-          const { data, errorMessage } = await getCurrentUserCommunities()
+          // Fetch hive data and set cookie if not already cached
+          const { data, errorMessage } = await getCurrentUserHives()
           if (data) {
-            const formattedCommunities = data.map((community) => ({
-              title: community.community_info?.title,
-              url: `/communities/${community.community_info.title}`,
+            const formattedHives = data.map((hive) => ({
+              title: hive.hive_info?.title,
+              url: `/hives/${hive.hive_info.title}`,
               avatar_url:
-                community.community_info.avatar_url ??
-                '/default-community-avatar.png',
-            })) as SidebarCommunity[]
+                hive.hive_info.avatar_url ?? '/default-hive-avatar.png',
+            })) as SidebarHive[]
 
-            setCommunities(formattedCommunities)
-            setCommunitiesCookie(formattedCommunities) // Cache the communities
+            setHives(formattedHives)
+            setHivesCookie(formattedHives) // Cache the hives
           } else {
             console.error(errorMessage)
           }
         }
       } catch (error) {
-        console.error('Error fetching communities:', error)
+        console.error('Error fetching hives:', error)
       }
-      setCommunitiesLoading(false)
+      setHivesLoading(false)
     }
 
     const fetchNotificationsInfo = async () => {
@@ -140,7 +136,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           const cookieData = await getNotificationsCookie()
           setNotificationsInfo(cookieData)
         } else {
-          // Fetch community data and set cookie if not already cached
+          // Fetch hive data and set cookie if not already cached
           const { data, errorMessage } =
             await getUnreadNotificationsCountByUserId()
           if (data) {
@@ -156,7 +152,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setNotificationsInfoLoading(false)
     }
 
-    void fetchCommunities()
+    void fetchHives()
     void fetchNotificationsInfo()
   }, [loading, user])
 
@@ -194,17 +190,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ],
       },
       {
-        title: 'Communities',
+        title: 'Hives',
         url: '#',
         icon: PersonStanding,
         items: [
           {
-            title: 'Create Community',
-            url: '/communities/create',
+            title: 'Create Hive',
+            url: '/hives/create',
           },
           {
-            title: 'Browse Communities',
-            url: '/communities/browse',
+            title: 'Browse Hives',
+            url: '/hives/browse',
           },
         ],
       },
@@ -236,9 +232,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               width={210}
               height={45}
               onError={(e) => {
-                e.currentTarget.onerror = null;
+                e.currentTarget.onerror = null
                 if (e.currentTarget.parentElement) {
-                  e.currentTarget.parentElement.innerHTML = 'CodeHive';
+                  e.currentTarget.parentElement.innerHTML = 'CodeHive'
                 }
               }}
             />
@@ -249,9 +245,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               width={235}
               height={50}
               onError={(e) => {
-                e.currentTarget.onerror = null;
+                e.currentTarget.onerror = null
                 if (e.currentTarget.parentElement) {
-                  e.currentTarget.parentElement.innerHTML = 'CodeHive';
+                  e.currentTarget.parentElement.innerHTML = 'CodeHive'
                 }
               }}
             />
@@ -261,22 +257,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             href="/"
             className="font-heading text-navLogo font-bold uppercase tracking-wider"
           >
-            <Image
-              src="/logo.svg"
-              alt="CodeHive Logo"
-              width={50}
-              height={50}
-            />
+            <Image src="/logo.svg" alt="CodeHive Logo" width={50} height={50} />
           </Link>
         )}
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={projects} loading={projectsLoading} />
-        <NavCommunities
-          communities={communities}
-          loading={communitiesLoading}
-        />
+        <NavHives hives={hives} loading={hivesLoading} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

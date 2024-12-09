@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/select'
 import Link from 'next/link'
 import { Skeleton } from '@/components/ui/skeleton'
-import CommunityCombobox from './CommunityCombobox'
+import HiveCombobox from '@/components/pages/questions/ask-question/HiveCombobox'
 import { type UUID } from 'crypto'
 import MarkdownEditor from '@/components/universal/code/MarkdownEditor'
 
@@ -44,7 +44,7 @@ const formSchema = z.object({
     message: 'Question description cannot be empty.',
   }),
   related_project: z.string().optional(), // project UUID
-  related_community: z.string().optional(), // Community UUID
+  related_hive: z.string().optional(), // Hive UUID
   code_context: z.string().optional(),
   code_context_full_pathname: z.string().optional(),
   code_context_line_number: z.number().nullable(),
@@ -56,7 +56,7 @@ type FormValues = z.infer<typeof formSchema>
 // The QuestionForm component
 export default function QuestionForm({
   onSubmit,
-  communityId,
+  hiveId,
   hasContext = false,
   project,
   codeContext,
@@ -65,7 +65,7 @@ export default function QuestionForm({
 }: {
   onSubmit: (values: FormValues) => Promise<void>
   hasContext?: boolean
-  communityId?: UUID | null
+  hiveId?: UUID | null
   project?: Project
   codeContext?: string
   codeContextFullPathname?: string
@@ -86,7 +86,7 @@ export default function QuestionForm({
           ? codeContextLineNumber
           : null,
       tags: [],
-      related_community: communityId ?? '',
+      related_hive: hiveId ?? '',
     },
   })
 
@@ -101,7 +101,7 @@ export default function QuestionForm({
   // State to store project options
   const [projectOptions, setProjectOptions] = useState<ProjectOption[]>([])
 
-  // Fetch tags and communities from the backend when the component mounts
+  // Fetch tags and hives from the backend when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -132,9 +132,9 @@ export default function QuestionForm({
     )
   }, [selectedTags, form])
 
-  // Synchronize selected community with react-hook-form's "related_community" field
-  const handleCommunityChange = (value: string) => {
-    form.setValue('related_community', value) // Update related_community in form state
+  // Synchronize selected hive with react-hook-form's "related_hive" field
+  const handleHiveChange = (value: string) => {
+    form.setValue('related_hive', value) // Update related_hive in form state
   }
 
   return (
@@ -195,17 +195,17 @@ export default function QuestionForm({
           )}
         />
 
-        {/* Communities Field */}
+        {/* Hives Field */}
         <FormField
           control={form.control}
-          name="related_community"
+          name="related_hive"
           render={() => (
             <FormItem>
-              <FormLabel htmlFor="related_community">Ask a Community</FormLabel>
+              <FormLabel htmlFor="related_hive">Ask a Hive</FormLabel>
               <FormControl>
-                <CommunityCombobox
-                  defaultValue={communityId ?? ''}
-                  onChange={handleCommunityChange}
+                <HiveCombobox
+                  defaultValue={hiveId ?? ''}
+                  onChange={handleHiveChange}
                 />
               </FormControl>
               <FormMessage />
