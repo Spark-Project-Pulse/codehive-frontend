@@ -20,7 +20,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
-import Image from 'next/image'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 
 export default function HiveRequestsTab() {
