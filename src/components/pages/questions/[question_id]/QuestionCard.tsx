@@ -77,9 +77,9 @@ export default function QuestionCard({
   const QuestionCardContent = (
     <div className="to-tertiary rounded-lg bg-gradient-to-b from-primary p-[2px]">
       <Card
-        className={`relative w-full ${
+        className={`relative w-full border transition-all ${
           href &&
-          'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'
+          'cursor-pointer hover:scale-105 hover:border-2 hover:border-primary hover:shadow-lg'
         }`}
       >
         <CardHeader>
