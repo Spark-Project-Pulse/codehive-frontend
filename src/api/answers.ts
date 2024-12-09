@@ -4,7 +4,6 @@ import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
-import { GoogleAuth } from 'google-auth-library'
 import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
