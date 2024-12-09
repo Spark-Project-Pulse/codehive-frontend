@@ -25,7 +25,7 @@ export default function HiveCard({
       <Card
         key={hive.hive_id}
         onClick={onCardClick}
-        className="flex transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+        className="flex w-full h-full transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg"
       >
         <CardHeader className="flex-row items-center gap-4">
           <Avatar className="h-12 w-12">
