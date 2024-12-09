@@ -204,7 +204,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
           setAuthPopupOpen(false)
         }}
       />
-      <section className="min-h-screen py-24">
+      <section className="min-h-screen">
         <div className="mx-auto max-w-4xl px-4">
           {isLoadingQuestion ? (
             <SkeletonQuestionCard />

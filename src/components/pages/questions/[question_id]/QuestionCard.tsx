@@ -9,7 +9,7 @@ import {
   CardContent,
 } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { CalendarIcon, UserIcon } from 'lucide-react'
+import { CalendarIcon, TagIcon, UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { type TagOption } from '@/types/Tags'
@@ -23,6 +23,7 @@ import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownPreview'
 import { useTheme } from 'next-themes'
 import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
+import { Badge } from '@/components/ui/badge'
 
 interface QuestionCardProps {
   question: Question
@@ -79,9 +80,9 @@ export default function QuestionCard({
   const QuestionCardContent = (
     <div className="to-tertiary rounded-lg bg-gradient-to-b from-primary p-[2px]">
       <Card
-        className={`relative w-full ${
+        className={`relative w-full border transition-all ${
           href &&
-          'cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-lg'
+          'cursor-pointer hover:scale-105 hover:border-2 hover:border-primary hover:shadow-lg'
         }`}
       >
         <CardHeader>
@@ -159,6 +160,20 @@ export default function QuestionCard({
                 />
               </div>
             )}
+
+          {question.tags && question.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <TagIcon className="mr-2 h-4 w-4 text-gray-500" />
+              {question.tags.map((tagId, index) => {
+                const tag = tags.find((t) => t.value === tagId)
+                return tag ? (
+                  <Badge key={index} variant="secondary">
+                    {tag.label}
+                  </Badge>
+                ) : null
+              })}
+            </div>
+          )}
         </CardContent>
         <CardFooter className="flex items-center justify-between">
           <div

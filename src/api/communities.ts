@@ -8,6 +8,7 @@ import {
 } from '@/types/Communities'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
+import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
  * Creates a new community request.
@@ -27,8 +28,8 @@ export const createCommunityRequest = async (
     // add the owner to the form
     formData.append('owner', user.id)
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/createRequest/`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/createRequest/',
       {
         method: 'POST',
         body: formData,
@@ -78,8 +79,8 @@ export const approveCommunityRequest = async (
       return { errorMessage: 'User not authenticated' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/approveCommunityRequest/`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/approveCommunityRequest/',
       {
         method: 'POST',
         headers: {
@@ -122,8 +123,8 @@ export const rejectCommunityRequest = async (
       return { errorMessage: 'User not authenticated' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/rejectCommunityRequest/`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/rejectCommunityRequest/',
       {
         method: 'POST',
         headers: {
@@ -167,8 +168,8 @@ export const addUserToCommunity = async (
       return { errorMessage: 'User not authenticated' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/addCommunityMember/`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/addCommunityMember/',
       {
         method: 'POST',
         headers: {
@@ -209,8 +210,8 @@ export const removeUserFromCommunity = async (
       return { errorMessage: 'User not authenticated' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/removeCommunityMember/`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/removeCommunityMember/',
       {
         method: 'POST',
         headers: {
@@ -274,12 +275,15 @@ export const getAllCommunities = async (
     params.append('page', pageNumber.toString())
     params.append('page_size', pageSize.toString())
 
-    const response = await fetch(`${url}?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getAll/?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
     if (!response.ok) {
       const errorText = await response.text()
@@ -314,8 +318,8 @@ export const getAllCommunities = async (
  */
 export const getAllCommunityOptions = async (): Promise<CommunityOption[]> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllOptions`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/getAllOptions',
       {
         method: 'GET',
         headers: {
@@ -352,8 +356,8 @@ export const getAllCommunityMembers = async (
   community_id: string
 ): Promise<ApiResponse<CommunityMember[]>> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllMembers/${community_id}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getAllMembers/${community_id}`,
       {
         method: 'GET',
         headers: {
@@ -384,8 +388,8 @@ export const getCommunityById = async (
   community_id: UUID
 ): Promise<ApiResponse<Community>> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getById/${community_id}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getById/${community_id}`,
       {
         method: 'GET',
         headers: {
@@ -416,8 +420,8 @@ export const getCommunityByTitle = async (
   title: string
 ): Promise<ApiResponse<Community>> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getByTitle/${title}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getByTitle/${title}`,
       {
         method: 'GET',
         headers: {
@@ -454,8 +458,8 @@ export const getCurrentUserCommunities = async (): Promise<
       throw new Error('User is not authenticated')
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getUserCommunitiesById/${user.id}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getUserCommunitiesById/${user.id}`,
       {
         method: 'GET',
         headers: {
@@ -485,8 +489,8 @@ export const getAllCommunityRequests = async (): Promise<
   ApiResponse<Community[]>
 > => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/getAllCommunityRequests`,
+    const response = await makeAuthenticatedBackendFetch(
+      '/communities/getAllCommunityRequests',
       {
         method: 'GET',
         headers: {
@@ -523,8 +527,8 @@ export const userIsPartOfCommunity = async (
       return { errorMessage: 'User not authenticated' }
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/communities/userIsPartOfCommunity/${community_title}/${user.id}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/userIsPartOfCommunity/${community_title}/${user.id}`,
       {
         method: 'GET',
         headers: {
