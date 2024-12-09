@@ -4,6 +4,7 @@ import { type SuccessResponse, type ApiResponse } from '@/types/Api'
 import { type Hive, type HiveOption, type HiveMember } from '@/types/Hives'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
+import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
  * Creates a new hive request.
@@ -268,12 +269,15 @@ export const getAllHives = async (
     params.append('page', pageNumber.toString())
     params.append('page_size', pageSize.toString())
 
-    const response = await fetch(`${url}?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const response = await makeAuthenticatedBackendFetch(
+      `/communities/getAll/?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
     if (!response.ok) {
       const errorText = await response.text()
