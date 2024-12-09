@@ -104,7 +104,7 @@ const ReviewCard = ({
 
 export default function Testimonials() {
   return (
-    <section className="container mx-auto px-4 py-12 text-center">
+    <section className="container mx-auto px-4 py-12 text-center mb-36">
       {/* Title and Description */}
       <div className="mb-8 flex flex-col items-center">
         <h2 className="text-3xl font-bold tracking-tight">

@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning lang="en">
-      <body>
+      <body className="flex flex-col min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,14 +47,12 @@ export default function RootLayout({
                       </TooltipTrigger>
                       <TooltipContent side="right">
                         {/* TODO: fix tooltip styling (doesn't seem correct) */}
-                        <p>⌘ /</p>  
+                        <p>⌘ /</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
                 </header>
-                <main className="flex-grow">
-                  {children}
-                </main>
+                <main className="flex-grow ml-28 mr-28 mt-28">{children}</main>
                 <SiteFooter />
                 <Toaster />
               </SidebarInset>

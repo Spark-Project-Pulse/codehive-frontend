@@ -111,7 +111,7 @@ export default function CommunityForm({
               <FormControl>
                 <Input
                   id="title"
-                  placeholder="Enter community title"
+                  placeholder="Community title"
                   {...field}
                 />
               </FormControl>

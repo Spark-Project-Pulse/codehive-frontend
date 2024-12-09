@@ -12,9 +12,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { ButtonWithLoading } from '@/components/universal/ButtonWithLoading'
 import { type Question } from '@/types/Questions'
+import MarkdownEditor from '@/components/universal/code/MarkdownEditor'
 
 // Define the schema for validation using zod
 const formSchema = z.object({
@@ -29,11 +29,13 @@ export type FormValues = z.infer<typeof formSchema>
 interface UpdateQuestionFormProps {
   question: Question
   onSubmit: (values: FormValues) => Promise<void>
+  isLoadingUpdate: boolean
 }
 
 export default function UpdateQuestionForm({
   question,
   onSubmit,
+  isLoadingUpdate,
 }: UpdateQuestionFormProps) {
   // Initialize the form with react-hook-form
   const form = useForm<FormValues>({
@@ -48,7 +50,7 @@ export default function UpdateQuestionForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 mt-4">
         {/* Title Field */}
         <FormField
           control={form.control}
@@ -72,9 +74,9 @@ export default function UpdateQuestionForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Provide a detailed description"
+                <MarkdownEditor
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
                 />
               </FormControl>
               <FormMessage />
@@ -86,7 +88,7 @@ export default function UpdateQuestionForm({
         <ButtonWithLoading
           buttonText="Update Question"
           buttonType="submit"
-          isLoading={false} // Replace with actual loading state if needed
+          isLoading={isLoadingUpdate}
         />
       </form>
     </Form>
