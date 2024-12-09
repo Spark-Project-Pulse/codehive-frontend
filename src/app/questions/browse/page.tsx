@@ -117,7 +117,7 @@ const QuestionsPage: React.FC = () => {
 
   const handleClearSearchQuery = () => setSearchQuery('')
 
-  // Naviage to ask questions page, include community id as a query parameter
+  // Navigate to ask questions page, include hive id as a query parameter
   const handleAskQuestionClick = () => {
     router.push(`/questions/ask-question`)
   }

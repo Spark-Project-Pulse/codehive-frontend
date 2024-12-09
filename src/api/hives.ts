@@ -270,7 +270,7 @@ export const getAllHives = async (
     params.append('page_size', pageSize.toString())
 
     const response = await makeAuthenticatedBackendFetch(
-      `/communities/getAll/?${params.toString()}`,
+      `/hives/getAll/?${params.toString()}`,
       {
         method: 'GET',
         headers: {
