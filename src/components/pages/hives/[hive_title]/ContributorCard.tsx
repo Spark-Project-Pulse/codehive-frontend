@@ -22,10 +22,10 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
   }
 
   return (
-    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg hover:md:px-[3%] hover:md:py-[3%] hover:lg:px-[3%] hover:lg:py-[2%] duration-200 hover:from-primary hover:to-tertiary">
+    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg hover:border-primary duration-200 hover:from-primary hover:to-tertiary">
       <Card
         onClick={handleCardClick}
-        className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+        className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg hover:border-primary"
       >
         <CardHeader className="pb-2">
           <div className="flex items-center justify-start">
