@@ -20,6 +20,7 @@ const QuestionsPage: React.FC = () => {
   const [hasError, setHasError] = useState<boolean>(false)
   const [tags, setTags] = useState<TagOption[]>([])
   const [selectedTags, setSelectedTags] = useState<TagOption[]>([])
+  const [sortBy, setSortBy] = useState<string>('recency') // Default to 'recency'
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -37,14 +38,23 @@ const QuestionsPage: React.FC = () => {
     const fetchQuestions = async () => {
       try {
         setIsLoading(true)
+
         const selectedTagValues = selectedTags.map((tag) => tag.value)
+        console.log('Fetching questions with:', {
+          currentPage,
+          pageSize,
+          selectedTagValues,
+          searchQuery: debouncedSearchQuery,
+          sortBy,
+        })
 
         const response = await getAllQuestions(
           currentPage,
           pageSize,
           selectedTagValues,
           debouncedSearchQuery,
-          null
+          null,
+          sortBy // Pass the sortBy parameter
         )
 
         if (response.errorMessage) {
@@ -52,22 +62,8 @@ const QuestionsPage: React.FC = () => {
         }
 
         if (response.data) {
-          // Ensure uniqueness based on 'question_id'
-          const uniqueQuestionsMap = new Map<string, Question>()
-          response.data.questions.forEach((question) => {
-            uniqueQuestionsMap.set(question.question_id.toString(), question)
-          })
-          let uniqueQuestions = Array.from(uniqueQuestionsMap.values())
-
-          // Sort questions to prioritize unanswered ones
-          uniqueQuestions = uniqueQuestions.sort((a, b) => {
-            // Unanswered questions (is_answered === false) come first
-            if (!a.is_answered && b.is_answered) return -1
-            if (a.is_answered && !b.is_answered) return 1
-            return 0 // Keep relative order for questions with the same state
-          })
-
-          setQuestions(uniqueQuestions)
+          console.log('API response:', response.data.questions)
+          setQuestions(response.data.questions)
           setTotalQuestions(response.data.totalQuestions)
           setTotalPages(Math.ceil(response.data.totalQuestions / pageSize))
         } else {
@@ -82,7 +78,7 @@ const QuestionsPage: React.FC = () => {
     }
 
     void fetchQuestions()
-  }, [currentPage, pageSize, selectedTags, debouncedSearchQuery])
+  }, [currentPage, pageSize, selectedTags, debouncedSearchQuery, sortBy]) // Add sortBy here
 
   // Fetch Tags
   useEffect(() => {
@@ -101,15 +97,16 @@ const QuestionsPage: React.FC = () => {
   const clearFilters = () => {
     setSelectedTags([])
     setSearchQuery('')
+    setSortBy('recency') // Reset to default sort
     setCurrentPage(1) // Reset to first page when filters are cleared
   }
 
-  // Reset to first page when filters or search query change
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [selectedTags, debouncedSearchQuery])
-
   const handleSearchChange = (query: string) => setSearchQuery(query)
+
+  const handleSortChange = (sortOption: string) => {
+    setSortBy(sortOption)
+    setCurrentPage(1) // Reset to the first page when sort changes
+  }
 
   const handleRemoveTag = (tagValue: string) => {
     setSelectedTags(selectedTags.filter((tag) => tag.value !== tagValue))
@@ -117,7 +114,6 @@ const QuestionsPage: React.FC = () => {
 
   const handleClearSearchQuery = () => setSearchQuery('')
 
-  // Naviage to ask questions page, include community id as a query parameter
   const handleAskQuestionClick = () => {
     router.push(`/questions/ask-question`)
   }
@@ -141,6 +137,12 @@ const QuestionsPage: React.FC = () => {
             onTagChange={setSelectedTags}
             onClearFilters={clearFilters}
             searchQuery={searchQuery}
+            sortOptions={[
+              { label: 'Recency', value: 'recency' },
+              { label: 'Views', value: 'views' },
+              { label: 'Unanswered', value: 'unanswered' },
+            ]}
+            onSortChange={handleSortChange}
           />
         </div>
 
@@ -164,10 +166,11 @@ const QuestionsPage: React.FC = () => {
 
           {!isLoading && !hasError && (
             <>
-              {(selectedTags.length > 0 || searchQuery.trim()) && (
+              {(selectedTags.length > 0 || searchQuery.trim() || sortBy !== 'recency') && (
                 <ActiveFilters
                   selectedTags={selectedTags}
                   searchQuery={searchQuery}
+                  currentSort={sortBy}
                   onRemoveTag={handleRemoveTag}
                   onClearSearchQuery={handleClearSearchQuery}
                 />
@@ -190,19 +193,17 @@ const QuestionsPage: React.FC = () => {
                 )}
               </ul>
 
-              {/* Use Pagination Component */}
               {totalPages > 1 && (
                 <PaginationComponent
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  onPageChange={setCurrentPage} // Pass setCurrentPage directly
+                  onPageChange={setCurrentPage}
                 />
               )}
             </>
           )}
         </main>
       </div>
-
     </div>
   )
 }

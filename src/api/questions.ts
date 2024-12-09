@@ -127,73 +127,74 @@ export const getQuestionById = async (
  * @param {number} pageSize - The number of questions per page.
  * @param {string[]} selectedTags - An array of selected tag IDs.
  * @param {string} searchQuery - The search query string.
+ * @param {string} sortBy - Sort filter applied to the search
  * @returns {Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>>} The questions data on success, or an error message on failure.
  * 
  */
 
 export const getAllQuestions = async (
-  pageNumber: number,
-  pageSize: number,
-  selectedTags: string[],
-  searchQuery: string,
-  related_community_id: UUID | null
-): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
-  try {
-    let url = ''
-    const params = new URLSearchParams()
-
-    if (searchQuery.trim()) {
-      // Use the search endpoint
-      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/search/`
-      params.append('q', searchQuery.trim())
-    } else {
-      // Use the general getAll endpoint
-      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`
+    pageNumber: number,
+    pageSize: number,
+    selectedTags: string[],
+    searchQuery: string,
+    related_community_id: UUID | null,
+    sortBy: string
+  ): Promise<ApiResponse<{ questions: Question[]; totalQuestions: number }>> => {
+    try {
+      let url = ''
+      const params = new URLSearchParams()
+  
+      if (searchQuery.trim()) {
+        // Use the search endpoint
+        url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/search/`
+        params.append('q', searchQuery.trim())
+      } else {
+        // Use the general getAll endpoint
+        url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/questions/getAll/`
+      }
+  
+      // Append tags
+      selectedTags.forEach((tagId) => {
+        params.append('tags', tagId)
+      })
+      if (related_community_id) {
+        params.append('related_community_id', related_community_id.toString())
+      }
+  
+      // Always append pagination and sortBy parameters
       params.append('page', pageNumber.toString())
       params.append('page_size', pageSize.toString())
+      params.append('sort_by', sortBy)
+  
+      const response = await fetch(`${url}?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+  
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(
+          `HTTP error! Status: ${response.status}, Message: ${errorText}`
+        )
+      }
+  
+      const responseData = (await response.json()) as ListQuestionsRepsonse
+  
+      return {
+        errorMessage: null,
+        data: {
+          questions: responseData.questions,
+          totalQuestions: responseData.totalQuestions,
+        },
+      }
+    } catch (error) {
+      console.error('Error fetching questions:', error)
+      return { errorMessage: 'Error fetching questions' }
     }
-
-    // Append tags in both cases
-    selectedTags.forEach((tagId) => {
-      params.append('tags', tagId)
-    })
-    if (related_community_id) {
-      params.append('related_community_id', related_community_id.toString())
-    }
-
-    // Always append pagination parameters
-    params.append('page', pageNumber.toString())
-    params.append('page_size', pageSize.toString())
-
-    const response = await fetch(`${url}?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(
-        `HTTP error! Status: ${response.status}, Message: ${errorText}`
-      )
-    }
-
-    const responseData = (await response.json()) as ListQuestionsRepsonse
-
-    return {
-      errorMessage: null,
-      data: {
-        questions: responseData.questions,
-        totalQuestions: responseData.totalQuestions,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching questions:', error)
-    return { errorMessage: 'Error fetching questions' }
   }
-}
-
+  
 /**
  * Marks a question as answered or un-answered, depending on current state
  *

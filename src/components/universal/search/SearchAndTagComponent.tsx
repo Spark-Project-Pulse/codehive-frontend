@@ -6,13 +6,16 @@ import { MultiSelector } from '@/components/ui/MultiSelector'
 import { type TagOption } from '@/types/Tags'
 
 interface SearchAndTagComponentProps {
-  tags: TagOption[]
-  selectedTags: TagOption[]
-  onSearchChange: (query: string) => void
-  onTagChange: (selected: TagOption[]) => void
-  onClearFilters: () => void
-  searchQuery: string
+  tags: TagOption[];
+  selectedTags: TagOption[];
+  onSearchChange: (query: string) => void;
+  onTagChange: (selected: TagOption[]) => void;
+  onClearFilters: () => void;
+  searchQuery: string;
+  sortOptions: { label: string; value: string }[];
+  onSortChange: (sortOption: string) => void;
 }
+
 
 export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
   tags,
@@ -21,6 +24,8 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
   onTagChange,
   onClearFilters,
   searchQuery,
+  sortOptions,
+  onSortChange,
 }) => {
   return (
     <aside className="flex flex-col min-w-[250px] max-w-xs md:basis-1/4">
@@ -41,8 +46,19 @@ export const SearchAndTagComponent: React.FC<SearchAndTagComponentProps> = ({
           options={tags}
           selected={selectedTags}
           onSelectedChange={onTagChange}
-          placeholder="Filter"
+          placeholder="Tags"
         />
+        <div className="mt-4">
+        <MultiSelector
+          options={sortOptions} // Pass sortOptions
+          selected={[]} // No pre-selected sort
+          onSelectedChange={(selected) => {
+            onSortChange(selected[0]?.value || ""); // Trigger sort change
+          }}
+          placeholder="Sort by" // Unique placeholder for sort dropdown
+          singleSelect={true} // Ensure single select
+        />
+        </div>
         {(selectedTags.length > 0 || searchQuery.trim()) && (
           <button
             onClick={onClearFilters}

@@ -6,6 +6,7 @@ import { type TagOption } from '@/types/Tags'
 interface ActiveFiltersProps {
   selectedTags: TagOption[]
   searchQuery: string
+  currentSort: string
   onRemoveTag: (tagValue: string) => void
   onClearSearchQuery: () => void
 }
@@ -13,6 +14,7 @@ interface ActiveFiltersProps {
 export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   selectedTags,
   searchQuery,
+  currentSort,
   onRemoveTag,
   onClearSearchQuery,
 }) => {
@@ -20,6 +22,7 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     <div className="mb-4">
       <p className="text-lg font-medium">Active Filters:</p>
       <div className="flex flex-wrap gap-2 mt-2">
+        {/* Show selected tags */}
         {selectedTags.map((tag) => (
           <span
             key={tag.value}
@@ -34,6 +37,8 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
             </button>
           </span>
         ))}
+
+        {/* Show search query */}
         {searchQuery.trim() && (
           <span
             className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium flex items-center"
@@ -47,6 +52,13 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
             </button>
           </span>
         )}
+
+        {/* Show current sort */}
+        <span
+          className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium flex items-center"
+        >
+          Sort: {currentSort}
+        </span>
       </div>
     </div>
   )
