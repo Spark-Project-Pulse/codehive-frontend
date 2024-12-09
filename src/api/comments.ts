@@ -3,6 +3,7 @@
 import { type ApiResponse } from '@/types/Api'
 import { type Comment } from '@/types/Comments'
 import { getSupaUser } from '@/utils/supabase/server'
+import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
  * Submits a comment to an answer.
@@ -24,16 +25,13 @@ export const createComment = async (commentData: {
     }
 
     const vals = { expert: user?.id, ...commentData }
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/create/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vals),
-      }
-    )
+    const response = await makeAuthenticatedBackendFetch('/comments/create/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(vals),
+    })
 
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -62,8 +60,8 @@ export const getCommentsByAnswerId = async (
   answer_id: string
 ): Promise<ApiResponse<Comment[]>> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/comments/getCommentsByAnswerId/${answer_id}`,
+    const response = await makeAuthenticatedBackendFetch(
+      `/comments/getCommentsByAnswerId/${answer_id}`,
       {
         method: 'GET',
         headers: {

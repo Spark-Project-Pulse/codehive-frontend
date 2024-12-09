@@ -4,6 +4,8 @@ import { type ApiResponse } from '@/types/Api'
 import { type Answer } from '@/types/Answers'
 import { getSupaUser } from '@/utils/supabase/server'
 import { type UUID } from 'crypto'
+import { GoogleAuth } from 'google-auth-library'
+import { makeAuthenticatedBackendFetch } from '@/lib/makeAuthenticatedBackendRequest'
 
 /**
  * @param {Object} answerData - The data for the answer to be created.
@@ -24,16 +26,13 @@ export const createAnswer = async (answerData: {
     }
 
     const vals = { expert: user?.id, ...answerData }
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/create/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vals),
-      }
-    )
+    const response = await makeAuthenticatedBackendFetch('/answers/create/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(vals),
+    })
 
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -72,19 +71,16 @@ export const upvoteAnswer = async (
       throw new Error('You cannot upvote your own answer')
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/upvote/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          answer_id: answer_id,
-        }),
-      }
-    )
+    const response = await makeAuthenticatedBackendFetch('/answers/upvote/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        answer_id: answer_id,
+      }),
+    })
 
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -122,19 +118,16 @@ export const downvoteAnswer = async (
       throw new Error('You cannot downvote your own answer')
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/downvote/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          answer_id: answer_id,
-        }),
-      }
-    )
+    const response = await makeAuthenticatedBackendFetch('/answers/downvote/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        answer_id: answer_id,
+      }),
+    })
 
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -161,12 +154,12 @@ export const getAnswersByQuestionId = async (
   try {
     const user = await getSupaUser()
 
-    let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionId/${question_id}`
-
+    let path = `/answers/getAnswersByQuestionId/${question_id}`
     if (user) {
-      url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/answers/getAnswersByQuestionIdWithUser/${question_id}/${user?.id}`
+      path = `/answers/getAnswersByQuestionIdWithUser/${question_id}/${user?.id}`
     }
-    const response = await fetch(url, {
+
+    const response = await makeAuthenticatedBackendFetch(path, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
