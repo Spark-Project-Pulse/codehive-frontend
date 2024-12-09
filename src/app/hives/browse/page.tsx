@@ -1,22 +1,22 @@
 'use client'
 
-import { getAllCommunities } from '@/api/communities'
+import { getAllHives } from '@/api/hives'
 import { getAllTags } from '@/api/tags'
-import CommunityCard from '@/components/pages/communities/browse/CommunityCard'
-import SkeletonCommunityCard from '@/components/pages/communities/browse/SkeletonCommunityCard'
+import HiveCard from '@/components/pages/hives/browse/HiveCard'
+import SkeletonHiveCard from '@/components/pages/hives/browse/SkeletonHiveCard'
 import { ActiveFilters } from '@/components/universal/search/ActiveFilters'
 import { PaginationComponent } from '@/components/universal/search/PaginationComponent'
 import { SearchAndTagComponent } from '@/components/universal/search/SearchAndTagComponent'
 import { useDebounce } from '@/hooks/useDebounce'
-import { type Community } from '@/types/Communities'
+import { type Hive } from '@/types/Hives'
 import { type TagOption } from '@/types/Tags'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-// Main component for browsing communities
-export default function BrowseCommunities() {
-  // State for communities fetched from the API
-  const [communities, setCommunities] = useState<Community[]>([])
+// Main component for browsing hives
+export default function BrowseHives() {
+  // State for hives fetched from the API
+  const [hives, setHives] = useState<Hive[]>([])
   // State for loading status
   const [isLoading, setIsLoading] = useState<boolean>(true)
   // State to track if an error occurred during data fetching
@@ -28,9 +28,9 @@ export default function BrowseCommunities() {
 
   // Pagination state variables
   const [currentPage, setCurrentPage] = useState<number>(1) // Current page for pagination
-  const [pageSize] = useState<number>(30) // Number of communities per page
+  const [pageSize] = useState<number>(30) // Number of hives per page
   const [totalPages, setTotalPages] = useState<number>(1) // Total number of pages available
-  const [, setTotalCommunities] = useState<number>(0) // Total number of communities fetched
+  const [, setTotalHives] = useState<number>(0) // Total number of hives fetched
 
   // State for the search query and debouncing to limit API calls
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -38,15 +38,15 @@ export default function BrowseCommunities() {
 
   const router = useRouter()
 
-  // useEffect to fetch communities with pagination, filtering, and search capabilities
+  // useEffect to fetch hives with pagination, filtering, and search capabilities
   useEffect(() => {
-    const fetchCommunities = async () => {
+    const fetchHives = async () => {
       try {
         setIsLoading(true) // Start loading
         const selectedTagValues = selectedTags.map((tag) => tag.value) // Extract tag values
 
-        // Fetch communities with current page, selected tags, and search query
-        const response = await getAllCommunities(
+        // Fetch hives with current page, selected tags, and search query
+        const response = await getAllHives(
           currentPage,
           pageSize,
           selectedTagValues,
@@ -58,26 +58,26 @@ export default function BrowseCommunities() {
 
         // Update state if data is received
         if (response.data) {
-          setCommunities(response.data.communities)
-          setTotalCommunities(response.data.totalCommunities)
-          setTotalPages(Math.ceil(response.data.totalCommunities / pageSize))
+          setHives(response.data.hives)
+          setTotalHives(response.data.totalHives)
+          setTotalPages(Math.ceil(response.data.totalHives / pageSize))
         } else {
           throw new Error('No data received') // Handle case with no data
         }
       } catch (error) {
-        console.error('Error fetching communities:', error) // Log error
+        console.error('Error fetching hives:', error) // Log error
         setHasError(true) // Set error state
       } finally {
         setIsLoading(false) // Stop loading
       }
     }
 
-    void fetchCommunities()
+    void fetchHives()
   }, [currentPage, pageSize, selectedTags, debouncedSearchQuery])
 
-  // Handle click on a community card to navigate to the community details page
-  const handleCommunityClick = (community_title: string) => {
-    router.push(`/communities/${community_title}`)
+  // Handle click on a hive card to navigate to the hive details page
+  const handleHiveClick = (hive_title: string) => {
+    router.push(`/hives/${hive_title}`)
   }
 
   // useEffect to fetch available tags for filtering
@@ -119,9 +119,9 @@ export default function BrowseCommunities() {
 
   return (
     <div className="max-w-7xl p-6 mb-96">
-      {/* Main title for the communities page */}
+      {/* Main title for the hives page */}
       <h1 className="text-center text-h4 font-subHeading text-black mb-10">
-        Communities
+        Hives
       </h1>
 
       <div className="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0">
@@ -135,26 +135,26 @@ export default function BrowseCommunities() {
           searchQuery={searchQuery}
         />
         <div className="md:w-3/4">
-          {/* Display community card skeletons while fetching communities */}
+          {/* Display hive card skeletons while fetching hives */}
           {isLoading && (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 30 }, (_, index) => (
-                <SkeletonCommunityCard key={index} />
+                <SkeletonHiveCard key={index} />
               ))}
             </div>
           )}
 
-          {/* Display error message if there was an issue fetching communities */}
+          {/* Display error message if there was an issue fetching hives */}
           {hasError && (
             <div className="my-10 text-center text-destructive">
               <p>
-                Something went wrong while fetching the communities. Please try
+                Something went wrong while fetching the hives. Please try
                 again later.
               </p>
             </div>
           )}
 
-          {/* Display communities if loading is complete and no error occurred */}
+          {/* Display hives if loading is complete and no error occurred */}
           {!isLoading && !hasError && (
             <>
               {/* Show active filters if tags or search query are applied */}
@@ -167,23 +167,23 @@ export default function BrowseCommunities() {
                 />
               )}
 
-              {/* Display community cards if there are communities available */}
-              {communities.length > 0 ? (
+              {/* Display hive cards if there are hives available */}
+              {hives.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {communities.map((community) => (
-                    <div key={community.community_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
-                      <CommunityCard
-                        key={community.community_id}
-                        community={community}
+                  {hives.map((hive) => (
+                    <div key={hive.hive_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
+                      <HiveCard
+                        key={hive.hive_id}
+                        hive={hive}
                         tags={tags}
-                        onCardClick={() => handleCommunityClick(community.title)}
+                        onCardClick={() => handleHiveClick(hive.title)}
                       />
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="text-center text-lg text-gray-700">
-                  No communities match your search criteria.
+                  No hives match your search criteria.
                 </p>
               )}
 

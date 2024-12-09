@@ -1,28 +1,28 @@
 'use client'
 
-import { type CommunityMember } from '@/types/Communities'
+import { type HiveMember } from '@/types/Hives'
 import { type UUID } from 'crypto'
 import { useEffect, useState } from 'react'
-import { getAllCommunityMembers } from '@/api/communities'
+import { getAllHiveMembers } from '@/api/hives'
 import ContributorCard from './ContributorCard'
 import SkeletonContributorCard from './SkeletonContributorCard'
 
-interface CommunityContributorsTabProps {
-  communityId: UUID
+interface HiveContributorsTabProps {
+  hiveId: UUID
 }
 
-const CommunityContributorsTab: React.FC<CommunityContributorsTabProps> = ({
-  communityId,
+const HiveContributorsTab: React.FC<HiveContributorsTabProps> = ({
+  hiveId,
 }) => {
-  const [contributors, setContributors] = useState<CommunityMember[]>([])
+  const [contributors, setContributors] = useState<HiveMember[]>([])
   const [contributorsLoading, setContributorsLoading] = useState<boolean>(true)
 
-  // Fetch members specific to this community
+  // Fetch members specific to this hive
   useEffect(() => {
     const fetchContributors = async () => {
       setContributorsLoading(true)
       try {
-        const response = await getAllCommunityMembers(communityId)
+        const response = await getAllHiveMembers(hiveId)
 
         if (response.errorMessage) {
           throw new Error(response.errorMessage)
@@ -41,7 +41,7 @@ const CommunityContributorsTab: React.FC<CommunityContributorsTabProps> = ({
     }
 
     void fetchContributors()
-  }, [communityId])
+  }, [hiveId])
 
   return (
     <div className="container mx-auto pt-16 pb-16">
@@ -61,4 +61,4 @@ const CommunityContributorsTab: React.FC<CommunityContributorsTabProps> = ({
     </div>
   )
 }
-export default CommunityContributorsTab
+export default HiveContributorsTab

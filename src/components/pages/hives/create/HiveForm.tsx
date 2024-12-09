@@ -23,10 +23,10 @@ import { MultiSelector } from '@/components/ui/MultiSelector'
 // Define the schema using zod
 const formSchema = z.object({
   title: z.string().min(1, {
-    message: 'Community title cannot be empty.',
+    message: 'Hive title cannot be empty.',
   }),
   description: z.string().min(1, {
-    message: 'Community description cannot be empty.',
+    message: 'Hive description cannot be empty.',
   }),
   tags: z.array(z.string()).optional(), // Array of tag UUIDs
   avatar:
@@ -37,8 +37,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-// The CommunityForm component
-export default function CommunityForm({
+// The HiveForm component
+export default function HiveForm({
   onSubmit,
 }: {
   onSubmit: (values: FormValues) => Promise<void>
@@ -107,11 +107,11 @@ export default function CommunityForm({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="title">Community Title</FormLabel>
+              <FormLabel htmlFor="title">Hive Title</FormLabel>
               <FormControl>
                 <Input
                   id="title"
-                  placeholder="Community title"
+                  placeholder="Hive title"
                   {...field}
                 />
               </FormControl>
@@ -130,7 +130,7 @@ export default function CommunityForm({
               <FormControl>
                 <Textarea
                   id="description"
-                  placeholder="Describe the community"
+                  placeholder="Describe the hive"
                   {...field}
                 />
               </FormControl>
@@ -166,7 +166,7 @@ export default function CommunityForm({
           render={() => (
             <FormItem>
               <FormLabel htmlFor="avatar">
-                Community Avatar (optional)
+                Hive Avatar (optional)
               </FormLabel>
               <FormControl>
                 <Input
@@ -183,7 +183,7 @@ export default function CommunityForm({
 
         {/* Submit Button */}
         <ButtonWithLoading
-          buttonText="Create Community"
+          buttonText="Create Hive"
           buttonType="submit"
           isLoading={isSubmitting}
         />
