@@ -78,7 +78,7 @@ export default function QuestionCard({
   }
 
   const QuestionCardContent = (
-    <div className="to-tertiary rounded-lg bg-gradient-to-b from-primary p-[2px]">
+    <div className="rounded-lg bg-gradient-to-b from-primary to-tertiary p-[2px]">
       <Card
         className={`relative w-full border transition-all ${
           href &&
@@ -86,32 +86,43 @@ export default function QuestionCard({
         }`}
       >
         <CardHeader>
-          {question.related_hive_info ? (
-            <div
-              className={`flex items-center space-x-3 rounded-t-lg pb-2 ${
-                !href &&
-                `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
-              }`}
-              onClick={handleHiveClick}
-            >
-              <Avatar className="h-10 w-10">
-                <AvatarImage
-                  src={question.related_hive_info.avatar_url}
-                  alt="Hive avatar"
+          <div className="flex items-center justify-between">
+            {question.related_hive_info ? (
+              <div
+                className={`flex items-center space-x-3 rounded-t-lg p-2 ${
+                  !href &&
+                  `cursor-pointer rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`
+                }`}
+                onClick={handleHiveClick}
+              >
+                <Avatar className="h-10 w-10">
+                  <AvatarImage
+                    src={question.related_hive_info.avatar_url}
+                    alt="Hive avatar"
+                  />
+                  <AvatarFallback>
+                    {question.related_hive_info.title[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-normal">
+                  {question.related_hive_info.title}
+                </span>
+              </div>
+            ) : null}
+            {isCurrentUser && !href && (
+              <div>
+                <UpdateDeleteQuestionDialog
+                  question={question}
+                  onUpdate={(updatedQuestion) => onUpdate?.(updatedQuestion)}
+                  onDelete={handleQuestionDelete}
                 />
-                <AvatarFallback>
-                  {question.related_hive_info.title[0]}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-normal">
-                {question.related_hive_info.title}
-              </span>
-            </div>
-          ) : null}
-          <CardTitle className="text-p1 font-subHeading">
+              </div>
+            )}
+          </div>
+          <CardTitle className="font-subHeading text-p1">
             {question.title}
           </CardTitle>
-          <CardDescription className="text-p15 mt-2 font-body">
+          <CardDescription className="mt-2 font-body text-p15">
             <DynamicMarkdownPreview value={question.description} />
           </CardDescription>
         </CardHeader>
@@ -203,16 +214,6 @@ export default function QuestionCard({
             {format(new Date(question.created_at), 'PPP')}
           </div>
         </CardFooter>
-
-        {isCurrentUser && !href && (
-          <div className="absolute right-4 top-4">
-            <UpdateDeleteQuestionDialog
-              question={question}
-              onUpdate={(updatedQuestion) => onUpdate?.(updatedQuestion)}
-              onDelete={handleQuestionDelete}
-            />
-          </div>
-        )}
       </Card>
     </div>
   )

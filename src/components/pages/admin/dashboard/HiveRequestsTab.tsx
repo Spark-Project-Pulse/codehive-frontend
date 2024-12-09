@@ -20,7 +20,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { type UUID } from 'crypto'
 import { toast } from '@/components/ui/use-toast'
-import Image from 'next/image'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 
 export default function HiveRequestsTab() {
   // State for hive requests fetched from the API
@@ -154,14 +154,12 @@ export default function HiveRequestsTab() {
                     {request.owner_info?.username}
                   </TableCell>
                   <TableCell>
-                    <Image
-                      src={
-                        request.avatar_url ?? '/default-hive-avatar.png'
-                      }
-                      alt="Hive avatar"
-                      width={48}
-                      height={48}
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage
+                      src={request.avatar_url ?? '/default-hive-avatar.png'}
+                      alt={request.title || 'Hive avatar'}
                     />
+                  </Avatar>
                   </TableCell>
                   <TableCell className="max-w-md break-words">
                     {request.title}
