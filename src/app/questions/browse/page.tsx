@@ -157,9 +157,9 @@ const QuestionsPage: React.FC = () => {
             onClearFilters={clearFilters}
             searchQuery={searchQuery}
             sortOptions={[
-              { label: 'Recency', value: 'recency' },
-              { label: 'Views', value: 'views' },
-              { label: 'Unanswered', value: 'unanswered' },
+              { label: 'Recency', value: 'Recency' },
+              { label: 'Trending', value: 'Trending' },
+              { label: 'Unanswered', value: 'Unanswered' },
             ]}
             onSortChange={handleSortChange}
             showSortOptions={true}
