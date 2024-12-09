@@ -8,8 +8,15 @@
     text-wrap: balance;
   }
 
-  .hexagonal-bg {
-    background-image: url('/hive-bg.svg');
+  .hexagonal-bg-light {
+    background-image: url('/hive-bg-light.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-attachment: scroll;
+  }
+
+  .hexagonal-bg-dark {
+    background-image: url('/hive-bg-dark.svg');
     background-repeat: no-repeat;
     background-size: contain;
     background-attachment: scroll;
@@ -17,7 +24,6 @@
 }
 
 @layer base {
-
   /* Color scheme for light mode */
   :root {
     /* Main colors from your palette */
@@ -180,7 +186,7 @@
   font-size: 14px;
   line-height: 1.25;
   color: hsl(var(--foreground));
-  font-weight:500;
+  font-weight: 500;
   /* background-color: hsl(var(--background)); */
 }
 
@@ -202,4 +208,3 @@
 }
 
 /* *************************** END: MDEditor specific *************************** */
-
