@@ -8,6 +8,7 @@ export interface Question {
   title: string
   description: string
   created_at: Date
+  is_answered: boolean
   asker?: UUID
   asker_info?: User,
   tags?: string[],
@@ -15,11 +16,11 @@ export interface Question {
   related_project_info?: Project
   related_hive_id?: UUID
   related_hive_info?: Hive
-  code_context: string;
-  code_context_full_pathname: string;
-  code_context_line_number: number;
+  code_context?: string;
+  code_context_full_pathname?: string;
+  code_context_line_number_start?: number;
+  code_context_line_number_end?: number;
   toxic?: boolean
-  is_answered: boolean
 }
 
 export interface ListQuestionsRepsonse {

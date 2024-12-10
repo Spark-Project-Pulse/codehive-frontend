@@ -47,7 +47,8 @@ const formSchema = z.object({
   related_hive: z.string().optional(), // Hive UUID
   code_context: z.string().optional(),
   code_context_full_pathname: z.string().optional(),
-  code_context_line_number: z.number().nullable(),
+  code_context_line_number_start: z.number().nullable(),
+  code_context_line_number_end: z.number().nullable(),
   tags: z.array(z.string()).optional(), // Array of tag UUIDs
 })
 
@@ -61,7 +62,8 @@ export default function QuestionForm({
   project,
   codeContext,
   codeContextFullPathname,
-  codeContextLineNumber,
+  codeContextLineNumberStart,
+  codeContextLineNumberEnd,
 }: {
   onSubmit: (values: FormValues) => Promise<void>
   hasContext?: boolean
@@ -69,7 +71,8 @@ export default function QuestionForm({
   project?: Project
   codeContext?: string
   codeContextFullPathname?: string
-  codeContextLineNumber?: number
+  codeContextLineNumberStart?: number
+  codeContextLineNumberEnd?: number
 }) {
   // Initialize the form
   const form = useForm<FormValues>({
@@ -81,9 +84,13 @@ export default function QuestionForm({
       code_context: project && hasContext ? codeContext : '',
       code_context_full_pathname:
         project && hasContext ? codeContextFullPathname : '',
-      code_context_line_number:
-        project && hasContext && codeContextLineNumber
-          ? codeContextLineNumber
+      code_context_line_number_start:
+        project && hasContext && codeContextLineNumberStart
+          ? codeContextLineNumberStart
+          : null,
+      code_context_line_number_end:
+        project && hasContext && codeContextLineNumberEnd
+          ? codeContextLineNumberEnd
           : null,
       tags: [],
       related_hive: hiveId ?? '',

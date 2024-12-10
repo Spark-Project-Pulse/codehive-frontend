@@ -4,7 +4,6 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardFooter,
   CardContent,
 } from '@/components/ui/card'
@@ -15,8 +14,6 @@ import { useEffect, useState } from 'react'
 import { type TagOption } from '@/types/Tags'
 import { getAllTags } from '@/api/tags'
 import { useRouter } from 'next/navigation'
-import { Editor } from '@monaco-editor/react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
@@ -24,13 +21,12 @@ import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownP
 import { useTheme } from 'next-themes'
 import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 import { Badge } from '@/components/ui/badge'
+import ReadOnlyEditor from '@/components/universal/code/ReadOnlyEditor'
+import { Button } from '@/components/ui/button'
 
 interface QuestionCardProps {
   question: Question
-  href?: string // Optional prop for link
-  codeLine?: string | null
-  isLoadingCodeLine?: boolean
-  codeLineError?: string | null
+  href?: string
   onUpdate?: (updatedQuestion: Question) => void
 }
 
@@ -122,53 +118,38 @@ export default function QuestionCard({
           <CardTitle className="font-subHeading text-p1">
             {question.title}
           </CardTitle>
-          <CardDescription className="mt-2 font-body text-p15">
-            <DynamicMarkdownPreview value={question.description} />
-          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='flex flex-col gap-4'>
+          <DynamicMarkdownPreview value={question.description} />
           {/* Display the specific line of code if available */}
           {question.related_project_info?.project_id &&
             question.code_context_full_pathname &&
-            typeof question.code_context_line_number === 'number' &&
+            question.code_context_line_number_start &&
+            question.code_context &&
             question.code_context && (
-              <div className="rounded-lg p-4 shadow">
-                <h2 className="mb-2 flex items-center">Code Context:</h2>
-                <h3
-                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
-                  onClick={() =>
-                    router.push(
-                      `/projects/${question.related_project_info?.project_id}`
-                    )
-                  }
+              <div>
+                <h2 className='mb-2'>Code Context:</h2>
+                <Link
+                  href={`/projects/${question.related_project_info?.project_id}`}
+                  className='mb-2'
                 >
-                  <div className="flex items-center">
-                    {/* GitHub Icon */}
+                  <Button variant="ghost">
                     <GitHubLogoIcon />
-                    &nbsp;
-                    <span>{question.related_project_info?.title}</span>
-                  </div>
-                </h3>
-                <Editor
-                  loading={<Skeleton className="h-full w-full" />}
-                  height="20px"
-                  language={getLanguageFromFilename(
-                    question.code_context_full_pathname
-                  )}
-                  value={question.code_context}
-                  theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
-                  options={{
-                    lineNumbers: (num) =>
-                      (num + question.code_context_line_number).toString(),
-                    automaticLayout: true,
-                    selectOnLineNumbers: true,
-                    readOnly: true,
-                    minimap: { enabled: false },
-                    renderLineHighlight: 'all',
-                    scrollBeyondLastLine: false,
-                    cursorStyle: 'block',
-                  }}
-                />
+                    {question.related_project_info?.title}
+                  </Button>
+                </Link>
+                {!href && (
+                  <ReadOnlyEditor
+                    language={getLanguageFromFilename(
+                      question.code_context_full_pathname
+                    )}
+                    value={question.code_context}
+                    theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
+                    lineNumberStart={
+                      question.code_context_line_number_start ?? 1
+                    }
+                  />
+                )}
               </div>
             )}
 
@@ -187,6 +168,27 @@ export default function QuestionCard({
           )}
         </CardContent>
         <CardFooter className="flex items-center justify-between">
+          {question.asker_info?.user ? (
+            <Link href={`/profiles/${question.asker_info.username}`}>
+              <Button variant="ghost" className="py-6">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={question.asker_info?.profile_image_url} />
+                  <AvatarFallback>
+                    {question.asker_info?.username?.[0] ?? (
+                      <UserIcon className="h-4 w-4" />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                {question.asker_info?.username ?? 'Anonymous User'}
+              </Button>
+            </Link>
+          ) : (
+            <Button variant="ghost" className="py-6" disabled>
+              <UserIcon className="h-4 w-4" />
+              {question.asker_info?.username ?? 'Anonymous User'}
+            </Button>
+          )}
+
           <div
             className={`flex items-center space-x-4 ${
               question.asker_info && !href
@@ -194,21 +196,7 @@ export default function QuestionCard({
                 : ''
             }`}
             onClick={handleProfileClick}
-          >
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={question.asker_info?.profile_image_url} />
-              <AvatarFallback>
-                {question.asker_info?.username?.[0] ?? (
-                  <UserIcon className="h-4 w-4" />
-                )}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">
-                {question.asker_info?.username ?? 'Anonymous User'}
-              </p>
-            </div>
-          </div>
+          ></div>
           <div className="flex items-center text-sm text-gray-500">
             <CalendarIcon className="mr-2 h-4 w-4" />
             {format(new Date(question.created_at), 'PPP')}

@@ -41,9 +41,14 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const router = useRouter()
   const editorLanguage = getLanguageFromFilename(filename) // Get the language from the filename, defaults to plaintext if filename is null
   const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [selectedLine, setSelectedLine] = useState<number | null>(null)
-  const codeContext =
-    selectedLine !== null ? fileContent?.split('\n')[selectedLine - 1] : ''
+  const [selectedLines, setSelectedLines] = useState<{
+    startLine: number
+    endLine: number
+    content: string | null
+  } | null>(null)
+
+  // const codeContext =
+  //   selectedLine !== null ? fileContent?.split('\n')[selectedLine - 1] : ''
 
   // useEffect to handle body overflow when the sheet is open/closed
   useEffect(() => {
@@ -61,19 +66,25 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   }, [isSheetOpen])
 
   const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
-    // Add click event listener
-    editor.onMouseDown((e) => {
-      if (e.target.position) {
-        const lineNumber = e.target.position.lineNumber
-        setSelectedLine(lineNumber)
-      }
-    })
-
-    // Alternative: Listen for selection changes
+    // Listen for selection changes
     editor.onDidChangeCursorSelection(() => {
-      const position = editor.getPosition()
-      if (position) {
-        setSelectedLine(position.lineNumber)
+      const selection = editor.getSelection()
+
+      if (selection) {
+        const startLine = selection.startLineNumber
+        const endLine = selection.endLineNumber
+
+        // Capture the range of lines selected
+        const selectedLines = fileContent
+          ?.split('\n')
+          .slice(startLine - 1, endLine) // Adjusting for zero-based index
+          .join('\n')
+
+        setSelectedLines({
+          startLine,
+          endLine,
+          content: selectedLines ?? '',
+        })
       }
     })
   }
@@ -85,7 +96,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     related_project?: string
     codeContext?: string
     codeContextFullPathname?: string
-    codeContextLineNumber?: number
+    codeContextLineNumberStart?: number
+    codeContextLineNumberEnd?: number
     tags?: string[]
   }) {
     try {
@@ -145,11 +157,15 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
         onMount={handleEditorMount}
       />
-      {selectedLine !== null && (
+      {selectedLines !== null && (
         <div className="fixed bottom-4 right-6 z-50 rounded shadow-lg">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger>
-              <Button>Ask on line {selectedLine}</Button>
+              <Button>
+                Ask on line {selectedLines.startLine}
+                {selectedLines.endLine > selectedLines.startLine &&
+                  ` - ${selectedLines.endLine}`}
+              </Button>
             </SheetTrigger>
             <SheetContent className="overflow-auto">
               <SheetHeader>
@@ -162,9 +178,10 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                   onSubmit={handleFormSubmit}
                   hasContext
                   project={project}
-                  codeContext={codeContext}
+                  codeContext={selectedLines.content ?? undefined}
                   codeContextFullPathname={pathname}
-                  codeContextLineNumber={selectedLine}
+                  codeContextLineNumberStart={selectedLines.startLine}
+                  codeContextLineNumberEnd={selectedLines.endLine}
                 />
               </SheetHeader>
             </SheetContent>

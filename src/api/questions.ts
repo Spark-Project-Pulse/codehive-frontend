@@ -18,6 +18,12 @@ import { type UUID } from 'crypto'
 export const createQuestion = async (values: {
   title: string
   description: string
+  related_project?: string
+  codeContext?: string
+  codeContextFullPathname?: string
+  codeContextLineNumberStart?: number
+  codeContextLineNumberEnd?: number
+  tags?: string[]
 }): Promise<ApiResponse<{ question_id: string }>> => {
   try {
     const user = await getSupaUser()
