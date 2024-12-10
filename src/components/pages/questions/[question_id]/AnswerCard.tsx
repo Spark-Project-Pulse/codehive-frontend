@@ -262,7 +262,7 @@ export default function AnswerCard({
                             {/* Display tier level if available */}
                             {userBadge.badge_tier_info && (
                               <span className="absolute bottom-0 right-0 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-primary-foreground bg-primary rounded-full">
-                                {userBadge.badge_tier_info.tier_level}
+                                {/* {userBadge.badge_tier_info.tier_level} */}
                               </span>
                             )}
                           </div>
@@ -276,7 +276,7 @@ export default function AnswerCard({
                           </p>
                           {userBadge.badge_tier_info && (
                             <p className="text-sm text-muted-foreground mt-1">
-                              Tier {userBadge.badge_tier_info.tier_level}
+                              {/* Tier {userBadge.badge_tier_info.tier_level} */}
                             </p>
                           )}
                         </PopoverContent>
