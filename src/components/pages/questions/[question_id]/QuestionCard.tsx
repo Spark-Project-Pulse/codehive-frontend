@@ -120,7 +120,7 @@ export default function QuestionCard({
             {question.title}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className='flex flex-col gap-4'>
           <DynamicMarkdownPreview value={question.description} />
           {/* Display the specific line of code if available */}
           {question.related_project_info?.project_id &&
