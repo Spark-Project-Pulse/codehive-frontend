@@ -128,10 +128,11 @@ export default function QuestionCard({
             question.code_context_line_number_start &&
             question.code_context &&
             question.code_context && (
-              <div className="flex flex-col gap-2">
-                <h2>Code Context:</h2>
+              <div>
+                <h2 className='mb-2'>Code Context:</h2>
                 <Link
                   href={`/projects/${question.related_project_info?.project_id}`}
+                  className='mb-2'
                 >
                   <Button variant="ghost">
                     <GitHubLogoIcon />
