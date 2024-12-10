@@ -11,12 +11,7 @@ export default function Hero() {
             <h2 className="text-h3 font-heading leading-tight">
               <span>Welcome to the </span>
               <span className="bg-gradient-to-r from-primary to-tertiary bg-clip-text pr-2 text-transparent">
-                Hive
-              </span>
-              <br />
-              <span>Where code comes to </span>
-              <span className="bg-gradient-to-r from-primary to-tertiary bg-clip-text pr-2 text-transparent">
-                life
+                CodeHive
               </span>
             </h2>
             <p className="text-p1 mx-auto max-w-[700px] text-muted-foreground md:text-xl font-body">
