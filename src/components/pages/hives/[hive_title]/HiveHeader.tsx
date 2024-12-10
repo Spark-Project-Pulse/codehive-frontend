@@ -48,7 +48,7 @@ export default function HiveHeader({
 
         {/* Hive title and description */}
         <h1 className="text-h4 font-subHeading">{hive?.title}</h1>
-        <p className="mb-2 text-black font-body text-p15">{hive?.description}</p>
+        <p className="mb-2 font-body text-p15">{hive?.description}</p>
         {/* Hive tags */}
         <div className="mb-4 flex flex-wrap gap-2">
           {hive?.tags?.map((tagId) => {
