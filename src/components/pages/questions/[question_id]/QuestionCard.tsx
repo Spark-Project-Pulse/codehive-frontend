@@ -23,6 +23,7 @@ import { useTheme } from 'next-themes'
 import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 import { Badge } from '@/components/ui/badge'
 import ReadOnlyEditor from '@/components/universal/code/ReadOnlyEditor'
+import { Button } from '@/components/ui/button'
 
 interface QuestionCardProps {
   question: Question
@@ -118,11 +119,9 @@ export default function QuestionCard({
           <CardTitle className="font-subHeading text-p1">
             {question.title}
           </CardTitle>
-          <CardDescription className="mt-2 font-body text-p15">
-            <DynamicMarkdownPreview value={question.description} />
-          </CardDescription>
         </CardHeader>
         <CardContent>
+          <DynamicMarkdownPreview value={question.description} />
           {/* Display the specific line of code if available */}
           {question.related_project_info?.project_id &&
             question.code_context_full_pathname &&
@@ -131,29 +130,26 @@ export default function QuestionCard({
             question.code_context && (
               <div className="rounded-lg p-4 shadow">
                 <h2 className="mb-2 flex items-center">Code Context:</h2>
-                <h3
-                  className={`inline-block cursor-pointer items-center rounded-md p-2 transition-transform duration-200 ${resolvedTheme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
-                  onClick={() =>
-                    router.push(
-                      `/projects/${question.related_project_info?.project_id}`
-                    )
-                  }
+                <Link
+                  href={`/projects/${question.related_project_info?.project_id}`}
                 >
-                  <div className="flex items-center">
-                    {/* GitHub Icon */}
+                  <Button variant="ghost">
                     <GitHubLogoIcon />
-                    &nbsp;
-                    <span>{question.related_project_info?.title}</span>
-                  </div>
-                </h3>
-                <ReadOnlyEditor
-                  language={getLanguageFromFilename(
-                    question.code_context_full_pathname
-                  )}
-                  value={question.code_context}
-                  theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
-                  lineNumberStart={question.code_context_line_number_start ?? 1}
-                />
+                    {question.related_project_info?.title}
+                  </Button>
+                </Link>
+                {!href && (
+                  <ReadOnlyEditor
+                    language={getLanguageFromFilename(
+                      question.code_context_full_pathname
+                    )}
+                    value={question.code_context}
+                    theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
+                    lineNumberStart={
+                      question.code_context_line_number_start ?? 1
+                    }
+                  />
+                )}
               </div>
             )}
 
