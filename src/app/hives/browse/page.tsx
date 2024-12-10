@@ -172,14 +172,12 @@ export default function BrowseHives() {
               {hives.length > 0 ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {hives.map((hive) => (
-                    <div key={hive.hive_id} className="bg-gradient-to-b from-primary to-tertiary p-[1px] rounded-lg">
-                      <HiveCard
-                        key={hive.hive_id}
-                        hive={hive}
-                        tags={tags}
-                        onCardClick={() => handleHiveClick(hive.title)}
-                      />
-                    </div>
+                    <HiveCard
+                      key={hive.hive_id}
+                      hive={hive}
+                      tags={tags}
+                      onCardClick={() => handleHiveClick(hive.title)}
+                    />
                   ))}
                 </div>
               ) : (
