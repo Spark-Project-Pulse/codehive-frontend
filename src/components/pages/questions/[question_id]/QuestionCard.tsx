@@ -15,8 +15,6 @@ import { useEffect, useState } from 'react'
 import { type TagOption } from '@/types/Tags'
 import { getAllTags } from '@/api/tags'
 import { useRouter } from 'next/navigation'
-import { Editor } from '@monaco-editor/react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useUser } from '@/app/contexts/UserContext'
 import UpdateDeleteQuestionDialog from './UpdateDeleteQuestionDialog'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
@@ -24,13 +22,11 @@ import DynamicMarkdownPreview from '@/components/universal/code/DynamicMarkdownP
 import { useTheme } from 'next-themes'
 import { getLanguageFromFilename } from '@/utils/codeEditorHelpers'
 import { Badge } from '@/components/ui/badge'
+import ReadOnlyEditor from '@/components/universal/code/ReadOnlyEditor'
 
 interface QuestionCardProps {
   question: Question
-  href?: string // Optional prop for link
-  codeLine?: string | null
-  isLoadingCodeLine?: boolean
-  codeLineError?: string | null
+  href?: string
   onUpdate?: (updatedQuestion: Question) => void
 }
 
@@ -130,7 +126,8 @@ export default function QuestionCard({
           {/* Display the specific line of code if available */}
           {question.related_project_info?.project_id &&
             question.code_context_full_pathname &&
-            typeof question.code_context_line_number === 'number' &&
+            question.code_context_line_number_start &&
+            question.code_context &&
             question.code_context && (
               <div className="rounded-lg p-4 shadow">
                 <h2 className="mb-2 flex items-center">Code Context:</h2>
@@ -149,25 +146,13 @@ export default function QuestionCard({
                     <span>{question.related_project_info?.title}</span>
                   </div>
                 </h3>
-                <Editor
-                  loading={<Skeleton className="h-full w-full" />}
-                  height="20px"
+                <ReadOnlyEditor
                   language={getLanguageFromFilename(
                     question.code_context_full_pathname
                   )}
                   value={question.code_context}
                   theme={resolvedTheme === 'dark' ? 'vs-dark' : 'light'}
-                  options={{
-                    lineNumbers: (num) =>
-                      (num + question.code_context_line_number).toString(),
-                    automaticLayout: true,
-                    selectOnLineNumbers: true,
-                    readOnly: true,
-                    minimap: { enabled: false },
-                    renderLineHighlight: 'all',
-                    scrollBeyondLastLine: false,
-                    cursorStyle: 'block',
-                  }}
+                  lineNumberStart={question.code_context_line_number_start ?? 1}
                 />
               </div>
             )}

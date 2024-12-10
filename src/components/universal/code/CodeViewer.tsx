@@ -74,21 +74,17 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         const startLine = selection.startLineNumber
         const endLine = selection.endLineNumber
 
-        if (startLine && endLine) {
-          // Capture the range of lines selected
-          const selectedLines = fileContent
-            ?.split('\n')
-            .slice(startLine - 1, endLine) // Adjusting for zero-based index
-            .join('\n')
+        // Capture the range of lines selected
+        const selectedLines = fileContent
+          ?.split('\n')
+          .slice(startLine - 1, endLine) // Adjusting for zero-based index
+          .join('\n')
 
-          console.log('Selected lines:', startLine, endLine, selectedLines)
-
-          setSelectedLines({
-            startLine,
-            endLine,
-            content: selectedLines ?? '',
-          })
-        }
+        setSelectedLines({
+          startLine,
+          endLine,
+          content: selectedLines ?? '',
+        })
       }
     })
   }
