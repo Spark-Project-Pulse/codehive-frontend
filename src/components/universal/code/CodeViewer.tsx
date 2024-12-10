@@ -185,7 +185,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                   codeContext={selectedLines.content ?? undefined}
                   codeContextFullPathname={pathname}
                   codeContextLineNumberStart={selectedLines.startLine}
-                  codeContextLineNumberEnd={selectedLines.startLine}
+                  codeContextLineNumberEnd={selectedLines.endLine}
                 />
               </SheetHeader>
             </SheetContent>
