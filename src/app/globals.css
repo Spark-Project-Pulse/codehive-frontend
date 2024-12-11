@@ -21,6 +21,13 @@
     background-size: contain;
     background-attachment: scroll;
   }
+
+  /* for cards... */
+  .gradient-border {
+    background: linear-gradient(to bottom, hsl(var(--sidebar-accent)), hsl(var(--accent)));
+    padding: 2px;
+    border-radius: 0.5rem;
+  }
 }
 
 @layer base {

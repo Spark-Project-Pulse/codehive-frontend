@@ -15,28 +15,30 @@ import Image from 'next/image'
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="relative mx-auto h-20 w-20">
-            <Image
-              src="logo.svg"
-              alt="CodeHive Logo"
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-          <CardTitle className="text-3xl font-bold">CodeHive</CardTitle>
-          <CardDescription>
-            Where developers swarm to collaborate!
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <GithubLoginButton />
-          <p className="text-center text-sm text-muted-foreground">
-            Ready to bee part of something amazing? Join the hive!
-          </p>
-        </CardContent>
-      </Card>
+      <div className="gradient-border">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="relative mx-auto h-20 w-20">
+              <Image
+                src="logo.svg"
+                alt="CodeHive Logo"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+            <CardTitle className="text-3xl font-bold">CodeHive</CardTitle>
+            <CardDescription>
+              Where developers swarm to collaborate!
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <GithubLoginButton />
+            <p className="text-center text-sm text-muted-foreground">
+              Ready to bee part of something amazing? Join the hive!
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="mt-12 w-full max-w-3xl space-y-8">
         <section>

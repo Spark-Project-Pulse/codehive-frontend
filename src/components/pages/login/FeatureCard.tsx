@@ -10,14 +10,16 @@ export default function FeatureCard({
   description: string
 }) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="mb-2">{icon}</div>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
+    <div className="gradient-border">
+      <Card>
+        <CardHeader>
+          <div className="mb-2">{icon}</div>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
