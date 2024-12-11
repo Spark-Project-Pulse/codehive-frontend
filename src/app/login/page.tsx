@@ -16,7 +16,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="gradient-border">
-        <Card className="w-full max-w-md">
+        <Card className="w-full h-full max-w-md">
           <CardHeader className="text-center">
             <div className="relative mx-auto h-20 w-20">
               <Image
