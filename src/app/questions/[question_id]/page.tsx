@@ -282,7 +282,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
           {/* Answer form */}
           {!isLoading && (
             <div className="items-center px-4 py-12 sm:px-6 lg:px-8">
-              <h1 className="text-center text-2xl font-bold">
+              <h1 className="text-center text-2xl font-bold mb-6">
                 Answer Question
               </h1>
               <AnswerForm onSubmit={handleAnswerSubmit} />
