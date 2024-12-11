@@ -22,7 +22,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
   }
 
   return (
-    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg hover:border-primary duration-200 hover:from-primary hover:to-tertiary">
+    <div className="gradient-border">
       <Card
         onClick={handleCardClick}
         className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg hover:border-primary"

@@ -21,11 +21,11 @@ export default function HiveCard({
   maxCharacters = 30,
 }: HiveCardProps) {
   return (
-    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+    <div className="gradient-border">
       <Card
         key={hive.hive_id}
         onClick={onCardClick}
-        className="flex w-full h-full transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+        className="flex w-full h-full transform cursor-pointer flex-col transition-transform duration-200 hover:scale-105 hover:shadow-lg hover:border-primary"
       >
         <CardHeader className="flex-row items-center gap-4">
           <Avatar className="h-12 w-12">

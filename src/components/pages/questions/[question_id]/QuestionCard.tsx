@@ -74,7 +74,6 @@ export default function QuestionCard({
   }
 
   const QuestionCardContent = (
-    // <div className="rounded-lg bg-gradient-to-b from-primary to-tertiary p-[2px]">
     <div className="gradient-border">
       <Card
         className={`relative w-full border transition-all ${
