@@ -145,6 +145,13 @@
 
   /* For custom fonts */
   @font-face {
+    font-family: 'Sigmar';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('./fonts/Sigmar-Regular.ttf') format('truetype');
+  }
+  @font-face {
     font-family: 'Luckiest Guy';
     font-style: normal;
     font-weight: 400;

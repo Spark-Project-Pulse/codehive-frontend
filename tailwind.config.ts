@@ -77,6 +77,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
+				title: ['Sigmar', 'Georgia'],
 				heading: ['Roboto-Black', 'Georgia'],
 				subHeading: ['Roboto-Bold', 'Georgia'],
 				body: ['Lato-Regular', 'Georgia'],
