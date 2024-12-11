@@ -138,7 +138,10 @@ export default function QuestionCard({
                       {question.related_project_info?.title}
                     </Button>
                   </Link>
+                  <code className='bg-code rounded-lg px-1'>
                   {question.code_context_full_pathname}
+
+                  </code>
                 </div>
 
                 {!href && (
