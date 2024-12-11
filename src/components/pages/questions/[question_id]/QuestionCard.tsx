@@ -106,7 +106,7 @@ export default function QuestionCard({
               </div>
             ) : null}
             {isCurrentUser && !href && (
-              <div>
+              <div className='ml-auto'>
                 <UpdateDeleteQuestionDialog
                   question={question}
                   onUpdate={(updatedQuestion) => onUpdate?.(updatedQuestion)}
@@ -119,7 +119,7 @@ export default function QuestionCard({
             {question.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className='flex flex-col gap-4'>
+        <CardContent className="flex flex-col gap-4">
           <DynamicMarkdownPreview value={question.description} />
           {/* Display the specific line of code if available */}
           {question.related_project_info?.project_id &&
@@ -128,16 +128,19 @@ export default function QuestionCard({
             question.code_context &&
             question.code_context && (
               <div>
-                <h2 className='mb-2'>Code Context:</h2>
-                <Link
-                  href={`/projects/${question.related_project_info?.project_id}`}
-                  className='mb-2'
-                >
-                  <Button variant="ghost">
-                    <GitHubLogoIcon />
-                    {question.related_project_info?.title}
-                  </Button>
-                </Link>
+                <hr />
+                <div className="mb-2 flex items-center gap-2">
+                  <Link
+                    href={`/projects/${question.related_project_info?.project_id}`}
+                  >
+                    <Button variant="ghost">
+                      <GitHubLogoIcon />
+                      {question.related_project_info?.title}
+                    </Button>
+                  </Link>
+                  {question.code_context_full_pathname}
+                </div>
+
                 {!href && (
                   <ReadOnlyEditor
                     language={getLanguageFromFilename(
