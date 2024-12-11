@@ -24,7 +24,7 @@
 
   /* for cards... */
   .gradient-border {
-    background: linear-gradient(to bottom, hsl(var(--sidebar-accent)), hsl(var(--accent)));
+    background: linear-gradient(to bottom, hsl(var(--secondary)), hsl(var(--accent)));
     padding: 2px;
     border-radius: 0.5rem;
   }
