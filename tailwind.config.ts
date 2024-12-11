@@ -91,6 +91,7 @@ const config: Config = {
 				h4: '2.5rem', /* 40px */
 				h5: '1.875rem', /* 30px */
 				h6: '1.5625rem', /* 25px */
+				h7: '5.625rem', /* 90px */
 				p1: '1.25rem', /* 20px */
 				p13: '0.813rem',
 				p15: '0.938rem',
