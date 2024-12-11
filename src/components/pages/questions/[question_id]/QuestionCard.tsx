@@ -129,7 +129,7 @@ export default function QuestionCard({
             question.code_context && (
               <div>
                 <hr />
-                <div className="mb-2 flex items-center gap-2">
+                <div className="my-2 flex items-center gap-2">
                   <Link
                     href={`/projects/${question.related_project_info?.project_id}`}
                   >
