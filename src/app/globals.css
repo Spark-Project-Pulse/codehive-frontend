@@ -96,6 +96,8 @@
     --sidebar-accent-foreground: 230 47% 7%;
     --sidebar-border: 223 47% 85%;
     --sidebar-ring: 35 92% 33%;
+
+    --code: 200, 10%, 94%;
   }
 
   /* Color scheme for dark mode */
@@ -141,6 +143,8 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 223 47% 15%;
     --sidebar-ring: 35 92% 67%;
+
+    --code: 219, 12%, 23%;
   }
 
   /* For custom fonts */
