@@ -91,7 +91,7 @@ export default function AddProject() {
         Add a Project
       </h1>
       <div className="flex items-center justify-center relative">
-        <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-md">
+        <div className="gradient-border">
           <Card className="mx-auto w-full max-w-4xl">
             <CardHeader>
               <CardDescription>

@@ -22,13 +22,13 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
   }
 
   return (
-    <div className="bg-gradient-to-b from-primary to-tertiary p-[2px] rounded-lg hover:border-primary duration-200 hover:from-primary hover:to-tertiary">
+    <div className="gradient-border">
       <Card
         onClick={handleCardClick}
-        className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-lg hover:border-primary"
+        className="cursor-pointer overflow-hidden transition-transform duration-200 hover:scale-105 hover:border-primary hover:shadow-lg"
       >
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-start">
+          <div className="flex items-center justify-start gap-2">
             <Avatar className="h-16 w-16">
               <AvatarImage
                 src={contributor.user_info.profile_image_url}
@@ -38,27 +38,28 @@ const ContributorCard: React.FC<ContributorCardProps> = ({
                 {contributor.user_info.username.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <CardTitle className="-mt-6 pl-2 pr-2">{contributor.user_info.username}</CardTitle>
+            <CardTitle className="flex-1">
+              {contributor.user_info.username}
+            </CardTitle>
             {index < 3 && (
-              <div className="text-yellow-500">
+              <div className="flex items-center">
                 {index === 0 && <Trophy size={32} aria-label="First" />}
                 {index === 1 && <Medal size={32} aria-label="Second" />}
                 {index === 2 && <Award size={32} aria-label="Third" />}
               </div>
             )}
           </div>
-
         </CardHeader>
         <CardContent>
           <div className="flex justify-around">
             <div className="flex flex-col items-center">
-              <span className="text-p15 font-body">Reputation</span>
+              <span className="font-body text-p15">Reputation</span>
               <Badge variant="secondary">
                 {contributor.hive_reputation.toLocaleString()}
               </Badge>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-p15 font-body">Contributions</span>
+              <span className="font-body text-p15">Contributions</span>
               <Badge variant="secondary">
                 {contributor.contributions.toLocaleString()}
               </Badge>

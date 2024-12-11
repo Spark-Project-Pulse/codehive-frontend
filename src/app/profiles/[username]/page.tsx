@@ -238,7 +238,7 @@ export default function ProfilePage({
     <div className="container mx-auto">
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">
-          <div className="to-tertiary rounded-md bg-gradient-to-b from-primary p-[2px]">
+          <div className="gradient-border">
             <Card>
               <CardHeader className="flex flex-col items-center">
                 <div className="relative h-32 w-32">
