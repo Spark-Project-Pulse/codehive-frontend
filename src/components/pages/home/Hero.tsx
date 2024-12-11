@@ -11,9 +11,6 @@ export default function Hero() {
           <div className="space-y-4">
             <h2 className="text-h3 font-title leading-tight">
               <span>WELCOME TO</span><br/>
-              {/* <span className="bg-gradient-to-r from-primary to-tertiary bg-clip-text pr-2 text-transparent">
-                CODEHIVE
-              </span> */}
               <Image
               src="/logo-and-codehive-dark.svg"
               className="mx-auto block dark:hidden"
